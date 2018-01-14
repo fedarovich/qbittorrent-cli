@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace QBittorrent.Client
 {
@@ -47,6 +48,21 @@ namespace QBittorrent.Client
 
         #endregion
 
+        public async Task<IReadOnlyList<TorrentInfo>> GetTorrenListAsync(TorrentListQuery query = null)
+        {
+            query = query ?? new TorrentListQuery();
+            var uri = BuildUri("/query/torrents",
+                ("filter", query.Filter.ToString().ToLowerInvariant()),
+                ("category", query.Category),
+                ("sort", query.SortBy),
+                ("reverse", query.ReverseSort.ToString().ToLowerInvariant()),
+                ("limit", query.Limit?.ToString()),
+                ("offset", query.Offset?.ToString()));
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<TorrentInfo[]>(json);
+            return result;
+        }
+
         public void Dispose()
         {
             _client?.Dispose();
@@ -55,6 +71,18 @@ namespace QBittorrent.Client
         private FormUrlEncodedContent BuildForm(params (string key, string value)[] fields)
         {
             return new FormUrlEncodedContent(fields.Select(f => new KeyValuePair<string, string>(f.key, f.value)));
+        }
+
+        private Uri BuildUri(string path, params (string key, string value)[] parameters)
+        {
+            var builder = new UriBuilder(_uri)
+            {
+                Path = path,
+                Query = string.Join("&", parameters
+                    .Where(t => t.value != null)
+                    .Select(t => $"{Uri.EscapeDataString(t.key)}={Uri.EscapeDataString(t.value)}"))
+            };
+            return builder.Uri;
         }
     }
 }
