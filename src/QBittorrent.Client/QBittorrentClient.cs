@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -13,7 +15,7 @@ namespace QBittorrent.Client
         private readonly Uri _uri;
         private readonly HttpClient _client;
 
-        public QBittorrentClient(Uri uri) 
+        public QBittorrentClient(Uri uri)
             : this(uri, new HttpClient())
         {
         }
@@ -61,6 +63,54 @@ namespace QBittorrent.Client
             var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<TorrentInfo[]>(json);
             return result;
+        }
+
+        public async Task DownloadAsync(DownloadWithTorrentFilesRequest request)
+        {
+            var data = new MultipartFormDataContent();
+            foreach (var file in request.TorrentFiles)
+            {
+                data.AddFile("torrents", file, "application/x-bittorrent");
+            }
+
+            data
+                .AddNonEmptyString("savepath", request.DownloadFolder)
+                .AddNonEmptyString("cookie", request.Cookie)
+                .AddNonEmptyString("category", request.Category)
+                .AddValue("skip_checking", request.SkipHashChecking)
+                .AddValue("paused", request.Paused)
+                .AddNotNullValue("root_folder", request.CreateRootFolder)
+                .AddNonEmptyString("rename", request.Rename)
+                .AddNotNullValue("upLimit", request.UploadLimit)
+                .AddNotNullValue("dlLimit", request.DownloadLimit)
+                .AddValue("sequentialDownload", request.SequentialDownload)
+                .AddValue("firstLastPiecePrio", request.FirstLastPiecePrioritized);
+            
+            var uri = BuildUri("/command/upload");
+            var response = await _client.PostAsync(uri, data).ConfigureAwait(false);
+        }
+
+        public async Task DownloadAsync(DownloadWithTorrentUrlsRequest request)
+        {
+            var data = new MultipartFormDataContent();
+            var urls = string.Join("\n", request.TorrentUrls.Select(url => url.AbsoluteUri));
+
+            data
+                .AddValue("urls", urls)
+                .AddNonEmptyString("savepath", request.DownloadFolder)
+                .AddNonEmptyString("cookie", request.Cookie)
+                .AddNonEmptyString("category", request.Category)
+                .AddValue("skip_checking", request.SkipHashChecking)
+                .AddValue("paused", request.Paused)
+                .AddNotNullValue("root_folder", request.CreateRootFolder)
+                .AddNonEmptyString("rename", request.Rename)
+                .AddNotNullValue("upLimit", request.UploadLimit)
+                .AddNotNullValue("dlLimit", request.DownloadLimit)
+                .AddValue("sequentialDownload", request.SequentialDownload)
+                .AddValue("firstLastPiecePrio", request.FirstLastPiecePrioritized);
+
+            var uri = BuildUri("/command/download");
+            var response = await _client.PostAsync(uri, data).ConfigureAwait(false);
         }
 
         public void Dispose()

@@ -99,7 +99,7 @@ namespace QBittorrent.Client
         /// True if sequential download is enabled
         /// </summary>
         [JsonProperty("seq_dl")]
-        public bool IsSequentialDownload { get; set; }
+        public bool SequentialDownload { get; set; }
 
         /// <summary>
         /// True if first last piece are prioritized

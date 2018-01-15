@@ -13,7 +13,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command("list")]
     [Subcommand("torrents", typeof(Torrents))]
-    public class ListCommand : QBittorrentCommandBase
+    public class ListCommand : QBittorrentRootCommandBase
     {
         [Command("torrents")]
         public class Torrents : QBittorrentCommandBase
@@ -114,7 +114,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     string GetOptions()
                     {
                         var options = new List<string>(4);
-                        if (torrent.IsSequentialDownload)
+                        if (torrent.SequentialDownload)
                             options.Add("Sequential");
                         if (torrent.SuperSeeding)
                             options.Add("Super seeding");
@@ -251,12 +251,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                         $"The value of {validationContext.DisplayName} must be one of the following: {string.Join(", ", SortColumns.Keys)}");
                 }
             }
-        }
-
-        public int OnExecute(CommandLineApplication app, IConsole console)
-        {
-            app.ShowHelp();
-            return 1;
         }
     }
 }
