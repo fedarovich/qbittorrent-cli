@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 
-namespace QBittorrent.Client
+namespace QBittorrent.Client.Extensions
 {
     internal static class MultipartFormDataContentExtensions
     {

@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using QBittorrent.Client.Extensions;
 
 namespace QBittorrent.Client
 {
@@ -50,6 +51,8 @@ namespace QBittorrent.Client
 
         #endregion
 
+        #region Get
+
         public async Task<IReadOnlyList<TorrentInfo>> GetTorrenListAsync(TorrentListQuery query = null)
         {
             query = query ?? new TorrentListQuery();
@@ -65,38 +68,40 @@ namespace QBittorrent.Client
             return result;
         }
 
+        public async Task<TorrentProperties> GetTorrentPropertiesAsync(string hash)
+        {
+            var uri = BuildUri($"/query/propertiesGeneral/{hash}");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<TorrentProperties>(json);
+            return result;
+        }
+
+        #endregion
+
+        #region Download
+
         public async Task DownloadAsync(DownloadWithTorrentFilesRequest request)
         {
+            var uri = BuildUri("/command/upload");
             var data = new MultipartFormDataContent();
             foreach (var file in request.TorrentFiles)
             {
                 data.AddFile("torrents", file, "application/x-bittorrent");
-            }
-
-            data
-                .AddNonEmptyString("savepath", request.DownloadFolder)
-                .AddNonEmptyString("cookie", request.Cookie)
-                .AddNonEmptyString("category", request.Category)
-                .AddValue("skip_checking", request.SkipHashChecking)
-                .AddValue("paused", request.Paused)
-                .AddNotNullValue("root_folder", request.CreateRootFolder)
-                .AddNonEmptyString("rename", request.Rename)
-                .AddNotNullValue("upLimit", request.UploadLimit)
-                .AddNotNullValue("dlLimit", request.DownloadLimit)
-                .AddValue("sequentialDownload", request.SequentialDownload)
-                .AddValue("firstLastPiecePrio", request.FirstLastPiecePrioritized);
-            
-            var uri = BuildUri("/command/upload");
-            var response = await _client.PostAsync(uri, data).ConfigureAwait(false);
+            }           
+            await DownloadCoreAsync(uri, data, request).ConfigureAwait(false);
         }
 
         public async Task DownloadAsync(DownloadWithTorrentUrlsRequest request)
         {
-            var data = new MultipartFormDataContent();
+            var uri = BuildUri("/command/download");
             var urls = string.Join("\n", request.TorrentUrls.Select(url => url.AbsoluteUri));
+            var data = new MultipartFormDataContent().AddValue("urls", urls);
+            await DownloadCoreAsync(uri, data, request).ConfigureAwait(false);
+        }
 
+        protected async Task DownloadCoreAsync(Uri uri, MultipartFormDataContent data, DownloadRequest request)
+        {
             data
-                .AddValue("urls", urls)
                 .AddNonEmptyString("savepath", request.DownloadFolder)
                 .AddNonEmptyString("cookie", request.Cookie)
                 .AddNonEmptyString("category", request.Category)
@@ -109,9 +114,11 @@ namespace QBittorrent.Client
                 .AddValue("sequentialDownload", request.SequentialDownload)
                 .AddValue("firstLastPiecePrio", request.FirstLastPiecePrioritized);
 
-            var uri = BuildUri("/command/download");
             var response = await _client.PostAsync(uri, data).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
         }
+
+        #endregion
 
         public void Dispose()
         {

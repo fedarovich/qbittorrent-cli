@@ -12,6 +12,7 @@ namespace QBittorrent.CommandLineInterface
     [Command]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("download", typeof(DownloadCommand))]
+    [Subcommand("get", typeof(GetCommand))]
     [HelpOption]
     class Program
     {

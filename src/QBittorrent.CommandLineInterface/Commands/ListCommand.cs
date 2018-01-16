@@ -63,7 +63,9 @@ namespace QBittorrent.CommandLineInterface.Commands
                     {
                         Category = Category,
                         Filter = Enum.TryParse(Filter, out TorrentListFilter filter) ? filter : TorrentListFilter.All,
-                        SortBy = SortColumns.TryGetValue(Sort, out var sort) ? sort : null,
+                        SortBy = Sort != null
+                            ? (SortColumns.TryGetValue(Sort, out var sort) ? sort : null)
+                            : null,
                         ReverseSort = Reverse,
                         Limit = Limit,
                         Offset = Offset
