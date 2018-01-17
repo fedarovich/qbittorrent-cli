@@ -62,12 +62,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                                     console.WriteLine($"[{(i + 1).ToString().PadLeft(numbers)}] {torrent.Hash} {name}");
                                 }
 
-                                int index = -1;
-                                while (index < 0 || index >= matching.Count)
+                                int index = 0;
+                                while (index <= 0 || index > matching.Count)
                                 {
                                     index = Prompt.GetInt("Please, select the required one:");
                                 }
-                                fullHash = matching[index].Hash;
+                                fullHash = matching[index - 1].Hash;
                             }
                         }
                         else
@@ -76,18 +76,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         }
 
                         var props = await client.GetTorrentPropertiesAsync(fullHash);
-                        var properties =
-                            (from prop in typeof(TorrentProperties).GetRuntimeProperties()
-                            let attr = prop.GetCustomAttribute<DisplayAttribute>()
-                            let name = attr?.Name ?? prop.Name
-                            orderby attr?.GetOrder() ?? 0
-                            select (name, value: prop.GetValue(props))).ToList();
-
-                        var columnWidth = properties.Max(p => p.name.Length) + 1;
-                        foreach (var property in properties)
-                        {
-                            console.WriteLine($"{(property.name + ":").PadRight(columnWidth)} {property.value}");
-                        }
+                        console.PrintObject(props);
 
                         return 0;
                     }

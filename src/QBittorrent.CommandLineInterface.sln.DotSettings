@@ -1,4 +1,27 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=DISP_005FNAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=DISP_005FNAME/Order/@EntryValue">3</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=JSON_005FNAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=JSON_005FNAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=PROP/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=PROP/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=TYPE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=TYPE/Expression/@EntryValue">completeSmart()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Field/=TYPE/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Scope/=B68999B9D6B43E47A02B22C12A54C3CC/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Scope/=B68999B9D6B43E47A02B22C12A54C3CC/CustomProperties/=minimumLanguageVersion/@EntryIndexedValue">2.0</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Scope/=B68999B9D6B43E47A02B22C12A54C3CC/Type/@EntryValue">InCSharpTypeMember</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Shortcut/@EntryValue">jdprop</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=4D56C100BD875946996CF9119DAB01A4/Text/@EntryValue">/// &lt;summary&gt;&#xD;
+/// &#xD;
+/// &lt;/summary&gt;&#xD;
+[JsonProperty("$JSON_NAME$")]&#xD;
+[Display(Name = "$DISP_NAME$")]&#xD;
+public $TYPE$ $PROP$ { get; set; }</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Field/=JSON_005FNAME/@KeyIndexDefined">True</s:Boolean>
 	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Field/=JSON_005FNAME/Order/@EntryValue">0</s:Int64>
@@ -15,5 +38,8 @@
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Scope/=B68999B9D6B43E47A02B22C12A54C3CC/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Scope/=B68999B9D6B43E47A02B22C12A54C3CC/Type/@EntryValue">InCSharpTypeMember</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Scope/=B68999B9D6B43E47A02B22C12A54C3CC/CustomProperties/=minimumLanguageVersion/@EntryIndexedValue">2.0</s:String>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Text/@EntryValue">[JsonProperty("$JSON_NAME$")]&#xD;
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89800366A3AA8A4C82F3214623886197/Text/@EntryValue">/// &lt;summary&gt;&#xD;
+/// &#xD;
+/// &lt;/summary&gt;&#xD;
+[JsonProperty("$JSON_NAME$")]&#xD;
 public $TYPE$ $PROP$ { get; set; }</s:String></wpf:ResourceDictionary>
