@@ -13,10 +13,10 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command("list")]
     [Subcommand("torrents", typeof(Torrents))]
-    public class ListCommand : QBittorrentRootCommandBase
+    public class ListCommand : ClientRootCommandBase
     {
         [Command("torrents")]
-        public class Torrents : QBittorrentCommandBase
+        public class Torrents : ClientCommandBase
         {
             private static readonly Dictionary<string, string> SortColumns;
 

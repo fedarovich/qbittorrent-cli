@@ -5,13 +5,13 @@ using System.Text;
 
 namespace QBittorrent.Client
 {
-    public class DownloadWithTorrentUrlsRequest : DownloadRequest
+    public class AddTorrentUrlsRequest : AddTorrentRequest
     {
-        public DownloadWithTorrentUrlsRequest() : this(Enumerable.Empty<Uri>())
+        public AddTorrentUrlsRequest() : this(Enumerable.Empty<Uri>())
         {
         }
 
-        public DownloadWithTorrentUrlsRequest(IEnumerable<Uri> urls)
+        public AddTorrentUrlsRequest(IEnumerable<Uri> urls)
         {
             TorrentUrls = new List<Uri>(urls);
         }

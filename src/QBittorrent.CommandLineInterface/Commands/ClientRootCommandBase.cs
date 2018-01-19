@@ -2,7 +2,7 @@
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    public abstract class QBittorrentRootCommandBase : QBittorrentCommandBase
+    public abstract class ClientRootCommandBase : ClientCommandBase
     {
         public virtual int OnExecute(CommandLineApplication app, IConsole console)
         {

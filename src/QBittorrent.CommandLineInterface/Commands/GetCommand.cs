@@ -6,7 +6,7 @@ using McMaster.Extensions.CommandLineUtils;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command("get")]
-    public partial class GetCommand : QBittorrentRootCommandBase
+    public partial class GetCommand : ClientRootCommandBase
     {
     }
 }

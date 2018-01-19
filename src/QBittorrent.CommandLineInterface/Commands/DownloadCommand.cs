@@ -12,9 +12,9 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Command("download")]
     [Subcommand("torrents", typeof(Torrents))]
     [Subcommand("urls", typeof(DownloadWithUrls))]
-    public class DownloadCommand : QBittorrentRootCommandBase
+    public class DownloadCommand : ClientRootCommandBase
     {
-        public abstract class Base : QBittorrentCommandBase
+        public abstract class Base : ClientCommandBase
         {
             [Option("-f|--folder <PATH>", "Download folder.", CommandOptionType.SingleValue)]
             public string Folder { get; set; }
@@ -63,7 +63,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 try
                 {
                     await AuthenticateAsync(client);
-                    var request = new DownloadWithTorrentFilesRequest(Files)
+                    var request = new AddTorrentFilesRequest(Files)
                     {
                         Category = Category,
                         Cookie = Cookie,
@@ -77,7 +77,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         SkipHashChecking = SkipChecking,
                         UploadLimit = UploadLimit
                     };
-                    await client.DownloadAsync(request);
+                    await client.AddTorrentsAsync(request);
                     return 0;
                 }
                 finally
@@ -101,7 +101,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 try
                 {
                     await AuthenticateAsync(client);
-                    var request = new DownloadWithTorrentUrlsRequest(urls)
+                    var request = new AddTorrentUrlsRequest(urls)
                     {
                         Category = Category,
                         Cookie = Cookie,
@@ -115,7 +115,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         SkipHashChecking = SkipChecking,
                         UploadLimit = UploadLimit
                     };
-                    await client.DownloadAsync(request);
+                    await client.AddTorrentsAsync(request);
                     return 0;
                 }
                 finally

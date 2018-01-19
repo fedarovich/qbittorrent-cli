@@ -78,9 +78,9 @@ namespace QBittorrent.Client
 
         #endregion
 
-        #region Download
+        #region Add
 
-        public async Task DownloadAsync(DownloadWithTorrentFilesRequest request)
+        public async Task AddTorrentsAsync(AddTorrentFilesRequest request)
         {
             var uri = BuildUri("/command/upload");
             var data = new MultipartFormDataContent();
@@ -91,7 +91,7 @@ namespace QBittorrent.Client
             await DownloadCoreAsync(uri, data, request).ConfigureAwait(false);
         }
 
-        public async Task DownloadAsync(DownloadWithTorrentUrlsRequest request)
+        public async Task AddTorrentsAsync(AddTorrentUrlsRequest request)
         {
             var uri = BuildUri("/command/download");
             var urls = string.Join("\n", request.TorrentUrls.Select(url => url.AbsoluteUri));
@@ -99,7 +99,7 @@ namespace QBittorrent.Client
             await DownloadCoreAsync(uri, data, request).ConfigureAwait(false);
         }
 
-        protected async Task DownloadCoreAsync(Uri uri, MultipartFormDataContent data, DownloadRequest request)
+        protected async Task DownloadCoreAsync(Uri uri, MultipartFormDataContent data, AddTorrentRequest request)
         {
             data
                 .AddNonEmptyString("savepath", request.DownloadFolder)

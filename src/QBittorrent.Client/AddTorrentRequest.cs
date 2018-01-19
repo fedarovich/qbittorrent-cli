@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace QBittorrent.Client
 {
-    public abstract class DownloadRequest
+    public abstract class AddTorrentRequest
     {
         /// <summary>
         /// Download folder

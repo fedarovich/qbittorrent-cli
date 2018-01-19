@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace QBittorrent.Client
 {
-    public class DownloadWithTorrentFilesRequest : DownloadRequest
+    public class AddTorrentFilesRequest : AddTorrentRequest
     {
-        public DownloadWithTorrentFilesRequest() : this(Enumerable.Empty<string>())
+        public AddTorrentFilesRequest() : this(Enumerable.Empty<string>())
         {
         }
 
-        public DownloadWithTorrentFilesRequest(IEnumerable<string> torrentFiles)
+        public AddTorrentFilesRequest(IEnumerable<string> torrentFiles)
         {
             TorrentFiles = new List<string>(torrentFiles);
         }

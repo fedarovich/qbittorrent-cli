@@ -15,75 +15,15 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class GetCommand
     {
         [Subcommand("properties", typeof(Properties))]
-        public class TorrentCommand : QBittorrentRootCommandBase
+        public class TorrentCommand : ClientRootCommandBase
         {
-            public class Properties : QBittorrentCommandBase
+            public class Properties : TorrentSpecificCommandBase
             {
-                [Argument(0, "<HASH>", "Full or partial torrent hash")]
-                [Required]
-                [StringLength(40, MinimumLength = 1)]
-                public string Hash { get; set; }
-
-                public async Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)
+                protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
-                    var client = CreateClient();
-                    try
-                    {
-                        await AuthenticateAsync(client);
-                        string fullHash = "";
-                        if (Hash.Length < 40)
-                        {
-                            var torrents = await client.GetTorrenListAsync();
-                            var matching = torrents
-                                .Where(t => t.Hash.StartsWith(Hash, StringComparison.InvariantCultureIgnoreCase))
-                                .ToList();
-
-                            
-                            if (matching.Count == 0)
-                            {
-                                console.WriteLine($"No torrent matching hash {Hash} is found.");
-                                return 1;
-                            }
-                            if (matching.Count == 1)
-                            {
-                                fullHash = matching[0].Hash;
-                            }
-                            else
-                            {
-                                console.WriteLine($"The are several torrents matching partial hash {Hash}:");
-                                var numbers = (int) Math.Log10(matching.Count) + 1;
-                                var nameWidth = Console.BufferWidth - (numbers + 45);
-                                for (int i = 0; i < matching.Count; i++)
-                                {
-                                    var torrent = matching[i];
-                                    var name = torrent.Name.Length < nameWidth
-                                        ? torrent.Name
-                                        : torrent.Name.Substring(0, nameWidth - 3) + "...";
-                                    console.WriteLine($"[{(i + 1).ToString().PadLeft(numbers)}] {torrent.Hash} {name}");
-                                }
-
-                                int index = 0;
-                                while (index <= 0 || index > matching.Count)
-                                {
-                                    index = Prompt.GetInt("Please, select the required one:");
-                                }
-                                fullHash = matching[index - 1].Hash;
-                            }
-                        }
-                        else
-                        {
-                            fullHash = Hash;
-                        }
-
-                        var props = await client.GetTorrentPropertiesAsync(fullHash);
-                        console.PrintObject(props);
-
-                        return 0;
-                    }
-                    finally
-                    {
-                        client.Dispose();
-                    }
+                    var props = await client.GetTorrentPropertiesAsync(Hash);
+                    console.PrintObject(props);
+                    return 0;
                 }
             }
         }

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace QBittorrent.Client.Converters
 {
-    public class UnixTimeToDateTimeOffsetConverter : JsonConverter
+    internal class UnixTimeToNullableDateTimeConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -13,29 +13,31 @@ namespace QBittorrent.Client.Converters
             }
             else
             {
-                var dateTimeOffset = (DateTimeOffset) value;
+                var dateTime = new DateTime(((DateTime)value).Ticks, DateTimeKind.Utc);
+                var dateTimeOffset = new DateTimeOffset(dateTime, TimeSpan.Zero);
                 writer.WriteValue(dateTimeOffset.ToUnixTimeSeconds());
             }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            bool isNullable = objectType == typeof(DateTimeOffset?);
             if (reader.TokenType == JsonToken.Null)
             {
-                return isNullable ? (DateTimeOffset?)null : throw new JsonSerializationException($"Cannot convert null value to {objectType}.");
+                return null;
             }
             if (reader.TokenType == JsonToken.Integer)
             {
                 var unixTime = Convert.ToInt64(reader.Value);
                 if (unixTime < 0)
-                    return isNullable ? (DateTimeOffset?)null : throw new JsonSerializationException($"Cannot convert null value to {objectType}.");
-                return DateTimeOffset.FromUnixTimeSeconds(unixTime);
+                    return null;
+
+                var dto = DateTimeOffset.FromUnixTimeSeconds(unixTime);
+                return new DateTime(dto.UtcTicks, DateTimeKind.Unspecified);
             }
 
             throw new JsonSerializationException($"Unexpected token {reader.TokenType} when parsing unix time.");
         }
 
-        public override bool CanConvert(Type objectType) => objectType == typeof(DateTimeOffset) || objectType == typeof(DateTimeOffset?);
+        public override bool CanConvert(Type objectType) => objectType == typeof(DateTime?);
     }
 }

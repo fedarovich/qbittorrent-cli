@@ -6,7 +6,7 @@ using QBittorrent.Client;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [HelpOption]
-    public abstract class QBittorrentCommandBase
+    public abstract class ClientCommandBase
     {
         [Option("--url <URL>", "QBittorrent Server URL", CommandOptionType.SingleValue)]
         public string Url { get; set; } = "http://localhost:8080";
