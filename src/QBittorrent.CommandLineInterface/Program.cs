@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -21,13 +22,22 @@ namespace QBittorrent.CommandLineInterface
             try
             {
                 int code = await CommandLineApplication.ExecuteAsync<Program>(args);
-                Console.ReadKey();
                 return code;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
+            }
+            finally
+            {
+#if DEBUG
+                if (Debugger.IsAttached)
+                {
+                    Console.WriteLine("Press any key to exit...");
+                    Console.ReadKey();
+                }
+#endif
             }
         }
 
