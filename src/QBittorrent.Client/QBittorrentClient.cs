@@ -76,6 +76,14 @@ namespace QBittorrent.Client
             return result;
         }
 
+        public async Task<IEnumerable<TorrentContent>> GetTorrentContentsAsync(string hash)
+        {
+            var uri = BuildUri($"/query/propertiesFiles/{hash}");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<TorrentContent[]>(json);
+            return result;
+        }
+
         #endregion
 
         #region Add

@@ -15,6 +15,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class GetCommand
     {
         [Subcommand("properties", typeof(Properties))]
+        [Subcommand("contents", typeof(Contents))]
         public class TorrentCommand : ClientRootCommandBase
         {
             public class Properties : TorrentSpecificCommandBase
@@ -23,6 +24,20 @@ namespace QBittorrent.CommandLineInterface.Commands
                 {
                     var props = await client.GetTorrentPropertiesAsync(Hash);
                     console.PrintObject(props);
+                    return 0;
+                }
+            }
+
+            public class Contents : TorrentSpecificCommandBase
+            {
+                protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    var contents = await client.GetTorrentContentsAsync(Hash);
+                    foreach (var content in contents)
+                    {
+                        console.PrintObject(content);
+                        console.WriteLine(string.Empty);
+                    }
                     return 0;
                 }
             }

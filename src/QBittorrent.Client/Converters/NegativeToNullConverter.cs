@@ -38,7 +38,7 @@ namespace QBittorrent.Client.Converters
                 }
             }
 
-            throw new JsonSerializationException($"Unexpected token {reader.TokenType} when parsing unix time.");
+            throw new JsonSerializationException($"Unexpected token {reader.TokenType} when parsing integer.");
         }
 
         public override bool CanConvert(Type objectType)
