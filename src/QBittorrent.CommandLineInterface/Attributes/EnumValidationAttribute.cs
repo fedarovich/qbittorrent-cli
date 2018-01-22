@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
 namespace QBittorrent.CommandLineInterface.Attributes
 {
@@ -30,7 +28,7 @@ namespace QBittorrent.CommandLineInterface.Attributes
                 return ValidationResult.Success;
 
             if (value is string str && 
-                (Enum.TryParse(EnumType, str, !CaseSensitive, out _) || (AllowEmpty && string.IsNullOrEmpty(str)))
+                (EnumHelper.TryParse(EnumType, str, !CaseSensitive, out _) || (AllowEmpty && string.IsNullOrEmpty(str)))
             )
                 return ValidationResult.Success;
 

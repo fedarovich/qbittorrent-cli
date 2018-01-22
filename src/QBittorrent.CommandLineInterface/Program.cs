@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.CommandLineInterface.Commands;
