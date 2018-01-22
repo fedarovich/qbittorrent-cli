@@ -30,7 +30,7 @@ namespace QBittorrent.CommandLineInterface.Attributes
                 return ValidationResult.Success;
 
             if (value is string str && 
-                (Enum.TryParse(EnumType, str, !CaseSensitive, out _) || (AllowEmpty && string.IsNullOrEmpty(str)))
+                (EnumHelper.TryParse(EnumType, str, !CaseSensitive, out _) || (AllowEmpty && string.IsNullOrEmpty(str)))
             )
                 return ValidationResult.Success;
 
