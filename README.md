@@ -1,4 +1,6 @@
 # qbittorrent-cli
+![](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/2/badge)
+
 Command line interface for QBittorrent
 
 The binaries are available for different platforms:
