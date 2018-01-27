@@ -18,7 +18,6 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             [Argument(0, "<NAME>", "Category name.")]
             [Required]
-            [StringLength(255, MinimumLength = 1)]
             public string Name { get; set; }
 
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

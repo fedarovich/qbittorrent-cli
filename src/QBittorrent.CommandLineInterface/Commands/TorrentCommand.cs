@@ -120,7 +120,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         public class Category : TorrentSpecificCommandBase
         {
             [Option("--set <CATEGORY>", "The category name to set.", CommandOptionType.SingleValue)]
-            [Required]
+            [Required(AllowEmptyStrings = true)]
             public string CategoryName { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
