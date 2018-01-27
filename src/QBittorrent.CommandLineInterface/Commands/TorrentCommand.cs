@@ -8,7 +8,7 @@ using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Command("torrent")]
+    [Command("torrent", Description = "Manage torrents.")]
     [Subcommand("properties", typeof(Properties))]
     [Subcommand("content", typeof(Content))]
     [Subcommand("pause", typeof(Pause))]
@@ -16,6 +16,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand("delete", typeof(Delete))]
     [Subcommand("move", typeof(Move))]
     [Subcommand("rename", typeof(Rename))]
+    [Subcommand("category", typeof(Category))]
     public partial class TorrentCommand : ClientRootCommandBase
     {
         [Command(Description = "Shows the torrent properties.")]
@@ -111,6 +112,20 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 await client.RenameAsync(Hash, Name);
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Sets the torrent category.")]
+        public class Category : TorrentSpecificCommandBase
+        {
+            [Option("--set <CATEGORY>", "The category name to set.", CommandOptionType.SingleValue)]
+            [Required]
+            public string CategoryName { get; set; }
+
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                await client.SetTorrentCategoryAsync(Hash, CategoryName);
                 return ExitCodes.Success;
             }
         }

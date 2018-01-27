@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using QBittorrent.Client.Extensions;
@@ -162,6 +159,70 @@ namespace QBittorrent.Client
 
         #endregion
 
+        #region Categories
+
+        public async Task AddCategoryAsync(string name)
+        {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("The name cannot be empty.", nameof(name));
+
+            var uri = BuildUri("/command/addCategory");
+            await _client.PostAsync(uri, BuildForm(("category", name))).ConfigureAwait(false);
+        }
+
+        public async Task DeleteCategoriesAsync(params string[] names)
+        {
+            if (names == null)
+                throw new ArgumentNullException(nameof(names));
+            if (names.Length == 0)
+                throw new ArgumentException("The name list cannot be empty.");
+
+            var uri = BuildUri("/command/removeCategories");
+            await _client.PostAsync(
+                    uri,
+                    BuildForm(("categories", string.Join("\n", names))))
+                .ConfigureAwait(false);
+        }
+
+        public Task DeleteCategoriesAsync(IEnumerable<string> names)
+        {
+            return DeleteCategoriesAsync(names?.ToArray());
+        }
+
+        public async Task SetTorrentCategoryAsync(string hash, string category)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (category == null)
+                throw new ArgumentNullException(nameof(category));
+
+            var uri = BuildUri("/command/setCategory");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", hash),
+                    ("category", category)
+                )).ConfigureAwait(false);
+        }
+
+        public async Task SetTorrentCategoryAsync(IEnumerable<string> hashes, string category)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+            if (category == null)
+                throw new ArgumentNullException(nameof(category));
+
+            var uri = BuildUri("/command/setCategory");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", string.Join("|", hashes)),
+                    ("category", category)
+                )).ConfigureAwait(false);
+        }
+
+        #endregion
+
         #region Other
 
         public async Task DeleteAsync(string hash, bool deleteDownloadedData = false)
@@ -233,7 +294,7 @@ namespace QBittorrent.Client
                     ("name", newName)
                 )).ConfigureAwait(false);
 
-            // TODO: Handle 400 rescponse code.
+            // TODO: Handle 400 response code.
         }
 
         #endregion
