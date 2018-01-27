@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using QBittorrent.Client.Extensions;
@@ -304,9 +305,9 @@ namespace QBittorrent.Client
             _client?.Dispose();
         }
 
-        private FormUrlEncodedContent BuildForm(params (string key, string value)[] fields)
+        private HttpContent BuildForm(params (string key, string value)[] fields)
         {
-            return new FormUrlEncodedContent(fields.Select(f => new KeyValuePair<string, string>(f.key, f.value)));
+            return new CompatibleFormUrlEncodedContent(fields);
         }
 
         private Uri BuildUri(string path, params (string key, string value)[] parameters)
