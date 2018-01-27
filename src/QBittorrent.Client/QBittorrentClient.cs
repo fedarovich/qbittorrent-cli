@@ -128,6 +128,116 @@ namespace QBittorrent.Client
 
         #endregion
 
+        #region Pause/Resume
+
+        public async Task PauseAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            var uri = BuildUri("/command/pause");
+            await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+        }
+
+        public async Task PauseAllAsync()
+        {
+            var uri = BuildUri("/command/pauseAll");
+            await _client.PostAsync(uri, BuildForm()).ConfigureAwait(false);
+        }
+
+        public async Task ResumeAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            var uri = BuildUri("/command/resume");
+            await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+        }
+
+        public async Task ResumeAllAsync()
+        {
+            var uri = BuildUri("/command/resumeAll");
+            await _client.PostAsync(uri, BuildForm()).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Other
+
+        public async Task DeleteAsync(string hash, bool deleteDownloadedData = false)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            var uri = deleteDownloadedData
+                ? BuildUri("/command/deletePerm")
+                : BuildUri("/command/delete");
+            await _client.PostAsync(uri, BuildForm(("hashes", hash))).ConfigureAwait(false);
+        }
+
+        public async Task DeleteAsync(IEnumerable<string> hashes, bool deleteDownloadedData = false)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = deleteDownloadedData
+                ? BuildUri("/command/deletePerm")
+                : BuildUri("/command/delete");
+            await _client.PostAsync(
+                uri, 
+                BuildForm(("hashes", string.Join("|", hashes))))
+                .ConfigureAwait(false);
+        }
+
+        public async Task SetLocationAsyc(string hash, string newLocation)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (newLocation == null)
+                throw new ArgumentNullException(nameof(newLocation));
+
+            var uri = BuildUri("/command/setLocation");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", hash),
+                    ("location", newLocation)
+                )).ConfigureAwait(false);
+        }
+
+        public async Task SetLocationAsyc(IEnumerable<string> hashes, string newLocation)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+            if (newLocation == null)
+                throw new ArgumentNullException(nameof(newLocation));
+
+            var uri = BuildUri("/command/setLocation");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", string.Join("|", hashes)),
+                    ("location", newLocation)
+                )).ConfigureAwait(false);
+        }
+
+        public async Task RenameAsync(string hash, string newName)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (newName == null)
+                throw new ArgumentNullException(nameof(newName));
+
+            var uri = BuildUri("/command/rename");
+            var response = await _client.PostAsync(uri,
+                BuildForm(
+                    ("hash", hash),
+                    ("name", newName)
+                )).ConfigureAwait(false);
+
+            // TODO: Handle 400 rescponse code.
+        }
+
+        #endregion
+
         public void Dispose()
         {
             _client?.Dispose();

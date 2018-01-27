@@ -8,7 +8,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [HelpOption]
     public abstract class ClientCommandBase
     {
-        [Option("--url <URL>", "QBittorrent Server URL", CommandOptionType.SingleValue)]
+        [Option("--url <SERVER_URL>", "QBittorrent Server URL", CommandOptionType.SingleValue)]
         public string Url { get; set; } = "http://localhost:8080";
 
         [Option("--username <USERNAME>", "User name", CommandOptionType.SingleValue)]

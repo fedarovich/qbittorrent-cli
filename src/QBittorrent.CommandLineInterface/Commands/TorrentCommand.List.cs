@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
@@ -11,16 +12,15 @@ using QBittorrent.CommandLineInterface.Attributes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Command("list")]
-    [Subcommand("torrents", typeof(Torrents))]
-    public class ListCommand : ClientRootCommandBase
+    [Subcommand("list", typeof(List))]
+    public partial class TorrentCommand
     {
-        [Command("torrents")]
-        public class Torrents : ClientCommandBase
+        [Command(Description = "Shows the torrent list.")]
+        public class List : ClientCommandBase
         {
             private static readonly Dictionary<string, string> SortColumns;
 
-            static Torrents()
+            static List()
             {
                 var fields =
                     from property in typeof(TorrentInfo).GetProperties()

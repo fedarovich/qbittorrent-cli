@@ -12,11 +12,15 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Argument(0, "<HASH>", "Full or partial torrent hash")]
         [Required]
         [StringLength(40, MinimumLength = 1)]
-        public string Hash { get; set; }
+        public virtual string Hash { get; set; }
+
+        protected virtual bool AllowAll => false;
+
+        protected bool IsAll => "ALL".Equals(Hash, StringComparison.InvariantCultureIgnoreCase);
 
         protected sealed override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
         {
-            if (Hash.Length < 40)
+            if (Hash.Length < 40 && !(AllowAll && IsAll))
             {
                 var torrents = await client.GetTorrenListAsync();
                 var matching = torrents

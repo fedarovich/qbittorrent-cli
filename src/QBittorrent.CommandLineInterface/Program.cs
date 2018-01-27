@@ -9,9 +9,7 @@ using QBittorrent.CommandLineInterface.Commands;
 namespace QBittorrent.CommandLineInterface
 {
     [Command]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("download", typeof(DownloadCommand))]
-    [Subcommand("get", typeof(GetCommand))]
+    [Subcommand("torrent", typeof(TorrentCommand))]
     [HelpOption]
     class Program
     {
