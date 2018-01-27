@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.Commands;
 
 namespace QBittorrent.CommandLineInterface
@@ -37,8 +39,21 @@ namespace QBittorrent.CommandLineInterface
             }
         }
 
-        async Task<int> OnExecute()
+        [Option("--version", "Displays the program version.", CommandOptionType.NoValue)]
+        public bool ShowVersion { get; set; }
+
+        int OnExecute(CommandLineApplication app, IConsole console)
         {
+            if (ShowVersion)
+            {
+                var attr = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                console.WriteLine(attr.InformationalVersion);
+            }
+            else
+            {
+                app.ShowHelp();
+            }
+
             return 0;
         }
     }
