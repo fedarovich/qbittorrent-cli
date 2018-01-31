@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using QBittorrent.Client.Extensions;
 
 namespace QBittorrent.Client
@@ -51,7 +52,7 @@ namespace QBittorrent.Client
 
         #region Get
 
-        public async Task<IReadOnlyList<TorrentInfo>> GetTorrenListAsync(TorrentListQuery query = null)
+        public async Task<IReadOnlyList<TorrentInfo>> GetTorrentListAsync(TorrentListQuery query = null)
         {
             query = query ?? new TorrentListQuery();
             var uri = BuildUri("/query/torrents",
@@ -220,6 +221,106 @@ namespace QBittorrent.Client
                     ("hashes", string.Join("|", hashes)),
                     ("category", category)
                 )).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region Limits
+
+        public async Task<long?> GetTorrentDownloadLimitAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            var dict = await GetTorrentDownloadLimitAsync(new[] {hash}).ConfigureAwait(false);
+            return dict?.Values?.SingleOrDefault();
+        }
+
+        public async Task<IReadOnlyDictionary<string, long>> GetTorrentDownloadLimitAsync(IEnumerable<string> hashes)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/getTorrentsDlLimit");
+            var response = await _client.PostAsync(
+                uri, 
+                BuildForm(("hashes", string.Join("|", hashes))))
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(json);
+            return dict;
+        }
+
+        public Task SetTorrentDownloadLimitAsync(string hash, long limit)
+        {
+            if (hash == null)
+                throw new ArgumentNullException();
+
+            return SetTorrentDownloadLimitAsync(new[] {hash}, limit);
+        }
+
+        public async Task SetTorrentDownloadLimitAsync(IEnumerable<string> hashes, long limit)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/setTorrentsDlLimit");
+            await _client.PostAsync(
+                uri,
+                BuildForm(
+                    ("hashes", string.Join("|", hashes)),
+                    ("limit", limit.ToString())))
+                .ConfigureAwait(false);
+        }
+
+        public async Task<long?> GetTorrentUploadLimitAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            var dict = await GetTorrentUploadLimitAsync(new[] { hash }).ConfigureAwait(false);
+            return dict?.Values?.SingleOrDefault();
+        }
+
+        public async Task<IReadOnlyDictionary<string, long>> GetTorrentUploadLimitAsync(IEnumerable<string> hashes)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/getTorrentsUpLimit");
+            var response = await _client.PostAsync(
+                    uri,
+                    BuildForm(("hashes", string.Join("|", hashes))))
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(json);
+            return dict;
+        }
+
+        public Task SetTorrentUploadLimitAsync(string hash, long limit)
+        {
+            if (hash == null)
+                throw new ArgumentNullException();
+
+            return SetTorrentUploadLimitAsync(new[] { hash }, limit);
+        }
+
+        public async Task SetTorrentUploadLimitAsync(IEnumerable<string> hashes, long limit)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/setTorrentsUpLimit");
+            await _client.PostAsync(
+                    uri,
+                    BuildForm(
+                        ("hashes", string.Join("|", hashes)),
+                        ("limit", limit.ToString())))
+                .ConfigureAwait(false);
         }
 
         #endregion

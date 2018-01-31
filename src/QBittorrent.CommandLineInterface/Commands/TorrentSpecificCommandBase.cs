@@ -22,7 +22,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             if (Hash.Length < 40 && !(AllowAll && IsAll))
             {
-                var torrents = await client.GetTorrenListAsync();
+                var torrents = await client.GetTorrentListAsync();
                 var matching = torrents
                     .Where(t => t.Hash.StartsWith(Hash, StringComparison.InvariantCultureIgnoreCase))
                     .ToList();

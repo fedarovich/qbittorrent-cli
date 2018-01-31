@@ -70,7 +70,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         Limit = Limit,
                         Offset = Offset
                     };
-                    var torrents = await client.GetTorrenListAsync(query);
+                    var torrents = await client.GetTorrentListAsync(query);
                     PrintTorrents(console, torrents);
                     return 0;
                 }
