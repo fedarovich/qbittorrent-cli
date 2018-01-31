@@ -24,4 +24,10 @@
     <ProjectReference Include="..\QBittorrent.Client\QBittorrent.Client.csproj" />
   </ItemGroup>
 
+  <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == ''">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="qbt.cmd" RelativePath="qbt.cmd" />
+      <ResolvedFileToPublish Include="qbt.sh" RelativePath="qbt" />
+    </ItemGroup>
+  </Target>
 </Project>
