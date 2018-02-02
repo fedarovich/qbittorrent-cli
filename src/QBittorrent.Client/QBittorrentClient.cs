@@ -83,6 +83,14 @@ namespace QBittorrent.Client
             return result;
         }
 
+        public async Task<GlobalTransferInfo> GetGlobalTransferInfoAsync()
+        {
+            var uri = BuildUri("/query/transferInfo");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<GlobalTransferInfo>(json);
+            return result;
+        }
+
         #endregion
 
         #region Add
@@ -321,6 +329,36 @@ namespace QBittorrent.Client
                         ("hashes", string.Join("|", hashes)),
                         ("limit", limit.ToString())))
                 .ConfigureAwait(false);
+        }
+
+        public async Task<long?> GetGlobalDownloadLimitAsync()
+        {
+            var uri = BuildUri("/command/getGlobalDlLimit");
+            var response = await _client.PostAsync(uri, null).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var strValue = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return long.TryParse(strValue, out long value) ? value : 0;
+        }
+
+        public async Task SetGlobalDownloadLimitAsync(long limit)
+        {
+            var uri = BuildUri("/command/setGlobalDlLimit");
+            await _client.PostAsync(uri, BuildForm(("limit", limit.ToString()))).ConfigureAwait(false);
+        }
+
+        public async Task<long?> GetGlobalUploadLimitAsync()
+        {
+            var uri = BuildUri("/command/getGlobalUpLimit");
+            var response = await _client.PostAsync(uri, null).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var strValue = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return long.TryParse(strValue, out long value) ? value : 0;
+        }
+
+        public async Task SetGlobalUploadLimitAsync(long limit)
+        {
+            var uri = BuildUri("/command/setGlobalUpLimit");
+            await _client.PostAsync(uri, BuildForm(("limit", limit.ToString()))).ConfigureAwait(false);
         }
 
         #endregion
