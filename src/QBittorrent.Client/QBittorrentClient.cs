@@ -363,6 +363,47 @@ namespace QBittorrent.Client
 
         #endregion
 
+        #region Priority
+
+        public Task ChangeTorrentPriorityAsync(string hash, TorrentPriorityChange change)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            return ChangeTorrentPriorityAsync(new[] {hash}, change);
+        }
+
+        public async Task ChangeTorrentPriorityAsync(IEnumerable<string> hashes, TorrentPriorityChange change)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException();
+
+            var uri = BuildUri(GetPath());
+            await _client.PostAsync(
+                    uri,
+                    BuildForm(("hashes", string.Join("|", hashes))))
+                .ConfigureAwait(false);
+
+            string GetPath()
+            {
+                switch (change)
+                {
+                    case TorrentPriorityChange.Minimal:
+                        return "/command/bottomPrio";
+                    case TorrentPriorityChange.Increase:
+                        return "/command/decreasePrio";
+                    case TorrentPriorityChange.Decrease:
+                        return "/command/increasePrio";
+                    case TorrentPriorityChange.Maximal:
+                        return "/command/topPrio";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(change), change, null);
+                }
+            }
+        }
+
+        #endregion
+
         #region Other
 
         public async Task DeleteAsync(string hash, bool deleteDownloadedData = false)
