@@ -16,13 +16,9 @@ qbt-osx-x64.zip | Mac OS X 10.10 or later (64-bit) | None
 
 **This software is at an early development stage and only several commands are available now. The syntax of the commands may change in future**
 
-To see the list of currently available commands run (any package except `qbt-core20-portable`):
+To see the list of currently available commands run:
 
     qbt --help
-
-or for `qbt-core20-portable`
-
-    dotnet qbt.dll --help
 
 ### Prerequisites on Linux
 The application has been tested on **Ubuntu 16.04 TLS** and **openSUSE Leap 42**, but it should run on any distro supported by .Net Core:
