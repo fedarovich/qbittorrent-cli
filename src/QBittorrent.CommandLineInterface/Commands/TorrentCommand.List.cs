@@ -15,9 +15,26 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand("list", typeof(List))]
     public partial class TorrentCommand
     {
-        [Command(Description = "Shows the torrent list.")]
+        [Command(Description = "Shows the torrent list.", ExtendedHelpText = ExtendedHelpText)]
         public class List : ClientCommandBase
         {
+            private const string ExtendedHelpText =
+                "\n" + 
+                "Torrent Statuses in ST column:\n" +
+                "   D - Downloading\n" +
+                "  CD - Checking Download\n" +
+                "  MD - Downloading Metadata\n" +
+                "  PD - Paused Download\n" +
+                "  QD - Queued Download\n" +
+                "  SD - Stalled Download\n" +
+                "   E - Error\n" +
+                "   U - Uploading\n" +
+                "  CU - Checking Upload\n" +
+                "  PU - Paused Upload\n" +
+                "  QU - Queued Upload\n" +
+                "  SU - Stalled Upload\n";
+
+
             private static readonly Dictionary<string, string> SortColumns;
 
             static List()
@@ -133,7 +150,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             private void PrintTorrentsTable(IConsole console, IEnumerable<TorrentInfo> torrents)
             {
-                const int stateWidth = 1;
+                const int stateWidth = 2;
                 const int hashWidth = 6;
                 const int upSpeedWidth = 10;
                 const int downSpeedWidth = 10;
@@ -142,20 +159,20 @@ namespace QBittorrent.CommandLineInterface.Commands
                 int nameWidth = Console.WindowWidth -
                                 (stateWidth + hashWidth + upSpeedWidth + downSpeedWidth + eatWidth + spaceWidth) - 1;
 
-                console.WriteLine($"S|{"Name".PadRight(nameWidth)}| Hash | DL Speed | UL Speed |   EAT");
-                console.WriteLine(new string('-', Console.BufferWidth - 1));
+                console.WriteLine($"ST\u2502{"Name".PadRight(nameWidth)}\u2502 Hash \u2502 DL Speed \u2502 UL Speed \u2502   EAT   ");
+                console.WriteLine($"  \u253c{"    ".PadRight(nameWidth)}\u253c      \u253c          \u253c          \u253c         ".Replace(' ', '\u2500'));
                 foreach (var torrent in torrents)
                 {
                     PrintState(console, torrent.State);
-                    console.Write(" ");
+                    console.Write("\u2502");
                     console.Write(TrimPadName(torrent.Name));
-                    console.Write(" ");
+                    console.Write("\u2502");
                     console.Write(torrent.Hash.Substring(0, 6));
-                    console.Write(" ");
+                    console.Write("\u2502");
                     console.Write(FormatSpeed(torrent.DownloadSpeed).PadLeft(10));
-                    console.Write(" ");
+                    console.Write("\u2502");
                     console.Write(FormatSpeed(torrent.UploadSpeed).PadLeft(10));
-                    console.Write(" ");
+                    console.Write("\u2502");
                     console.Write(FormatEta(torrent.EstimatedTime));
                     console.WriteLine(string.Empty);
                 }
@@ -200,40 +217,40 @@ namespace QBittorrent.CommandLineInterface.Commands
                 switch (state)
                 {
                     case TorrentState.Error:
-                        console.WriteColored("E", ConsoleColor.Red);
+                        console.WriteColored(" E", ConsoleColor.Red);
                         break;
                     case TorrentState.PausedUpload:
-                        console.WriteColored("U", ConsoleColor.DarkGray);
+                        console.WriteColored("PU", ConsoleColor.DarkGray);
                         break;
                     case TorrentState.PausedDownload:
-                        console.WriteColored("D", ConsoleColor.DarkGray);
+                        console.WriteColored("PD", ConsoleColor.DarkGray);
                         break;
                     case TorrentState.QueuedUpload:
-                        console.WriteColored("U", ConsoleColor.DarkBlue);
+                        console.WriteColored("QU", ConsoleColor.DarkBlue);
                         break;
                     case TorrentState.QueuedDownload:
-                        console.WriteColored("D", ConsoleColor.DarkBlue);
+                        console.WriteColored("QD", ConsoleColor.DarkBlue);
                         break;
                     case TorrentState.Uploading:
-                        console.WriteColored("U", ConsoleColor.Green);
+                        console.WriteColored(" U", ConsoleColor.Green);
                         break;
                     case TorrentState.StalledUpload:
-                        console.WriteColored("U", ConsoleColor.DarkYellow);
+                        console.WriteColored("SU", ConsoleColor.DarkYellow);
                         break;
                     case TorrentState.CheckingUpload:
-                        console.WriteColored("U", ConsoleColor.Yellow);
+                        console.WriteColored("CU", ConsoleColor.Yellow);
                         break;
                     case TorrentState.CheckingDownload:
-                        console.WriteColored("D", ConsoleColor.Yellow);
+                        console.WriteColored("CD", ConsoleColor.Yellow);
                         break;
                     case TorrentState.Downloading:
-                        console.WriteColored("D", ConsoleColor.Green);
+                        console.WriteColored(" D", ConsoleColor.Green);
                         break;
                     case TorrentState.StalledDownload:
-                        console.WriteColored("D", ConsoleColor.DarkYellow);
+                        console.WriteColored("SD", ConsoleColor.DarkYellow);
                         break;
                     case TorrentState.FetchingMetadata:
-                        console.WriteColored("M", ConsoleColor.Blue);
+                        console.WriteColored("MD", ConsoleColor.Blue);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(state), state, null);
