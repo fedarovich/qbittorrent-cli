@@ -11,7 +11,6 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Command("torrent", Description = "Manage torrents.")]
     [Subcommand("properties", typeof(Properties))]
     [Subcommand("content", typeof(Content))]
-    [Subcommand("trackers", typeof(Trackers))]
     [Subcommand("web-seeds", typeof(WebSeeds))]
     [Subcommand("pause", typeof(Pause))]
     [Subcommand("resume", typeof(Resume))]
@@ -41,21 +40,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                 foreach (var content in contents)
                 {
                     console.PrintObject(content);
-                    console.WriteLine();
-                }
-                return ExitCodes.Success;
-            }
-        }
-
-        [Command(Description = "Shows the torrent trackers.")]
-        public class Trackers : TorrentSpecificCommandBase
-        {
-            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
-            {
-                var trackers = await client.GetTorrentTrackersAsync(Hash);
-                foreach (var tracker in trackers)
-                {
-                    console.PrintObject(tracker);
                     console.WriteLine();
                 }
                 return ExitCodes.Success;

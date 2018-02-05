@@ -510,6 +510,26 @@ namespace QBittorrent.Client
             // TODO: Handle 400 response code.
         }
 
+        public Task AddTrackersAsync(string hash, params Uri[] trackers)
+        {
+            return AddTrackersAsync(hash, trackers?.AsEnumerable());
+        }
+
+        public async Task AddTrackersAsync(string hash, IEnumerable<Uri> trackers)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (trackers == null)
+                throw new ArgumentNullException(nameof(trackers));
+
+            var uri = BuildUri("/command/addTrackers");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hash", hash),
+                    ("urls", string.Join("\n", trackers.Select(x => x.AbsoluteUri)))
+                )).ConfigureAwait(false);
+        }
+
         #endregion
 
         public void Dispose()
