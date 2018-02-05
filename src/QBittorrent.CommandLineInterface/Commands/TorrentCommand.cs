@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.Attributes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command("torrent", Description = "Manage torrents.")]
     [Subcommand("properties", typeof(Properties))]
     [Subcommand("content", typeof(Content))]
+    [Subcommand("trackers", typeof(Trackers))]
+    [Subcommand("web-seeds", typeof(WebSeeds))]
     [Subcommand("pause", typeof(Pause))]
     [Subcommand("resume", typeof(Resume))]
     [Subcommand("delete", typeof(Delete))]
@@ -39,7 +41,36 @@ namespace QBittorrent.CommandLineInterface.Commands
                 foreach (var content in contents)
                 {
                     console.PrintObject(content);
-                    console.WriteLine(string.Empty);
+                    console.WriteLine();
+                }
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Shows the torrent trackers.")]
+        public class Trackers : TorrentSpecificCommandBase
+        {
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                var trackers = await client.GetTorrentTrackersAsync(Hash);
+                foreach (var tracker in trackers)
+                {
+                    console.PrintObject(tracker);
+                    console.WriteLine();
+                }
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Shows the torrent web seeds.")]
+        public class WebSeeds : TorrentSpecificCommandBase
+        {
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                var urls = await client.GetTorrentWebSeedsAsync(Hash);
+                foreach (var url in urls)
+                {
+                    console.WriteLine(url.AbsoluteUri);
                 }
                 return ExitCodes.Success;
             }

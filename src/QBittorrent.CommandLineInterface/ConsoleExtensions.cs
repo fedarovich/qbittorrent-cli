@@ -10,6 +10,11 @@ namespace QBittorrent.CommandLineInterface
 {
     public static class ConsoleExtensions
     {
+        public static IConsole WriteLine(this IConsole console)
+        {
+            return console.WriteLine(string.Empty);
+        }
+
         public static IConsole WriteColored(this IConsole console, string text,
             ConsoleColor? foregroundColor = null,
             ConsoleColor? backgroundColor = null)

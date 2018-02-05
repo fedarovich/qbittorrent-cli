@@ -83,6 +83,38 @@ namespace QBittorrent.Client
             return result;
         }
 
+        public async Task<IEnumerable<TorrentTracker>> GetTorrentTrackersAsync(string hash)
+        {
+            var uri = BuildUri($"/query/propertiesTrackers/{hash}");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<TorrentTracker[]>(json);
+            return result;
+        }
+
+        public async Task<IEnumerable<Uri>> GetTorrentWebSeedsAsync(string hash)
+        {
+            var uri = BuildUri($"/query/propertiesWebSeeds/{hash}");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<UrlItem[]>(json);
+            return result.Select(x => x.Url).ToArray();
+        }
+
+        public async Task<IReadOnlyList<TorrentPieceState>> GetTorrentPiecesStatesAsync(string hash)
+        {
+            var uri = BuildUri($"/query/getPieceStates/{hash}");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<TorrentPieceState[]>(json);
+            return result;
+        }
+
+        public async Task<IReadOnlyList<string>> GetTorrentPiecesHashesAsync(string hash)
+        {
+            var uri = BuildUri($"/query/getPieceHashes/{hash}");
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<string[]>(json);
+            return result;
+        }
+
         public async Task<GlobalTransferInfo> GetGlobalTransferInfoAsync()
         {
             var uri = BuildUri("/query/transferInfo");
@@ -500,6 +532,12 @@ namespace QBittorrent.Client
                     .Select(t => $"{Uri.EscapeDataString(t.key)}={Uri.EscapeDataString(t.value)}"))
             };
             return builder.Uri;
+        }
+
+        private struct UrlItem
+        {
+            [JsonProperty("url")]
+            public Uri Url { get; set; }
         }
     }
 }
