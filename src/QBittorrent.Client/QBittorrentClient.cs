@@ -547,6 +547,20 @@ namespace QBittorrent.Client
                 )).ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<TorrentLogItem>> GetLogAsync(TorrentLogSeverity severity = TorrentLogSeverity.All, int afterId = -1)
+        {
+            var uri = BuildUri("/query/getLog",
+                ("normal", severity.HasFlag(TorrentLogSeverity.Normal).ToString().ToLowerInvariant()),
+                ("info", severity.HasFlag(TorrentLogSeverity.Info).ToString().ToLowerInvariant()),
+                ("warning", severity.HasFlag(TorrentLogSeverity.Warning).ToString().ToLowerInvariant()),
+                ("critical", severity.HasFlag(TorrentLogSeverity.Critical).ToString().ToLowerInvariant()),
+                ("last_known_id", afterId.ToString())
+            );
+
+            var json = await _client.GetStringAsync(uri);
+            return JsonConvert.DeserializeObject<IEnumerable<TorrentLogItem>>(json);
+        }
+
         #endregion
 
         public void Dispose()
