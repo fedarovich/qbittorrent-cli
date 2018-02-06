@@ -5,9 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
-using QBittorrent.CommandLineInterface.Commands;
 
-namespace QBittorrent.CommandLineInterface
+namespace QBittorrent.CommandLineInterface.Commands
 {
     [Subcommand("tracker", typeof(Tracker))]
     public partial class TorrentCommand
