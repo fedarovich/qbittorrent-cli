@@ -530,6 +530,15 @@ namespace QBittorrent.Client
                 )).ConfigureAwait(false);
         }
 
+        public async Task RecheckAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            var uri = BuildUri("/command/recheck");
+            await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+        }
+
         #endregion
 
         public void Dispose()

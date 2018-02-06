@@ -18,6 +18,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand("move", typeof(Move))]
     [Subcommand("rename", typeof(Rename))]
     [Subcommand("category", typeof(Category))]
+    [Subcommand("check", typeof(Check))]
     public partial class TorrentCommand : ClientRootCommandBase
     {
         [Command(Description = "Shows the torrent properties.")]
@@ -141,6 +142,16 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 await client.SetTorrentCategoryAsync(Hash, CategoryName);
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Rechecks the torrent.")]
+        public class Check : TorrentSpecificCommandBase
+        {
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                await client.RecheckAsync(Hash);
                 return ExitCodes.Success;
             }
         }
