@@ -4,7 +4,7 @@ using QBittorrent.Client.Converters;
 
 namespace QBittorrent.Client
 {
-    public class TorrentLogItem
+    public class TorrentLogEntry
     {
         /// <summary>
         /// Message Id
@@ -25,7 +25,7 @@ namespace QBittorrent.Client
         public long Timestamp { get; set; }
 
         /// <summary>
-        /// Log item severity.
+        /// Log entry severity.
         /// </summary>
         [JsonProperty("type")]
         public TorrentLogSeverity Severity { get; set; }

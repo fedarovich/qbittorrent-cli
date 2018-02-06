@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.Attributes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -11,12 +13,27 @@ namespace QBittorrent.CommandLineInterface.Commands
 
         public class Log : AuthenticatedCommandBase
         {
+            [Option("--after-id <ID>", "Display only log entries with ID more than the specified one.", CommandOptionType.SingleValue)]
+            public int? AfterId { get; set; }
+
+            [Option("-s|--severity <S1,S2,...,SN>",
+                "Comma separated list of severities to display (NORMAL,INFO,WARNING,CRITICAL) or ALL",
+                CommandOptionType.SingleValue)]
+            [EnumValidation(typeof(TorrentLogSeverity), AllowEmpty = true)]
+            [DefaultValue("ALL")]
+            public string Severity { get; set; }
+
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                var log = await client.GetLogAsync();
-                foreach (var item in log)
+                if (!Enum.TryParse(Severity, true, out TorrentLogSeverity severity))
                 {
-                    switch (item.Severity)
+                    severity = TorrentLogSeverity.All;
+                }
+
+                var log = await client.GetLogAsync(severity, AfterId ?? -1);
+                foreach (var entry in log)
+                {
+                    switch (entry.Severity)
                     {
                         case TorrentLogSeverity.Normal:
                             console.WriteColored("[ Normal ]", ConsoleColor.Green);
@@ -32,8 +49,9 @@ namespace QBittorrent.CommandLineInterface.Commands
                             break;
                     }
 
-                    var time = DateTimeOffset.FromUnixTimeMilliseconds(item.Timestamp).ToString("s").Replace("T", " ");
-                    console.WriteLine($" {item.Id:D6} {time} {item.Message}");
+                    var time = DateTimeOffset.FromUnixTimeMilliseconds(entry.Timestamp).ToString("s").Replace("T", " ");
+                    console.WriteColored($" {entry.Id:D6} {time} ", ConsoleColor.White);
+                    console.WriteLine(entry.Message);
                 }
 
                 return ExitCodes.Success;

@@ -556,7 +556,7 @@ namespace QBittorrent.Client
             await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<TorrentLogItem>> GetLogAsync(TorrentLogSeverity severity = TorrentLogSeverity.All, int afterId = -1)
+        public async Task<IEnumerable<TorrentLogEntry>> GetLogAsync(TorrentLogSeverity severity = TorrentLogSeverity.All, int afterId = -1)
         {
             var uri = BuildUri("/query/getLog",
                 ("normal", severity.HasFlag(TorrentLogSeverity.Normal).ToString().ToLowerInvariant()),
@@ -567,7 +567,7 @@ namespace QBittorrent.Client
             );
 
             var json = await _client.GetStringAsync(uri);
-            return JsonConvert.DeserializeObject<IEnumerable<TorrentLogItem>>(json);
+            return JsonConvert.DeserializeObject<IEnumerable<TorrentLogEntry>>(json);
         }
 
         #endregion
