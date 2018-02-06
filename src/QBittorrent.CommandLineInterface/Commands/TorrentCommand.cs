@@ -31,7 +31,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
         }
 
-        [Command(Description = "Shows the torrent content.")]
+        [Command(Description = "Shows the torrent content. Alias for \"torrent file list\"")]
         public class Content : TorrentSpecificCommandBase
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

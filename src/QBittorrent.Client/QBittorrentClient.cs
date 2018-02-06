@@ -408,7 +408,7 @@ namespace QBittorrent.Client
         public async Task ChangeTorrentPriorityAsync(IEnumerable<string> hashes, TorrentPriorityChange change)
         {
             if (hashes == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(hashes));
 
             var uri = BuildUri(GetPath());
             await _client.PostAsync(
@@ -432,6 +432,23 @@ namespace QBittorrent.Client
                         throw new ArgumentOutOfRangeException(nameof(change), change, null);
                 }
             }
+        }
+
+        public async Task SetFilePriorityAsync(string hash, int fileId, TorrentContentPriority priority)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (fileId < 0)
+                throw new ArgumentOutOfRangeException(nameof(fileId));
+
+            var uri = BuildUri("/command/setFilePrio");
+            await _client.PostAsync(
+                    uri,
+                    BuildForm(
+                        ("hash", hash),
+                        ("id", fileId.ToString()),
+                        ("priority", priority.ToString("D"))))
+                .ConfigureAwait(false);
         }
 
         #endregion
