@@ -408,7 +408,7 @@ namespace QBittorrent.Client
         public async Task ChangeTorrentPriorityAsync(IEnumerable<string> hashes, TorrentPriorityChange change)
         {
             if (hashes == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(hashes));
 
             var uri = BuildUri(GetPath());
             await _client.PostAsync(
@@ -432,6 +432,23 @@ namespace QBittorrent.Client
                         throw new ArgumentOutOfRangeException(nameof(change), change, null);
                 }
             }
+        }
+
+        public async Task SetFilePriorityAsync(string hash, int fileId, TorrentContentPriority priority)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+            if (fileId < 0)
+                throw new ArgumentOutOfRangeException(nameof(fileId));
+
+            var uri = BuildUri("/command/setFilePrio");
+            await _client.PostAsync(
+                    uri,
+                    BuildForm(
+                        ("hash", hash),
+                        ("id", fileId.ToString()),
+                        ("priority", priority.ToString("D"))))
+                .ConfigureAwait(false);
         }
 
         #endregion
@@ -537,6 +554,20 @@ namespace QBittorrent.Client
 
             var uri = BuildUri("/command/recheck");
             await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<TorrentLogItem>> GetLogAsync(TorrentLogSeverity severity = TorrentLogSeverity.All, int afterId = -1)
+        {
+            var uri = BuildUri("/query/getLog",
+                ("normal", severity.HasFlag(TorrentLogSeverity.Normal).ToString().ToLowerInvariant()),
+                ("info", severity.HasFlag(TorrentLogSeverity.Info).ToString().ToLowerInvariant()),
+                ("warning", severity.HasFlag(TorrentLogSeverity.Warning).ToString().ToLowerInvariant()),
+                ("critical", severity.HasFlag(TorrentLogSeverity.Critical).ToString().ToLowerInvariant()),
+                ("last_known_id", afterId.ToString())
+            );
+
+            var json = await _client.GetStringAsync(uri);
+            return JsonConvert.DeserializeObject<IEnumerable<TorrentLogItem>>(json);
         }
 
         #endregion
