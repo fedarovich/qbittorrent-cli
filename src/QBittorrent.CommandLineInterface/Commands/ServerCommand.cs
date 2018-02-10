@@ -7,6 +7,7 @@ using QBittorrent.CommandLineInterface.Attributes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
+    [Command(Description = "Manage qBittorrent server.")]
     [Subcommand("log", typeof(Log))]
     public class ServerCommand : ClientRootCommandBase
     {
