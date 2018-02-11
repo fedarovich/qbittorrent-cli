@@ -23,6 +23,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 "Torrent Statuses in ST column:\n" +
                 "   D - Downloading\n" +
                 "  CD - Checking Download\n" +
+                "  FD - Forced Download\n" +
                 "  MD - Downloading Metadata\n" +
                 "  PD - Paused Download\n" +
                 "  QD - Queued Download\n" +
@@ -30,9 +31,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 "   E - Error\n" +
                 "   U - Uploading\n" +
                 "  CU - Checking Upload\n" +
+                "  FU - Forced Upload\n" +
                 "  PU - Paused Upload\n" +
                 "  QU - Queued Upload\n" +
-                "  SU - Stalled Upload\n";
+                "  SU - Stalled Upload\n"
+                ;
 
 
             private static readonly Dictionary<string, string> SortColumns;
@@ -251,6 +254,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                         break;
                     case TorrentState.FetchingMetadata:
                         console.WriteColored("MD", ConsoleColor.Blue);
+                        break;
+                    case TorrentState.ForcedUpload:
+                        console.WriteColored("FU", ConsoleColor.Cyan);
+                        break;
+                    case TorrentState.ForcedDownload:
+                        console.WriteColored("FD", ConsoleColor.Cyan);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(state), state, null);

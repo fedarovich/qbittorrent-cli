@@ -566,8 +566,121 @@ namespace QBittorrent.Client
                 ("last_known_id", afterId.ToString())
             );
 
-            var json = await _client.GetStringAsync(uri);
+            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
             return JsonConvert.DeserializeObject<IEnumerable<TorrentLogEntry>>(json);
+        }
+
+        public async Task<bool> GetAlternativeSpeedLimitsEnabledAsync()
+        {
+            var uri = BuildUri("/command/alternativeSpeedLimitsEnabled");
+            var result = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            return result == "1";
+        }
+
+        public async Task ToggleAlternativeSpeedLimitsAsync()
+        {
+            var uri = BuildUri("/command/toggleAlternativeSpeedLimits ");
+            var result = await _client.PostAsync(uri, BuildForm()).ConfigureAwait(false);
+            result.EnsureSuccessStatusCode();
+        }
+
+        public Task SetAutomaticTorrentManagementAsync(string hash, bool enabled)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            return SetAutomaticTorrentManagementAsync(new[] {hash}, enabled);
+        }
+
+        public async Task SetAutomaticTorrentManagementAsync(IEnumerable<string> hashes, bool enabled)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/setAutoTMM");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", string.Join("|", hashes)),
+                    ("enable", enabled.ToString().ToLowerInvariant())
+                )).ConfigureAwait(false);
+        }
+
+        public Task SetForceStartAsync(string hash, bool enabled)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            return SetForceStartAsync(new[] { hash }, enabled);
+        }
+
+        public async Task SetForceStartAsync(IEnumerable<string> hashes, bool enabled)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/setForceStart");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", string.Join("|", hashes)),
+                    ("value", enabled.ToString().ToLowerInvariant())
+                )).ConfigureAwait(false);
+        }
+
+        public Task SetSuperSeedingAsync(string hash, bool enabled)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            return SetSuperSeedingAsync(new[] { hash }, enabled);
+        }
+
+        public async Task SetSuperSeedingAsync(IEnumerable<string> hashes, bool enabled)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/setSuperSeeding");
+            await _client.PostAsync(uri,
+                BuildForm(
+                    ("hashes", string.Join("|", hashes)),
+                    ("value", enabled.ToString().ToLowerInvariant())
+                )).ConfigureAwait(false);
+        }
+
+        public Task ToggleFirstLastPiecePrioritizedAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            return ToggleFirstLastPiecePrioritizedAsync(new[] { hash });
+        }
+
+        public async Task ToggleFirstLastPiecePrioritizedAsync(IEnumerable<string> hashes)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/toggleFirstLastPiecePrio");
+            await _client.PostAsync(uri,
+                BuildForm(("hashes", string.Join("|", hashes)))).ConfigureAwait(false);
+        }
+
+        public Task ToggleSequentialDownloadAsync(string hash)
+        {
+            if (hash == null)
+                throw new ArgumentNullException(nameof(hash));
+
+            return ToggleSequentialDownloadAsync(new[] { hash });
+        }
+
+        public async Task ToggleSequentialDownloadAsync(IEnumerable<string> hashes)
+        {
+            if (hashes == null)
+                throw new ArgumentNullException(nameof(hashes));
+
+            var uri = BuildUri("/command/toggleSequentialDownload");
+            await _client.PostAsync(uri,
+                BuildForm(("hashes", string.Join("|", hashes)))).ConfigureAwait(false);
         }
 
         #endregion

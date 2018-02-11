@@ -78,6 +78,12 @@ namespace QBittorrent.Client
         /// Torrent has just started downloading and is fetching metadata
         /// </summary>
         [EnumMember(Value = "metaDL")]
-        FetchingMetadata
+        FetchingMetadata,
+
+        [EnumMember(Value = "forcedUP")]
+        ForcedUpload,
+
+        [EnumMember(Value = "forcedDL")]
+        ForcedDownload
     }
 }
