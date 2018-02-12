@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -16,17 +17,17 @@ namespace QBittorrent.Client
         private readonly Uri _uri;
         private readonly HttpClient _client;
 
-        public QBittorrentClient(Uri uri)
+        public QBittorrentClient([NotNull] Uri uri)
             : this(uri, new HttpClient())
         {
         }
 
-        public QBittorrentClient(Uri uri, HttpMessageHandler handler, bool disposeHandler)
+        public QBittorrentClient([NotNull] Uri uri, HttpMessageHandler handler, bool disposeHandler)
             : this(uri, new HttpClient(handler, disposeHandler))
         {
         }
 
-        private QBittorrentClient(Uri uri, HttpClient client)
+        private QBittorrentClient([NotNull] Uri uri, [NotNull] HttpClient client)
         {
             _uri = uri ?? throw new ArgumentNullException(nameof(uri));
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -34,26 +35,41 @@ namespace QBittorrent.Client
 
         #region Authentication
 
-        public async Task LoginAsync(string username, string password)
+        public async Task LoginAsync(
+            string username, 
+            string password, 
+            CancellationToken token = default)
         {
-            await _client.PostAsync(new Uri(_uri, "/login"),
+            var response = await _client.PostAsync(new Uri(_uri, "/login"),
                 BuildForm(
                     ("username", username),
                     ("password", password)
-                ))
+                ),
+                token)
                 .ConfigureAwait(false);
+            using (response)
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
 
-        public async Task LogoutAsync()
+        public async Task LogoutAsync(
+            CancellationToken token = default)
         {
-            await _client.PostAsync(new Uri(_uri, "/logout"), BuildForm()).ConfigureAwait(false);
+            var response = await _client.PostAsync(new Uri(_uri, "/logout"), BuildForm(), token).ConfigureAwait(false);
+            using (response)
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
 
         #endregion
 
         #region Get
 
-        public async Task<IReadOnlyList<TorrentInfo>> GetTorrentListAsync(TorrentListQuery query = null)
+        public async Task<IReadOnlyList<TorrentInfo>> GetTorrentListAsync(
+            TorrentListQuery query = null, 
+            CancellationToken token = default)
         {
             query = query ?? new TorrentListQuery();
             var uri = BuildUri("/query/torrents",
@@ -63,12 +79,15 @@ namespace QBittorrent.Client
                 ("reverse", query.ReverseSort.ToString().ToLowerInvariant()),
                 ("limit", query.Limit?.ToString()),
                 ("offset", query.Offset?.ToString()));
-            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+
+            var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<TorrentInfo[]>(json);
             return result;
         }
 
-        public Task<TorrentProperties> GetTorrentPropertiesAsync([NotNull] string hash)
+        public Task<TorrentProperties> GetTorrentPropertiesAsync(
+            [NotNull] string hash, 
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -76,13 +95,15 @@ namespace QBittorrent.Client
             async Task<TorrentProperties> ExecuteAsync()
             {
                 var uri = BuildUri($"/query/propertiesGeneral/{hash}");
-                var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+                var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<TorrentProperties>(json);
                 return result;
             }
         }
 
-        public Task<IReadOnlyList<TorrentContent>> GetTorrentContentsAsync([NotNull] string hash)
+        public Task<IReadOnlyList<TorrentContent>> GetTorrentContentsAsync(
+            [NotNull] string hash, 
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -90,13 +111,15 @@ namespace QBittorrent.Client
             async Task<IReadOnlyList<TorrentContent>> ExecuteAsync()
             {
                 var uri = BuildUri($"/query/propertiesFiles/{hash}");
-                var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+                var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<TorrentContent[]>(json);
                 return result;
             }
         }
 
-        public Task<IReadOnlyList<TorrentTracker>> GetTorrentTrackersAsync([NotNull] string hash)
+        public Task<IReadOnlyList<TorrentTracker>> GetTorrentTrackersAsync(
+            [NotNull] string hash, 
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -104,13 +127,15 @@ namespace QBittorrent.Client
             async Task<IReadOnlyList<TorrentTracker>> ExecuteAsync()
             {
                 var uri = BuildUri($"/query/propertiesTrackers/{hash}");
-                var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+                var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<TorrentTracker[]>(json);
                 return result;
             }
         }
 
-        public Task<IReadOnlyList<Uri>> GetTorrentWebSeedsAsync([NotNull] string hash)
+        public Task<IReadOnlyList<Uri>> GetTorrentWebSeedsAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -118,13 +143,15 @@ namespace QBittorrent.Client
             async Task<IReadOnlyList<Uri>> ExecuteAsync()
             {
                 var uri = BuildUri($"/query/propertiesWebSeeds/{hash}");
-                var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+                var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<UrlItem[]>(json);
                 return result.Select(x => x.Url).ToArray();
             }
         }
 
-        public Task<IReadOnlyList<TorrentPieceState>> GetTorrentPiecesStatesAsync([NotNull] string hash)
+        public Task<IReadOnlyList<TorrentPieceState>> GetTorrentPiecesStatesAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -132,13 +159,15 @@ namespace QBittorrent.Client
             async Task<IReadOnlyList<TorrentPieceState>> ExecuteAsync()
             {
                 var uri = BuildUri($"/query/getPieceStates/{hash}");
-                var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+                var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<TorrentPieceState[]>(json);
                 return result;
             }
         }
 
-        public Task<IReadOnlyList<string>> GetTorrentPiecesHashesAsync([NotNull] string hash)
+        public Task<IReadOnlyList<string>> GetTorrentPiecesHashesAsync(
+            [NotNull] string hash, 
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -146,16 +175,17 @@ namespace QBittorrent.Client
             async Task<IReadOnlyList<string>> ExecuteAsync()
             {
                 var uri = BuildUri($"/query/getPieceHashes/{hash}");
-                var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+                var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<string[]>(json);
                 return result;
             }
         }
 
-        public async Task<GlobalTransferInfo> GetGlobalTransferInfoAsync()
+        public async Task<GlobalTransferInfo> GetGlobalTransferInfoAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/query/transferInfo");
-            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<GlobalTransferInfo>(json);
             return result;
         }
@@ -164,7 +194,9 @@ namespace QBittorrent.Client
 
         #region Add
 
-        public Task AddTorrentsAsync([NotNull] AddTorrentFilesRequest request)
+        public Task AddTorrentsAsync(
+            [NotNull] AddTorrentFilesRequest request, 
+            CancellationToken token = default)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -180,11 +212,13 @@ namespace QBittorrent.Client
                     data.AddFile("torrents", file, "application/x-bittorrent");
                 }
 
-                await DownloadCoreAsync(uri, data, request).ConfigureAwait(false);
+                await DownloadCoreAsync(uri, data, request, token).ConfigureAwait(false);
             }
         }
 
-        public Task AddTorrentsAsync([NotNull] AddTorrentUrlsRequest request)
+        public Task AddTorrentsAsync(
+            [NotNull] AddTorrentUrlsRequest request, 
+            CancellationToken token = default)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -196,11 +230,15 @@ namespace QBittorrent.Client
                 var uri = BuildUri("/command/download");
                 var urls = string.Join("\n", request.TorrentUrls.Select(url => url.AbsoluteUri));
                 var data = new MultipartFormDataContent().AddValue("urls", urls);
-                await DownloadCoreAsync(uri, data, request).ConfigureAwait(false);
+                await DownloadCoreAsync(uri, data, request, token).ConfigureAwait(false);
             }
         }
 
-        protected async Task DownloadCoreAsync(Uri uri, MultipartFormDataContent data, AddTorrentRequest request)
+        protected async Task DownloadCoreAsync(
+            Uri uri, 
+            MultipartFormDataContent data, 
+            AddTorrentRequest request, 
+            CancellationToken token)
         {
             data
                 .AddNonEmptyString("savepath", request.DownloadFolder)
@@ -215,15 +253,19 @@ namespace QBittorrent.Client
                 .AddValue("sequentialDownload", request.SequentialDownload)
                 .AddValue("firstLastPiecePrio", request.FirstLastPiecePrioritized);
 
-            var response = await _client.PostAsync(uri, data).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            using (var response = await _client.PostAsync(uri, data, token).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
 
         #endregion
 
         #region Pause/Resume
 
-        public Task PauseAsync([NotNull] string hash)
+        public Task PauseAsync(
+            [NotNull] string hash, 
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -231,17 +273,28 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/pause");
-                await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("hash", hash)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public async Task PauseAllAsync()
+        public async Task PauseAllAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/command/pauseAll");
-            await _client.PostAsync(uri, BuildForm()).ConfigureAwait(false);
+            var response = await _client.PostAsync(uri, BuildForm(), token).ConfigureAwait(false);
+            using (response)
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
 
-        public Task ResumeAsync([NotNull] string hash)
+        public Task ResumeAsync(
+            [NotNull] string hash, 
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -249,65 +302,114 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/resume");
-                await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("hash", hash)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public async Task ResumeAllAsync()
+        public async Task ResumeAllAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/command/resumeAll");
-            await _client.PostAsync(uri, BuildForm()).ConfigureAwait(false);
+            var response = await _client.PostAsync(uri, BuildForm(), token).ConfigureAwait(false);
+            using (response)
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
 
         #endregion
 
         #region Categories
 
-        public Task AddCategoryAsync([NotNull] string name)
+        public Task AddCategoryAsync(
+            [NotNull] string category, 
+            CancellationToken token = default)
         {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("The name cannot be empty.", nameof(name));
+            if (category == null)
+                throw new ArgumentNullException(nameof(category));
+            if (string.IsNullOrWhiteSpace(category))
+                throw new ArgumentException("The category cannot be empty.", nameof(category));
 
             return ExecuteAsync();
 
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/addCategory");
-                await _client.PostAsync(uri, BuildForm(("category", name))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("category", category)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public Task DeleteCategoriesAsync([NotNull, ItemNotNull] params string[] names)
+        public Task DeleteCategoryAsync(
+            [NotNull] string category, 
+            CancellationToken token = default)
         {
-            if (names == null)
-                throw new ArgumentNullException(nameof(names));
-            if (names.Length == 0)
-                throw new ArgumentException("The name list cannot be empty.", nameof(names));
-            if (names.Any(string.IsNullOrWhiteSpace))
-                throw new ArgumentException("A category name cannot be null or empty string.", nameof(names));
+            if (category == null)
+                throw new ArgumentNullException(nameof(category));
+            if (string.IsNullOrWhiteSpace(category))
+                throw new ArgumentException("The category cannot be empty.", nameof(category));
 
+            return DeleteCategoriesAsync(new[] {category}, token);
+        }
+
+        public Task DeleteCategoriesAsync(
+            [NotNull, ItemNotNull] IEnumerable<string> categories, 
+            CancellationToken token = default)
+        {
+            var names = GetNames();
             return ExecuteAsync();
 
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/removeCategories");
-                await _client.PostAsync(
+                var response = await _client.PostAsync(
                         uri,
-                        BuildForm(("categories", string.Join("\n", names))))
+                        BuildForm(("categories", names)),
+                        token)
                     .ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
-        }
 
-        public Task DeleteCategoriesAsync([NotNull, ItemNotNull] IEnumerable<string> names)
-        {
-            return DeleteCategoriesAsync(names?.ToArray());
+            string GetNames()
+            {
+                if (categories == null)
+                    throw new ArgumentNullException(nameof(categories));
+
+                var builder = new StringBuilder(4096);
+                foreach (var category in categories)
+                {
+                    if (string.IsNullOrWhiteSpace(category))
+                        throw new ArgumentException("The collection must not contain nulls or empty strings.", nameof(categories));
+
+                    if (builder.Length > 0)
+                    {
+                        builder.Append('\n');
+                    }
+
+                    builder.Append(category);
+                }
+
+                if (builder.Length == 0)
+                    throw new ArgumentException("The collection must contain at least one category.", nameof(categories));
+
+                return builder.ToString();
+            }
         }
 
         public Task SetTorrentCategoryAsync(
             [NotNull] string hash, 
-            [NotNull] string category)
+            [NotNull] string category,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             if (category == null)
@@ -318,17 +420,22 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setCategory");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hash),
                         ("category", category)
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task SetTorrentCategoryAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes,
-            [NotNull] string category)
+            [NotNull] string category,
+            CancellationToken token = default)
         {
             if (hashes == null)
                 throw new ArgumentNullException(nameof(hashes));
@@ -340,11 +447,15 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setCategory");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", string.Join("|", hashes)),
                         ("category", category)
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
@@ -352,20 +463,23 @@ namespace QBittorrent.Client
 
         #region Limits
 
-        public Task<long?> GetTorrentDownloadLimitAsync([NotNull] string hash)
+        public Task<long?> GetTorrentDownloadLimitAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
 
             async Task<long?> ExecuteAsync()
             {
-                var dict = await GetTorrentDownloadLimitAsync(new[] {hash}).ConfigureAwait(false);
+                var dict = await GetTorrentDownloadLimitAsync(new[] {hash}, token).ConfigureAwait(false);
                 return dict?.Values?.SingleOrDefault();
             }
         }
 
         public Task<IReadOnlyDictionary<string, long>> GetTorrentDownloadLimitAsync(
-            [NotNull, ItemNotNull] IEnumerable<string> hashes)
+            [NotNull, ItemNotNull] IEnumerable<string> hashes,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -375,27 +489,33 @@ namespace QBittorrent.Client
                 var uri = BuildUri("/command/getTorrentsDlLimit");
                 var response = await _client.PostAsync(
                         uri,
-                        BuildForm(("hashes", hashesString)))
+                        BuildForm(("hashes", hashesString)),
+                        token)
                     .ConfigureAwait(false);
-                response.EnsureSuccessStatusCode();
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(json);
-                return dict;
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(json);
+                    return dict;
+                }
             }
         }
 
         public Task SetTorrentDownloadLimitAsync(
             [NotNull] string hash, 
-            long limit)
+            long limit,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return SetTorrentDownloadLimitAsync(new[] {hash}, limit);
+            return SetTorrentDownloadLimitAsync(new[] {hash}, limit, token);
         }
 
         public Task SetTorrentDownloadLimitAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            long limit)
+            long limit,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             if (limit < 0)
@@ -406,29 +526,37 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setTorrentsDlLimit");
-                await _client.PostAsync(
+                var response = await _client.PostAsync(
                         uri,
                         BuildForm(
                             ("hashes", hashesString),
-                            ("limit", limit.ToString())))
+                            ("limit", limit.ToString())),
+                        token)
                     .ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public Task<long?> GetTorrentUploadLimitAsync([NotNull] string hash)
+        public Task<long?> GetTorrentUploadLimitAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
 
             async Task<long?> ExecuteAsync()
             {
-                var dict = await GetTorrentUploadLimitAsync(new[] {hash}).ConfigureAwait(false);
+                var dict = await GetTorrentUploadLimitAsync(new[] {hash}, token).ConfigureAwait(false);
                 return dict?.Values?.SingleOrDefault();
             }
         }
 
         public Task<IReadOnlyDictionary<string, long>> GetTorrentUploadLimitAsync(
-            [NotNull, ItemNotNull] IEnumerable<string> hashes)
+            [NotNull, ItemNotNull] IEnumerable<string> hashes,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -438,27 +566,33 @@ namespace QBittorrent.Client
                 var uri = BuildUri("/command/getTorrentsUpLimit");
                 var response = await _client.PostAsync(
                         uri,
-                        BuildForm(("hashes", hashesString)))
+                        BuildForm(("hashes", hashesString)),
+                        token)
                     .ConfigureAwait(false);
-                response.EnsureSuccessStatusCode();
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(json);
-                return dict;
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(json);
+                    return dict;
+                }
             }
         }
 
         public Task SetTorrentUploadLimitAsync(
             [NotNull] string hash, 
-            long limit)
+            long limit,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return SetTorrentUploadLimitAsync(new[] { hash }, limit);
+            return SetTorrentUploadLimitAsync(new[] { hash }, limit, token);
         }
 
         public Task SetTorrentUploadLimitAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            long limit)
+            long limit,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             if (limit < 0)
@@ -469,25 +603,35 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setTorrentsUpLimit");
-                await _client.PostAsync(
+                var response = await _client.PostAsync(
                         uri,
                         BuildForm(
                             ("hashes", hashesString),
-                            ("limit", limit.ToString())))
+                            ("limit", limit.ToString())),
+                        token)
                     .ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public async Task<long?> GetGlobalDownloadLimitAsync()
+        public async Task<long?> GetGlobalDownloadLimitAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/command/getGlobalDlLimit");
-            var response = await _client.PostAsync(uri, null).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var strValue = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return long.TryParse(strValue, out long value) ? value : 0;
+            using (var response = await _client.PostAsync(uri, null, token).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+                var strValue = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return long.TryParse(strValue, out long value) ? value : 0;
+            }
         }
 
-        public Task SetGlobalDownloadLimitAsync(long limit)
+        public Task SetGlobalDownloadLimitAsync(
+            long limit,
+            CancellationToken token = default)
         {
             if (limit < 0)
                 throw new ArgumentOutOfRangeException(nameof(limit));
@@ -497,20 +641,29 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setGlobalDlLimit");
-                await _client.PostAsync(uri, BuildForm(("limit", limit.ToString()))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("limit", limit.ToString())), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public async Task<long?> GetGlobalUploadLimitAsync()
+        public async Task<long?> GetGlobalUploadLimitAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/command/getGlobalUpLimit");
-            var response = await _client.PostAsync(uri, null).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var strValue = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return long.TryParse(strValue, out long value) ? value : 0;
+            using (var response = await _client.PostAsync(uri, null, token).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+                var strValue = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return long.TryParse(strValue, out long value) ? value : 0;
+            }
         }
 
-        public Task SetGlobalUploadLimitAsync(long limit)
+        public Task SetGlobalUploadLimitAsync(
+            long limit,
+            CancellationToken token = default)
         {
             if (limit < 0)
                 throw new ArgumentOutOfRangeException(nameof(limit));
@@ -520,7 +673,11 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setGlobalUpLimit");
-                await _client.PostAsync(uri, BuildForm(("limit", limit.ToString()))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("limit", limit.ToString())), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
@@ -530,15 +687,17 @@ namespace QBittorrent.Client
 
         public Task ChangeTorrentPriorityAsync(
             [NotNull] string hash, 
-            TorrentPriorityChange change)
+            TorrentPriorityChange change,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return ChangeTorrentPriorityAsync(new[] {hash}, change);
+            return ChangeTorrentPriorityAsync(new[] {hash}, change, token);
         }
 
         public Task ChangeTorrentPriorityAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            TorrentPriorityChange change)
+            TorrentPriorityChange change,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             var path = GetPath();
@@ -547,10 +706,15 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri(path);
-                await _client.PostAsync(
+                var response = await _client.PostAsync(
                         uri,
-                        BuildForm(("hashes", hashesString)))
+                        BuildForm(("hashes", hashesString)),
+                        token)
                     .ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
 
             string GetPath()
@@ -574,7 +738,8 @@ namespace QBittorrent.Client
         public Task SetFilePriorityAsync(
             [NotNull] string hash, 
             int fileId, 
-            TorrentContentPriority priority)
+            TorrentContentPriority priority,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             if (fileId < 0)
@@ -587,13 +752,18 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setFilePrio");
-                await _client.PostAsync(
+                var response = await _client.PostAsync(
                         uri,
                         BuildForm(
                             ("hash", hash),
                             ("id", fileId.ToString()),
-                            ("priority", priority.ToString("D"))))
+                            ("priority", priority.ToString("D"))),
+                        token)
                     .ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
@@ -603,7 +773,8 @@ namespace QBittorrent.Client
 
         public Task DeleteAsync(
             [NotNull] string hash, 
-            bool deleteDownloadedData = false)
+            bool deleteDownloadedData = false,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -613,13 +784,18 @@ namespace QBittorrent.Client
                 var uri = deleteDownloadedData
                     ? BuildUri("/command/deletePerm")
                     : BuildUri("/command/delete");
-                await _client.PostAsync(uri, BuildForm(("hashes", hash))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("hashes", hash)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task DeleteAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            bool deleteDownloadedData = false)
+            bool deleteDownloadedData = false,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -629,16 +805,22 @@ namespace QBittorrent.Client
                 var uri = deleteDownloadedData
                     ? BuildUri("/command/deletePerm")
                     : BuildUri("/command/delete");
-                await _client.PostAsync(
+                var response = await _client.PostAsync(
                         uri,
-                        BuildForm(("hashes", hashesString)))
+                        BuildForm(("hashes", hashesString)),
+                        token)
                     .ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task SetLocationAsync(
             [NotNull] string hash, 
-            [NotNull] string newLocation)
+            [NotNull] string newLocation,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             if (newLocation == null)
@@ -651,17 +833,22 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setLocation");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hash),
                         ("location", newLocation)
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task SetLocationAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            [NotNull] string newLocation)
+            [NotNull] string newLocation,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             if (newLocation == null)
@@ -674,17 +861,22 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setLocation");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
                         ("location", newLocation)
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task RenameAsync(
             [NotNull] string hash, 
-            [NotNull] string newName)
+            [NotNull] string newName,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             if (newName == null)
@@ -701,21 +893,31 @@ namespace QBittorrent.Client
                     BuildForm(
                         ("hash", hash),
                         ("name", newName)
-                    )).ConfigureAwait(false);
-                response.EnsureSuccessStatusCode();
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public Task AddTrackersAsync(
+        public Task AddTrackerAsync(
             [NotNull] string hash, 
-            [NotNull, ItemNotNull] params Uri[] trackers)
+            [NotNull] Uri tracker,
+            CancellationToken token = default)
         {
-            return AddTrackersAsync(hash, trackers?.AsEnumerable());
+            if (tracker == null)
+                throw new ArgumentNullException(nameof(tracker));
+            if (!tracker.IsAbsoluteUri)
+                throw new ArgumentException("The URI must be absolute.", nameof(tracker));
+
+            return AddTrackersAsync(hash, new [] {tracker}, token);
         }
 
         public Task AddTrackersAsync(
             [NotNull] string hash,
-            [NotNull, ItemNotNull] IEnumerable<Uri> trackers)
+            [NotNull, ItemNotNull] IEnumerable<Uri> trackers,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             var urls = GetUrls();
@@ -725,11 +927,15 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/addTrackers");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hash", hash),
                         ("urls", urls)
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
 
             string GetUrls()
@@ -740,6 +946,7 @@ namespace QBittorrent.Client
                 var builder = new StringBuilder(4096);
                 foreach (var tracker in trackers)
                 {
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                     if (tracker == null)
                         throw new ArgumentException("The collection must not contain nulls.", nameof(trackers));
                     if (!tracker.IsAbsoluteUri)
@@ -760,7 +967,9 @@ namespace QBittorrent.Client
             }
         }
 
-        public Task RecheckAsync([NotNull] string hash)
+        public Task RecheckAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
             return ExecuteAsync();
@@ -768,11 +977,18 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/recheck");
-                await _client.PostAsync(uri, BuildForm(("hash", hash))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri, BuildForm(("hash", hash)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public async Task<IEnumerable<TorrentLogEntry>> GetLogAsync(TorrentLogSeverity severity = TorrentLogSeverity.All, int afterId = -1)
+        public async Task<IEnumerable<TorrentLogEntry>> GetLogAsync(
+            TorrentLogSeverity severity = TorrentLogSeverity.All, 
+            int afterId = -1,
+            CancellationToken token = default)
         {
             var uri = BuildUri("/query/getLog",
                 ("normal", severity.HasFlag(TorrentLogSeverity.Normal).ToString().ToLowerInvariant()),
@@ -782,35 +998,41 @@ namespace QBittorrent.Client
                 ("last_known_id", afterId.ToString())
             );
 
-            var json = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
             return JsonConvert.DeserializeObject<IEnumerable<TorrentLogEntry>>(json);
         }
 
-        public async Task<bool> GetAlternativeSpeedLimitsEnabledAsync()
+        public async Task<bool> GetAlternativeSpeedLimitsEnabledAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/command/alternativeSpeedLimitsEnabled");
-            var result = await _client.GetStringAsync(uri).ConfigureAwait(false);
+            var result = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
             return result == "1";
         }
 
-        public async Task ToggleAlternativeSpeedLimitsAsync()
+        public async Task ToggleAlternativeSpeedLimitsAsync(
+            CancellationToken token = default)
         {
             var uri = BuildUri("/command/toggleAlternativeSpeedLimits");
-            var result = await _client.PostAsync(uri, BuildForm()).ConfigureAwait(false);
-            result.EnsureSuccessStatusCode();
+            using (var result = await _client.PostAsync(uri, BuildForm(), token).ConfigureAwait(false))
+            {
+                result.EnsureSuccessStatusCode();
+            }
         }
 
         public Task SetAutomaticTorrentManagementAsync(
             [NotNull] string hash, 
-            bool enabled)
+            bool enabled,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return SetAutomaticTorrentManagementAsync(new[] {hash}, enabled);
+            return SetAutomaticTorrentManagementAsync(new[] {hash}, enabled, token);
         }
 
         public Task SetAutomaticTorrentManagementAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            bool enabled)
+            bool enabled,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -818,25 +1040,31 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setAutoTMM");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
                         ("enable", enabled.ToString().ToLowerInvariant())
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task SetForceStartAsync(
             [NotNull] string hash, 
-            bool enabled)
+            bool enabled,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return SetForceStartAsync(new[] { hash }, enabled);
+            return SetForceStartAsync(new[] { hash }, enabled, token);
         }
 
         public Task SetForceStartAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            bool enabled)
+            bool enabled,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -844,25 +1072,31 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setForceStart");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
                         ("value", enabled.ToString().ToLowerInvariant())
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
         public Task SetSuperSeedingAsync(
             [NotNull] string hash, 
-            bool enabled)
+            bool enabled,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return SetSuperSeedingAsync(new[] { hash }, enabled);
+            return SetSuperSeedingAsync(new[] { hash }, enabled, token);
         }
 
         public Task SetSuperSeedingAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes, 
-            bool enabled)
+            bool enabled,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -870,22 +1104,29 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/setSuperSeeding");
-                await _client.PostAsync(uri,
+                var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
                         ("value", enabled.ToString().ToLowerInvariant())
-                    )).ConfigureAwait(false);
+                    ), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public Task ToggleFirstLastPiecePrioritizedAsync([NotNull] string hash)
+        public Task ToggleFirstLastPiecePrioritizedAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return ToggleFirstLastPiecePrioritizedAsync(new[] { hash });
+            return ToggleFirstLastPiecePrioritizedAsync(new[] { hash }, token);
         }
 
         public Task ToggleFirstLastPiecePrioritizedAsync(
-            [NotNull, ItemNotNull] IEnumerable<string> hashes)
+            [NotNull, ItemNotNull] IEnumerable<string> hashes,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -893,19 +1134,26 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/toggleFirstLastPiecePrio");
-                await _client.PostAsync(uri,
-                    BuildForm(("hashes", hashesString))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri,
+                    BuildForm(("hashes", hashesString)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
-        public Task ToggleSequentialDownloadAsync([NotNull] string hash)
+        public Task ToggleSequentialDownloadAsync(
+            [NotNull] string hash,
+            CancellationToken token = default)
         {
             ValidateHash(hash);
-            return ToggleSequentialDownloadAsync(new[] { hash });
+            return ToggleSequentialDownloadAsync(new[] { hash }, token);
         }
 
         public Task ToggleSequentialDownloadAsync(
-            [NotNull, ItemNotNull] IEnumerable<string> hashes)
+            [NotNull, ItemNotNull] IEnumerable<string> hashes,
+            CancellationToken token = default)
         {
             var hashesString = JoinHashes(hashes);
             return ExecuteAsync();
@@ -913,8 +1161,12 @@ namespace QBittorrent.Client
             async Task ExecuteAsync()
             {
                 var uri = BuildUri("/command/toggleSequentialDownload");
-                await _client.PostAsync(uri,
-                    BuildForm(("hashes", hashesString))).ConfigureAwait(false);
+                var response = await _client.PostAsync(uri,
+                    BuildForm(("hashes", hashesString)), token).ConfigureAwait(false);
+                using (response)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
             }
         }
 
