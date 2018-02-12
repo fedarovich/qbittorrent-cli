@@ -76,7 +76,7 @@ namespace QBittorrent.Client
                 ("filter", query.Filter.ToString().ToLowerInvariant()),
                 ("category", query.Category),
                 ("sort", query.SortBy),
-                ("reverse", query.ReverseSort.ToString().ToLowerInvariant()),
+                ("reverse", query.ReverseSort.ToLowerString()),
                 ("limit", query.Limit?.ToString()),
                 ("offset", query.Offset?.ToString()));
 
@@ -991,10 +991,10 @@ namespace QBittorrent.Client
             CancellationToken token = default)
         {
             var uri = BuildUri("/query/getLog",
-                ("normal", severity.HasFlag(TorrentLogSeverity.Normal).ToString().ToLowerInvariant()),
-                ("info", severity.HasFlag(TorrentLogSeverity.Info).ToString().ToLowerInvariant()),
-                ("warning", severity.HasFlag(TorrentLogSeverity.Warning).ToString().ToLowerInvariant()),
-                ("critical", severity.HasFlag(TorrentLogSeverity.Critical).ToString().ToLowerInvariant()),
+                ("normal", severity.HasFlag(TorrentLogSeverity.Normal).ToLowerString()),
+                ("info", severity.HasFlag(TorrentLogSeverity.Info).ToLowerString()),
+                ("warning", severity.HasFlag(TorrentLogSeverity.Warning).ToLowerString()),
+                ("critical", severity.HasFlag(TorrentLogSeverity.Critical).ToLowerString()),
                 ("last_known_id", afterId.ToString())
             );
 
@@ -1043,7 +1043,7 @@ namespace QBittorrent.Client
                 var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
-                        ("enable", enabled.ToString().ToLowerInvariant())
+                        ("enable", enabled.ToLowerString())
                     ), token).ConfigureAwait(false);
                 using (response)
                 {
@@ -1075,7 +1075,7 @@ namespace QBittorrent.Client
                 var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
-                        ("value", enabled.ToString().ToLowerInvariant())
+                        ("value", enabled.ToLowerString())
                     ), token).ConfigureAwait(false);
                 using (response)
                 {
@@ -1107,7 +1107,7 @@ namespace QBittorrent.Client
                 var response = await _client.PostAsync(uri,
                     BuildForm(
                         ("hashes", hashesString),
-                        ("value", enabled.ToString().ToLowerInvariant())
+                        ("value", enabled.ToLowerString())
                     ), token).ConfigureAwait(false);
                 using (response)
                 {
