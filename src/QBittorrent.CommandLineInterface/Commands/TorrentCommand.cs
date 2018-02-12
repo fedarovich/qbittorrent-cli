@@ -113,7 +113,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await client.SetLocationAsyc(Hash, Folder);
+                await client.SetLocationAsync(Hash, Folder);
                 return ExitCodes.Success;
             }
         }
