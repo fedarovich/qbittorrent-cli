@@ -7,6 +7,12 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <Authors>Pavel Fedarovich</Authors>
+    <Company>Pavel Fedarovich</Company>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\QBittorrent.Client.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

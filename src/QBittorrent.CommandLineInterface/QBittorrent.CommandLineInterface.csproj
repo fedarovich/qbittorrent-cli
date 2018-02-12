@@ -12,6 +12,8 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <Authors>Pavel Fedarovich</Authors>
+    <Company>Pavel Fedarovich</Company>
   </PropertyGroup>
 
   <ItemGroup>
