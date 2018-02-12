@@ -14,6 +14,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Command(Description = "Gets or sets global download and upload speed limits.")]
         [Subcommand("download", typeof(Download))]
         [Subcommand("upload", typeof(Upload))]
+        [Subcommand("alternative", typeof(Alternative))]
         public class Limit : ClientRootCommandBase
         {
             protected static void PrintLimit(IConsole console, long? limit)
@@ -72,6 +73,28 @@ namespace QBittorrent.CommandLineInterface.Commands
                     {
                         var limit = await client.GetGlobalUploadLimitAsync();
                         PrintLimit(console, limit);
+                    }
+
+                    return ExitCodes.Success;
+                }
+            }
+
+            [Command(Description = "Enables/disables alternative speed mode.")]
+            public class Alternative : AuthenticatedCommandBase
+            {
+                [Option("-s|--set <BOOL>", "TRUE to enable alternative speed mode; FALSE to disable", CommandOptionType.SingleValue)]
+                public bool? Set { get; set; }
+
+                protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    var isAlternative = await client.GetAlternativeSpeedLimitsEnabledAsync();
+                    if (Set == null)
+                    {
+                        console.WriteLine($"Alternative speed mode enabled: {isAlternative}");
+                    }
+                    else if (isAlternative != Set)
+                    {
+                        await client.ToggleAlternativeSpeedLimitsAsync();
                     }
 
                     return ExitCodes.Success;
