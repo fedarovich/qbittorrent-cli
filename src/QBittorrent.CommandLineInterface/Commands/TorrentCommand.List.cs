@@ -16,7 +16,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class TorrentCommand
     {
         [Command(Description = "Shows the torrent list.", ExtendedHelpText = ExtendedHelpText)]
-        public class List : ClientCommandBase
+        public class List : AuthenticatedCommandBase
         {
             private const string ExtendedHelpText =
                 "\n" + 
@@ -73,31 +73,22 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Option("-o|--offset <OFFSET>", "Offset from the beginning of the list.", CommandOptionType.SingleValue)]
             public int? Offset { get; set; }
 
-            public async Task<int> OnExecute(IConsole console)
+            protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                var client = CreateClient();
-                try
+                var query = new TorrentListQuery
                 {
-                    await AuthenticateAsync(client);
-                    var query = new TorrentListQuery
-                    {
-                        Category = Category,
-                        Filter = Enum.TryParse(Filter, out TorrentListFilter filter) ? filter : TorrentListFilter.All,
-                        SortBy = Sort != null
-                            ? (SortColumns.TryGetValue(Sort, out var sort) ? sort : null)
-                            : null,
-                        ReverseSort = Reverse,
-                        Limit = Limit,
-                        Offset = Offset
-                    };
-                    var torrents = await client.GetTorrentListAsync(query);
-                    PrintTorrents(console, torrents);
-                    return 0;
-                }
-                finally
-                {
-                    client.Dispose();
-                }
+                    Category = Category,
+                    Filter = Enum.TryParse(Filter, out TorrentListFilter filter) ? filter : TorrentListFilter.All,
+                    SortBy = Sort != null
+                        ? (SortColumns.TryGetValue(Sort, out var sort) ? sort : null)
+                        : null,
+                    ReverseSort = Reverse,
+                    Limit = Limit,
+                    Offset = Offset
+                };
+                var torrents = await client.GetTorrentListAsync(query);
+                PrintTorrents(console, torrents);
+                return 0;
             }
 
             private void PrintTorrents(IConsole console, IEnumerable<TorrentInfo> torrents)
