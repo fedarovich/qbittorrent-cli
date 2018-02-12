@@ -74,6 +74,6 @@ namespace QBittorrent.Client
         /// </summary>
         [JsonProperty("connection_status")]
         [Display(Name = "Connection status")]
-        public ConnectionStatus ConnectionStatus { get; set; }
+        public ConnectionStatus? ConnectionStatus { get; set; }
     }
 }

@@ -190,6 +190,16 @@ namespace QBittorrent.Client
             return result;
         }
 
+        public async Task<PartialData> GetPartialDataAsync(
+            int responseId = 0,
+            CancellationToken token = default)
+        {
+            var uri = BuildUri("/sync/maindata", ("rid", responseId.ToString()));
+            var json = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<PartialData>(json);
+            return result;
+        }
+
         #endregion
 
         #region Add
