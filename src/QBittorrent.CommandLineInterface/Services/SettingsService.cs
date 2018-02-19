@@ -36,15 +36,34 @@ namespace QBittorrent.CommandLineInterface.Services
 
         public void Save(Settings settings)
         {
+            EnsureUserDir();
+            EncryptionService.Instance.ResetKey();
+            var file = new FileInfo(GetSettingsPath());
 
+            var serializer = new JsonSerializer();
+            using (var stream = file.Open(FileMode.Create, FileAccess.Write))
+            using (var textWriter = new StreamWriter(stream, Encoding.UTF8))
+            using (var jsonWriter = new JsonTextWriter(textWriter) {Formatting = Formatting.Indented} )
+            {
+                serializer.Serialize(jsonWriter, settings);
+            }
         }
 
         private string GetUserDir()
         {
-            var appData = Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData,
-                Environment.SpecialFolderOption.Create);
-            return Path.Combine(appData, ".qbt");
+            string root;
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                root = Environment.GetFolderPath(
+                    Environment.SpecialFolder.LocalApplicationData,
+                    Environment.SpecialFolderOption.Create);
+            }
+            else
+            {
+                root = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            }
+
+            return Path.Combine(root, ".qbt");
         }
 
         private void EnsureUserDir()

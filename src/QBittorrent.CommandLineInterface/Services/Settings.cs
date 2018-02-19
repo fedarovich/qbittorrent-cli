@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Newtonsoft.Json;
+using QBittorrent.CommandLineInterface.Converters;
 
 namespace QBittorrent.CommandLineInterface.Services
 {
@@ -14,6 +16,7 @@ namespace QBittorrent.CommandLineInterface.Services
 
         public string Username { get; set; }
 
+        [JsonConverter(typeof(EncryptConverter))]
         public string Password { get; set; }
     }
 }

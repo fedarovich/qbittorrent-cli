@@ -10,10 +10,9 @@ namespace QBittorrent.CommandLineInterface.Services
 
         static EncryptionService()
         {
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                Instance = new WindowsEncryptionService();
-            }
+            Instance = Environment.OSVersion.Platform == PlatformID.Win32NT 
+                ? (EncryptionService) new WindowsEncryptionService()
+                : new UnixEncryptionService();
         }
 
         private protected EncryptionService()
