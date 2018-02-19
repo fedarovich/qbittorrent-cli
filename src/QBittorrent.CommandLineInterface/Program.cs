@@ -3,16 +3,16 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.Commands;
 
 namespace QBittorrent.CommandLineInterface
 {
     [Command]
-    [Subcommand("torrent", typeof(TorrentCommand))]
     [Subcommand("category", typeof(CategoryCommand))]
     [Subcommand("global", typeof(GlobalCommand))]
     [Subcommand("server", typeof(ServerCommand))]
+    [Subcommand("settings", typeof(SettingsCommand))]
+    [Subcommand("torrent", typeof(TorrentCommand))]
     [HelpOption]
     class Program
     {
