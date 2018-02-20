@@ -31,7 +31,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 if (matching.Count == 0)
                 {
                     console.WriteLine($"No torrent matching hash {Hash} is found.");
-                    return 1;
+                    return ExitCodes.NotFound;
                 }
                 if (matching.Count == 1)
                 {

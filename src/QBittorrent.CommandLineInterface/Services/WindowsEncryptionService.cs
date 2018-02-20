@@ -7,7 +7,7 @@ namespace QBittorrent.CommandLineInterface.Services
 {
     internal class WindowsEncryptionService : EncryptionService
     {
-        private const int EntropyLength = 4096;
+        private const int EntropyLength = 16;
 
         public override string Encrypt(string input)
         {

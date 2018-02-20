@@ -26,8 +26,10 @@ namespace QBittorrent.CommandLineInterface
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(e.Message);
+                Console.ResetColor();
+                return ExitCodes.Failure;
             }
             finally
             {
@@ -56,7 +58,7 @@ namespace QBittorrent.CommandLineInterface
                 app.ShowHelp();
             }
 
-            return 0;
+            return ExitCodes.Success;
         }
     }
 }

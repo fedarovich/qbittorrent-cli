@@ -7,7 +7,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         public virtual int OnExecute(CommandLineApplication app, IConsole console)
         {
             app.ShowHelp();
-            return 1;
+            return ExitCodes.WrongUsage;
         }
     }
 }
