@@ -18,6 +18,7 @@
 
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\QBittorrent.Client.xml</DocumentationFile>
+    <Description>qBittorrent remote API client library</Description>
   </PropertyGroup>
 
   <ItemGroup>
