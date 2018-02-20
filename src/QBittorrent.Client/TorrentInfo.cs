@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// Represents main information about torrent.
+    /// </summary>
     [DebuggerDisplay("{Name}")]
     public class TorrentInfo
     {

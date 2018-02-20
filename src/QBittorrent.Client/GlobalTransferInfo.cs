@@ -4,6 +4,9 @@ using QBittorrent.Client.Converters;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// Represents global transfer info.
+    /// </summary>
     public class GlobalTransferInfo
     {
         /// <summary>

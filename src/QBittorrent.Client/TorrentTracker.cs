@@ -5,6 +5,9 @@ using QBittorrent.Client.Converters;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// Represents the torrent tracker information.
+    /// </summary>
     public class TorrentTracker
     {
         /// <summary>

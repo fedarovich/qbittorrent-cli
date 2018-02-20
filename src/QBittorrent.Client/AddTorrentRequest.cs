@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// The base class for add torrent requests.
+    /// </summary>
     public abstract class AddTorrentRequest
     {
         /// <summary>
@@ -56,7 +59,7 @@ namespace QBittorrent.Client
         public bool SequentialDownload { get; set; }
 
         /// <summary>
-        /// Prioritize download first last piece
+        /// Prioritize download of first and last pieces
         /// </summary>
         public bool FirstLastPiecePrioritized { get; set; }
         

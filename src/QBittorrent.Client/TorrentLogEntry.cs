@@ -4,6 +4,9 @@ using QBittorrent.Client.Converters;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// Represents QBittorrent log entry.
+    /// </summary>
     public class TorrentLogEntry
     {
         /// <summary>

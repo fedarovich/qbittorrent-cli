@@ -7,6 +7,9 @@ using QBittorrent.Client.Converters;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// Represents torrent content file info.
+    /// </summary>
     public class TorrentContent
     {
         /// <summary>
@@ -47,7 +50,7 @@ namespace QBittorrent.Client
         public bool IsSeeding { get; set; }
 
         /// <summary>
-        /// 
+        /// The range of the file.
         /// </summary>
         [JsonProperty("piece_range")]
         [Display(Name = "Piece Range")]

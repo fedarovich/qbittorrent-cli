@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// The torrent state.
+    /// </summary>
     public enum TorrentState
     {
         /// <summary>
@@ -80,9 +80,15 @@ namespace QBittorrent.Client
         [EnumMember(Value = "metaDL")]
         FetchingMetadata,
 
+        /// <summary>
+        /// 
+        /// </summary>
         [EnumMember(Value = "forcedUP")]
         ForcedUpload,
 
+        /// <summary>
+        /// 
+        /// </summary>
         [EnumMember(Value = "forcedDL")]
         ForcedDownload
     }

@@ -6,6 +6,11 @@ using Newtonsoft.Json.Converters;
 
 namespace QBittorrent.Client
 {
+    /// <summary>
+    /// Represents the changes in information about torrent since the last refresh.
+    /// </summary>
+    /// <seealso cref="PartialData"/>
+    /// <seealso cref="QBittorrentClient.GetPartialDataAsync"/>
     public class TorrentPartialInfo
     {
         /// <summary>
@@ -117,6 +122,7 @@ namespace QBittorrent.Client
         [JsonProperty("force_start")]
         public bool? ForceStart { get; set; }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented,
