@@ -88,7 +88,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 };
                 var torrents = await client.GetTorrentListAsync(query);
                 PrintTorrents(console, torrents);
-                return 0;
+                return ExitCodes.Success;
             }
 
             private void PrintTorrents(IConsole console, IEnumerable<TorrentInfo> torrents)

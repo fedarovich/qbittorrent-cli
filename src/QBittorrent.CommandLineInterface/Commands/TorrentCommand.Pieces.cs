@@ -20,7 +20,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 if (!Enum.TryParse(Display, true, out DisplayMode mode) && !string.IsNullOrEmpty(Display))
-                    return 1;
+                    return ExitCodes.WrongUsage;
 
                 switch (mode)
                 {

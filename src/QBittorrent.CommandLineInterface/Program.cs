@@ -3,16 +3,17 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.Commands;
+using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface
 {
     [Command]
-    [Subcommand("torrent", typeof(TorrentCommand))]
     [Subcommand("category", typeof(CategoryCommand))]
     [Subcommand("global", typeof(GlobalCommand))]
     [Subcommand("server", typeof(ServerCommand))]
+    [Subcommand("settings", typeof(SettingsCommand))]
+    [Subcommand("torrent", typeof(TorrentCommand))]
     [HelpOption]
     class Program
     {
@@ -25,8 +26,10 @@ namespace QBittorrent.CommandLineInterface
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(e.Message);
+                Console.ResetColor();
+                return ExitCodes.Failure;
             }
             finally
             {
@@ -55,7 +58,7 @@ namespace QBittorrent.CommandLineInterface
                 app.ShowHelp();
             }
 
-            return 0;
+            return ExitCodes.Success;
         }
     }
 }

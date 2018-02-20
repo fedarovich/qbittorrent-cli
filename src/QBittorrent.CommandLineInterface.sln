@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBittorrent.CommandLineInterface", "QBittorrent.CommandLineInterface\QBittorrent.CommandLineInterface.csproj", "{B4E40485-E6FB-48FF-86D3-A5E6221C8234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QBittorrent.CommandLineInterface", "QBittorrent.CommandLineInterface\QBittorrent.CommandLineInterface.csproj", "{B4E40485-E6FB-48FF-86D3-A5E6221C8234}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBittorrent.Client", "QBittorrent.Client\QBittorrent.Client.csproj", "{04EBEA0B-B98B-4FA3-B6FA-6640A1F2A0F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QBittorrent.Client", "QBittorrent.Client\QBittorrent.Client.csproj", "{04EBEA0B-B98B-4FA3-B6FA-6640A1F2A0F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
