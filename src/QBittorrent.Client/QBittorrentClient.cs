@@ -15,8 +15,9 @@ namespace QBittorrent.Client
     /// <summary>
     /// Provides access to qBittorrent remote API.
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
-    public class QBittorrentClient : IDisposable
+    /// <seealso cref="IDisposable" />
+    /// <seealso cref="IQBittorrentClient"/>
+    public class QBittorrentClient : IQBittorrentClient, IDisposable
     {
         private readonly Uri _uri;
         private readonly HttpClient _client;
