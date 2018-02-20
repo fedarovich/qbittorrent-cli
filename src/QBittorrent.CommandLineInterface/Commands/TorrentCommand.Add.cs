@@ -17,7 +17,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("url", typeof(AddUrl))]
         public class Add : ClientRootCommandBase
         {
-            public abstract class Base : ClientCommandBase
+            public abstract class Base : AuthenticatedCommandBase
             {
                 [Option("-f|--folder <PATH>", "Download folder.", CommandOptionType.SingleValue)]
                 public string Folder { get; set; }
@@ -40,10 +40,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-r|--rename <NEW_NAME>", "Rename torrent", CommandOptionType.SingleValue)]
                 public string Rename { get; set; }
 
-                [Option("--ul|--upload-limit <LIMIT>", "Set torrent upload speed limit (bytes/second).", CommandOptionType.SingleValue)]
+                [Option("-u|--upload-limit <LIMIT>", "Set torrent upload speed limit (bytes/second).", CommandOptionType.SingleValue)]
                 public int? UploadLimit { get; set; }
 
-                [Option("--dl|--download-limit <LIMIT>", "Set torrent upload speed limit (bytes/second).", CommandOptionType.SingleValue)]
+                [Option("-d|--download-limit <LIMIT>", "Set torrent upload speed limit (bytes/second).", CommandOptionType.SingleValue)]
                 public int? DownloadLimit { get; set; }
 
                 [Option("-s|--sequential", "Enable sequential download.", CommandOptionType.NoValue)]
@@ -60,33 +60,24 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Required]
                 public List<string> Files { get; set; }
 
-                public async Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)
+                protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
-                    var client = CreateClient();
-                    try
+                    var request = new AddTorrentFilesRequest(Files)
                     {
-                        await AuthenticateAsync(client);
-                        var request = new AddTorrentFilesRequest(Files)
-                        {
-                            Category = Category,
-                            Cookie = Cookie,
-                            CreateRootFolder = CreateRootFolder,
-                            DownloadFolder = Folder,
-                            DownloadLimit = DownloadLimit,
-                            FirstLastPiecePrioritized = FirstLastPiecePrioritized,
-                            Paused = Paused,
-                            Rename = Rename,
-                            SequentialDownload = SequentialDownload,
-                            SkipHashChecking = SkipChecking,
-                            UploadLimit = UploadLimit
-                        };
-                        await client.AddTorrentsAsync(request);
-                        return 0;
-                    }
-                    finally
-                    {
-                        client.Dispose();
-                    }
+                        Category = Category,
+                        Cookie = Cookie,
+                        CreateRootFolder = CreateRootFolder,
+                        DownloadFolder = Folder,
+                        DownloadLimit = DownloadLimit,
+                        FirstLastPiecePrioritized = FirstLastPiecePrioritized,
+                        Paused = Paused,
+                        Rename = Rename,
+                        SequentialDownload = SequentialDownload,
+                        SkipHashChecking = SkipChecking,
+                        UploadLimit = UploadLimit
+                    };
+                    await client.AddTorrentsAsync(request);
+                    return ExitCodes.Success;
                 }
             }
 
@@ -97,34 +88,25 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Required]
                 public List<string> Urls { get; set; }
 
-                public async Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)
+                protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
-                    var client = CreateClient();
                     var urls = Urls.Select(x => new Uri(x, UriKind.Absolute)).ToList();
-                    try
+                    var request = new AddTorrentUrlsRequest(urls)
                     {
-                        await AuthenticateAsync(client);
-                        var request = new AddTorrentUrlsRequest(urls)
-                        {
-                            Category = Category,
-                            Cookie = Cookie,
-                            CreateRootFolder = CreateRootFolder,
-                            DownloadFolder = Folder,
-                            DownloadLimit = DownloadLimit,
-                            FirstLastPiecePrioritized = FirstLastPiecePrioritized,
-                            Paused = Paused,
-                            Rename = Rename,
-                            SequentialDownload = SequentialDownload,
-                            SkipHashChecking = SkipChecking,
-                            UploadLimit = UploadLimit
-                        };
-                        await client.AddTorrentsAsync(request);
-                        return 0;
-                    }
-                    finally
-                    {
-                        client.Dispose();
-                    }
+                        Category = Category,
+                        Cookie = Cookie,
+                        CreateRootFolder = CreateRootFolder,
+                        DownloadFolder = Folder,
+                        DownloadLimit = DownloadLimit,
+                        FirstLastPiecePrioritized = FirstLastPiecePrioritized,
+                        Paused = Paused,
+                        Rename = Rename,
+                        SequentialDownload = SequentialDownload,
+                        SkipHashChecking = SkipChecking,
+                        UploadLimit = UploadLimit
+                    };
+                    await client.AddTorrentsAsync(request);
+                    return ExitCodes.Success;
                 }
             }
         }
