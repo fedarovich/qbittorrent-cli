@@ -13,6 +13,7 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand("global", typeof(GlobalCommand))]
     [Subcommand("server", typeof(ServerCommand))]
     [Subcommand("settings", typeof(SettingsCommand))]
+    [Subcommand("smart", typeof(SmartCommand))]
     [Subcommand("torrent", typeof(TorrentCommand))]
     [HelpOption]
     class Program

@@ -26,6 +26,7 @@
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.1.1" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0-beta3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="NJsonSchema" Version="9.10.27" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
   </ItemGroup>
 
@@ -39,4 +40,6 @@
       <ResolvedFileToPublish Include="qbt.sh" RelativePath="qbt" />
     </ItemGroup>
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

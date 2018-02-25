@@ -49,7 +49,7 @@ namespace QBittorrent.CommandLineInterface.Services
             }
         }
 
-        private string GetUserDir()
+        public string GetUserDir()
         {
             string root;
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)

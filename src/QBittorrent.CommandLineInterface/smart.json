@@ -1,0 +1,20 @@
+﻿{
+  "$schema": "Schemas/smart-schema.json",
+  "add": [
+    {
+      "condition": "/.+/",
+      "match": "name",
+      "properties": {
+        "name": { "script": "da" },
+        "downloadLimit": 5
+      }
+    }
+  ],
+  "move": [
+    {
+      "match": "name",
+      "condition": "`",
+      "moveTo": "/"
+    }
+  ]
+}

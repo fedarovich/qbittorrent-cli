@@ -1,0 +1,160 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for QBittorrent CLI smart command configuration",
+  "id": "https://github.com/fedarovich/qbittorrent-cli/smart-schema.json",
+
+  "type": "object",
+
+  "definitions": {
+    "script": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "type": "string",
+          "minLength": 1,
+          "description": "JavaScript code returing the value."
+        } 
+      }
+    },
+    "stringOrScipt": {
+      "anyOf": [
+        { "type": "string" },
+        { "$ref": "#/definitions/script" }
+      ]
+    },
+    "integerOrScript": {
+      "anyOf": [
+        { "type": "integer" },
+        { "$ref": "#/definitions/script" }
+      ]
+    },
+    "booleanOrScript": {
+      "anyOf": [
+        { "type": "boolean" },
+        { "$ref": "#/definitions/script" }
+      ]
+    } 
+  },
+
+  "properties": {
+    "add": {
+      "type": "array",
+      "description": "Rules for \"smart add\" command.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Rule name."
+          },
+          "match": {
+            "type": "string",
+            "enum": [ "name", "fullName", "path" ],
+            "description": "The torrent file property to match. \"name\" is used by default."
+          },
+          "condition": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The javascript code to perform a match. Can be a string, a regular expression or a boolean expression."
+          },
+          "properties": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "JavaScript code which sets the properties"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "savepath": {
+                    "$ref": "#/definitions/stringOrScipt",
+                    "description": "The directory to save the file in."
+                  },
+                  "cookie": {
+                    "$ref": "#/definitions/stringOrScipt",
+                    "description": "The cookie for the tracker."
+                  },
+                  "category": {
+                    "$ref": "#/definitions/stringOrScipt",
+                    "description": "The torrent category."
+                  },
+                  "paused": {
+                    "$ref": "#/definitions/booleanOrScript",
+                    "description": "If true, the torrent will be added in the pased state; false be default."
+                  },
+                  "skipChecking": {
+                    "$ref": "#/definitions/booleanOrScript",
+                    "description": "If true, the torrent hash check will be skipped; false by default."
+                  },
+                  "rootFolder": {
+                    "$ref": "#/definitions/booleanOrScript",
+                    "description": "Create the root folder."
+                  },
+                  "name": {
+                    "$ref": "#/definitions/stringOrScipt",
+                    "minLength": 1,
+                    "description": "The new torrent name."
+                  },
+                  "uploadLimit": {
+                    "$ref": "#/definitions/integerOrScript",
+                    "minimum": 0,
+                    "description": "Upload speed limit in bytes per second. 0 means no limit."
+                  },
+                  "downloadLimit": {
+                    "$ref": "#/definitions/integerOrScript",
+                    "minimum": 0,
+                    "description": "Download speed limit in bytes per second. 0 means no limit."
+                  },
+                  "sequentialDownload": {
+                    "$ref": "#/definitions/booleanOrScript",
+                    "description": "If true, the torrent pieces will be downloaded sequentially; false by default."
+                  },
+                  "firstLastPiecePrio": {
+                    "$ref": "#/definitions/booleanOrScript",
+                    "description": "If true, the download of the first and the last pieces will be prioritized; false by default."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "dependencies": {
+          "match": ["condition"] 
+        }
+      }
+    },
+    "move": {
+      "type": "array",
+      "description": "Rules for \"smart move\" command.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Rule name."
+          },
+          "match": {
+            "type": "string",
+            "enum": [ "name", "category", "state" ],
+            "description": "The torrent property to match. \"name\" is used by default."
+          },
+          "condition": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The javascript code to perform a match. Can be a string, a regular expression or a boolean expression."
+          },
+          "moveTo": {
+            "$ref": "#/definitions/stringOrScipt",
+            "minLength": 1,
+            "description": "The folder to move the downloaded files to."
+          }
+        },
+        "dependencies": {
+          "match": ["condition"] 
+        }
+      }
+    }
+  }
+}
