@@ -50,3 +50,6 @@ BinDir="$AGENT_BUILDDIRECTORY/raw/linux-x64"
 cp "$BinDir" "$BuildDir/opt/qbt"
 
 fpm -s dir -t deb -C "$BuildDir" --name qbt-cli --version $BUILD_BUILDNUMBER --iteration 1 --description "qBittorrent remote command client client."
+
+mkdir -p "$BUILD_ARTIFACTSTAGINGDIRECTORY/setup"
+cp "$BuildDir/*.deb" "$BUILD_ARTIFACTSTAGINGDIRECTORY/setup/"
