@@ -66,9 +66,11 @@ namespace QBittorrent.CommandLineInterface.Services
             return Path.Combine(root, ".qbt");
         }
 
-        private void EnsureUserDir()
+        public string EnsureUserDir()
         {
-            Directory.CreateDirectory(GetUserDir());
+            var userDir = GetUserDir();
+            Directory.CreateDirectory(userDir);
+            return userDir;
         }
 
         private string GetSettingsPath()
