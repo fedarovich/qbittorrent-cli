@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NJsonSchema;
+using QBittorrent.CommandLineInterface.Exceptions;
 
 namespace QBittorrent.CommandLineInterface.Services
 {
@@ -11,6 +16,8 @@ namespace QBittorrent.CommandLineInterface.Services
     {
         private const string SchemaUri =
             "https://raw.githubusercontent.com/fedarovich/qbittorrent-cli/smart-commands/src/QBittorrent.CommandLineInterface/Schemas/smart-schema.json";
+
+        private const string SmartSchemaResource = "QBittorrent.CommandLineInterface.Schemas.smart-schema.json";
 
         public static SmartService Instance { get; } = new SmartService();
 
@@ -28,6 +35,40 @@ namespace QBittorrent.CommandLineInterface.Services
             {
                 var dir = SettingsService.Instance.GetUserDir();
                 return Path.Combine(dir, "smart.json");
+            }
+        }
+
+        public JToken GetConfigurationObject(string path = "$")
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            if (!File.Exists(ConfigPath))
+                throw new FileNotFoundException(
+                    "The smart command configuration file not found.", ConfigPath);
+            
+            var root = GetRootObject();
+            var schema = ReadSchema();
+            var errors = schema.Validate(root);
+            if (errors.Any())
+                throw new JsonValidationException(
+                    "The smart command configuration file has errors.", errors);
+
+            return root.SelectToken(path, true);
+
+            JObject GetRootObject()
+            {
+                using (var textReader = File.OpenText(ConfigPath))
+                using (var jsonReader = new JsonTextReader(textReader))
+                {
+                    return JObject.Load(
+                        jsonReader, 
+                        new JsonLoadSettings
+                        {
+                            CommentHandling = CommentHandling.Load,
+                            LineInfoHandling = LineInfoHandling.Load
+                        });
+                }
             }
         }
 
@@ -51,6 +92,16 @@ namespace QBittorrent.CommandLineInterface.Services
             }
 
             return true;
+        }
+
+        private JsonSchema4 ReadSchema()
+        {
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(SmartSchemaResource))
+            using (var reader = new StreamReader(stream))
+            {
+                var json = reader.ReadToEnd();
+                return JsonSchema4.FromJsonAsync(json).Result;
+            }
         }
     }
 }

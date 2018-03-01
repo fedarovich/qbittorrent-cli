@@ -15,5 +15,7 @@ namespace QBittorrent.CommandLineInterface
         public const int NotFound = 3;
 
         public const int Cancelled = 4;
+
+        public const int InvalidConfiguration = 5;
     }
 }

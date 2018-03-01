@@ -23,6 +23,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Schemas\smart-schema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Schemas\smart-schema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.1.1" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0-beta3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />

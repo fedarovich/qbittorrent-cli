@@ -45,7 +45,7 @@
         "properties": {
           "rule": {
             "type": "string",
-            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_]+$",
             "description": "Rule name."
           },
           "match": {
@@ -132,7 +132,7 @@
         "properties": {
           "rule": {
             "type": "string",
-            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_]+$",
             "description": "Rule name."
           },
           "match": {

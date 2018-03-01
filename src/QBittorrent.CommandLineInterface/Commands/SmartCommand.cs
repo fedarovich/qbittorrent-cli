@@ -1,5 +1,6 @@
 ﻿using System;
 using McMaster.Extensions.CommandLineUtils;
+using QBittorrent.CommandLineInterface.Exceptions;
 using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -26,6 +27,23 @@ namespace QBittorrent.CommandLineInterface.Commands
                 console.WriteLine("Run \"qbt smart configure\" to edit the script.");
 
                 return ExitCodes.Success;
+            }
+        }
+
+        protected static void PrintJsonValidationError(IConsole console, JsonValidationException ex)
+        {
+            var colors = new[] {ConsoleColor.DarkYellow, ConsoleColor.DarkRed};
+            console.WriteLineColored(ex.Message, ConsoleColor.Red);
+
+            int row = 0;
+            foreach (var error in ex.Errors)
+            {
+                var color = colors[row++ % 2];
+                if (error.HasLineInfo)
+                {
+                    console.WriteColored($"[Line: {error.LineNumber}; Pos: {error.LinePosition}]", color);
+                    console.WriteLineColored(error.ToString(), color);
+                }
             }
         }
     }
