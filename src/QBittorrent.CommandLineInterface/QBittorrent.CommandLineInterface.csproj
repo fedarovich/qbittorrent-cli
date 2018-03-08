@@ -31,15 +31,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.1.1" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0-beta3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="NJsonSchema" Version="9.10.27" />
+    <PackageReference Include="NJsonSchema" Version="9.10.28" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\QBittorrent.Client\QBittorrent.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="JavaScript\" />
   </ItemGroup>
 
   <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == ''">

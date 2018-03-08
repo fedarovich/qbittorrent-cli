@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using Jint;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
@@ -70,6 +71,23 @@ namespace QBittorrent.CommandLineInterface.Services
                         });
                 }
             }
+        }
+
+        public Engine CreateEngine()
+        {
+            var engine = new Engine(opt => opt.LimitRecursion(100));
+
+            var scriptPath = Path.Combine(SettingsService.Instance.GetUserDir(), "smart.js");
+            if (File.Exists(scriptPath))
+            {
+                using (var reader = File.OpenText(scriptPath))
+                {
+                    var script = reader.ReadToEnd();
+                    engine.Execute(script);
+                }
+            }
+
+            return engine;
         }
 
         public bool Initialize()

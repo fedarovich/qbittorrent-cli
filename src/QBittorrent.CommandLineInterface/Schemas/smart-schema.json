@@ -152,8 +152,9 @@
           }
         },
         "dependencies": {
-          "match": ["condition"] 
-        }
+          "match": [ "condition" ]
+        },
+        "required": [ "moveTo" ]
       }
     }
   }
