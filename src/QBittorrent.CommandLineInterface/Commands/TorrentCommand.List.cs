@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 using QBittorrent.Client;
@@ -19,7 +20,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         public class List : AuthenticatedCommandBase
         {
             private const string ExtendedHelpText =
-                "\n" + 
+                "\n" +
                 "Torrent Statuses in ST column:\n" +
                 "   D - Downloading\n" +
                 "  CD - Checking Download\n" +
@@ -95,87 +96,155 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 if (Verbose)
                 {
-                    PrintTorrentsVerbose(console, torrents);
+                    PrintTorrentsVerbose(torrents);
                 }
                 else
                 {
-                    PrintTorrentsTable(console, torrents);
+                    PrintTorrentsTable(torrents);
                 }
             }
 
-            private void PrintTorrentsVerbose(IConsole console, IEnumerable<TorrentInfo> torrents)
+            private void PrintTorrentsVerbose(IEnumerable<TorrentInfo> torrents)
             {
-                foreach (var torrent in torrents)
+                var cellStroke = new LineThickness(LineWidth.None, LineWidth.None);
+                var doc = new Document
                 {
-                    console.WriteLine($"Name:       {torrent.Name}");
-                    console.WriteLine($"State:      {torrent.State}");
-                    console.WriteLine($"Hash:       {torrent.Hash}");
-                    console.WriteLine($"Size:       {torrent.Size:N0} bytes");
-                    console.WriteLine($"Progress:   {torrent.Progress:P0}");
-                    console.WriteLine($"DL Speed:   {FormatSpeed(torrent.DownloadSpeed)}");
-                    console.WriteLine($"UP Speed:   {FormatSpeed(torrent.UploadSpeed)}");
-                    console.WriteLine($"Priority:   {torrent.Priority}");
-                    console.WriteLine($"Seeds:      {torrent.ConnectedSeeds} of {torrent.TotalSeeds}");
-                    console.WriteLine($"Leechers:   {torrent.ConnectedLeechers} of {torrent.TotalLeechers}");
-                    console.WriteLine($"Ratio:      {torrent.Ratio:F2}");
-                    console.WriteLine($"ETA:        {FormatEta(torrent.EstimatedTime)}");
-                    console.WriteLine($"Category:   {torrent.Category}");
-                    console.WriteLine($"Options:    {GetOptions()}");
+                    Children =
+                     {
+                         torrents.Select(torrent =>
+                            new Grid
+                            {
+                                 Stroke = new LineThickness(LineWidth.None),
+                                 Columns =
+                                 {
+                                     new Column() { Width = GridLength.Auto },
+                                     new Column() { Width = GridLength.Star(1) }
+                                 },
+                                 Children =
+                                 {
+                                     Row("Name", torrent.Name),
+                                     Row("State", torrent.State),
+                                     Row("Hash", torrent.Hash),
+                                     Row("Size", $"{torrent.Size:N0} bytes"),
+                                     Row("Progress", $"{torrent.Progress:P0}"),
+                                     Row("DL Speed", $"{FormatSpeed(torrent.DownloadSpeed)}"),
+                                     Row("UP Speed", $"{FormatSpeed(torrent.UploadSpeed)}"),
+                                     Row("Priority", torrent.Priority),
+                                     Row("Seeds", $"{torrent.ConnectedSeeds} of {torrent.TotalSeeds}"),
+                                     Row("Leechers", $"{torrent.ConnectedLeechers} of {torrent.TotalLeechers}"),
+                                     Row("Ratio", $"{torrent.Ratio:F2}"),
+                                     Row("ETA", FormatEta(torrent.EstimatedTime)),
+                                     Row("Category", torrent.Category),
+                                     Row("Options", GetOptions(torrent)),
+                                 },
+                                 Margin = new Thickness(0, 0, 0, 2)
+                            }
+                         )
+                     }
+                };
 
-                    console.WriteLine(string.Empty);
+                ConsoleRenderer.RenderDocument(doc);
 
-                    string GetOptions()
+                Cell Label(string text) => new Cell(text + ":") { Color = ConsoleColor.Yellow, Stroke = cellStroke };
+
+                Cell Data<T>(T data) => new Cell(data.ToString()) { Stroke = cellStroke, Padding = new Thickness(3, 0, 0, 0) };
+
+                object[] Row<T>(string label, T data) => new object[] { Label(label), Data(data) };
+
+                string GetOptions(TorrentInfo torrent)
+                {
+                    var options = new List<string>(4);
+                    if (torrent.SequentialDownload)
+                        options.Add("Sequential");
+                    if (torrent.SuperSeeding)
+                        options.Add("Super seeding");
+                    if (torrent.ForceStart)
+                        options.Add("Force start");
+                    if (torrent.FirstLastPiecePrioritized)
+                        options.Add("First & last pieces are prioritized");
+                    return string.Join(", ", options);
+                }
+            }
+
+            private void PrintTorrentsTable(IEnumerable<TorrentInfo> torrents)
+            {
+                var headerStroke = new LineThickness(LineWidth.Single, LineWidth.Double);
+
+                var doc = new Document
+                {
+                    Children =
                     {
-                        var options = new List<string>(4);
-                        if (torrent.SequentialDownload)
-                            options.Add("Sequential");
-                        if (torrent.SuperSeeding)
-                            options.Add("Super seeding");
-                        if (torrent.ForceStart)
-                            options.Add("Force start");
-                        if (torrent.FirstLastPiecePrioritized)
-                            options.Add("First & last pieces are prioritized");
-                        return string.Join(", ", options);
+                        new Grid
+                        {
+                            Columns =
+                            {
+                                new Column {Width = GridLength.Auto},
+                                new Column {Width = GridLength.Star(1)},
+                                new Column {Width = GridLength.Auto},
+                                new Column {Width = GridLength.Auto},
+                                new Column {Width = GridLength.Auto},
+                                new Column {Width = GridLength.Auto},
+                            },
+                            Children =
+                            {
+                                new Cell("ST") { Stroke = headerStroke },
+                                new Cell("Name") { Stroke = headerStroke },
+                                new Cell("Hash") { Stroke = headerStroke },
+                                new Cell("DL Speed") { Stroke = headerStroke, TextAlign = TextAlign.Center },
+                                new Cell("UL Speed") { Stroke = headerStroke, TextAlign = TextAlign.Center },
+                                new Cell("EAT") { Stroke = headerStroke, TextAlign = TextAlign.Center, MinWidth = 9 },
+                                torrents.Select(t => new[]
+                                {
+                                    FormatState(t.State),
+                                    new Cell(t.Name),
+                                    new Cell(t.Hash.Substring(0, 6)),
+                                    new Cell(FormatSpeed(t.DownloadSpeed).PadLeft(10)),
+                                    new Cell(FormatSpeed(t.UploadSpeed).PadLeft(10)),
+                                    new Cell(FormatEta(t.EstimatedTime))
+                                })
+                            },
+                            Stroke = LineThickness.Single
+                        }
+                    },
+                };
+
+                ConsoleRenderer.RenderDocument(doc);
+
+                Cell FormatState(TorrentState state)
+                {
+                    switch (state)
+                    {
+                        case TorrentState.Error:
+                            return new Cell(" E") { Color = ConsoleColor.Red };
+                        case TorrentState.PausedUpload:
+                            return new Cell("PU") { Color = ConsoleColor.DarkGray };
+                        case TorrentState.PausedDownload:
+                            return new Cell("PD") { Color = ConsoleColor.DarkGray };
+                        case TorrentState.QueuedUpload:
+                            return new Cell("QU") { Color = ConsoleColor.DarkBlue };
+                        case TorrentState.QueuedDownload:
+                            return new Cell("QD") { Color = ConsoleColor.DarkBlue };
+                        case TorrentState.Uploading:
+                            return new Cell(" U") { Color = ConsoleColor.Green };
+                        case TorrentState.StalledUpload:
+                            return new Cell("SU") { Color = ConsoleColor.DarkYellow };
+                        case TorrentState.CheckingUpload:
+                            return new Cell("CU") { Color = ConsoleColor.Yellow };
+                        case TorrentState.CheckingDownload:
+                            return new Cell("CD") { Color = ConsoleColor.Yellow };
+                        case TorrentState.Downloading:
+                            return new Cell(" D") { Color = ConsoleColor.Green };
+                        case TorrentState.StalledDownload:
+                            return new Cell("SD") { Color = ConsoleColor.DarkYellow };
+                        case TorrentState.FetchingMetadata:
+                            return new Cell("MD") { Color = ConsoleColor.Blue };
+                        case TorrentState.ForcedUpload:
+                            return new Cell("FU") { Color = ConsoleColor.Cyan };
+                        case TorrentState.ForcedDownload:
+                            return new Cell("FD") { Color = ConsoleColor.Cyan };
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(state), state, null);
                     }
-                }
-
-
-            }
-
-            private void PrintTorrentsTable(IConsole console, IEnumerable<TorrentInfo> torrents)
-            {
-                const int stateWidth = 2;
-                const int hashWidth = 6;
-                const int upSpeedWidth = 10;
-                const int downSpeedWidth = 10;
-                const int eatWidth = 9;
-                const int spaceWidth = 5;
-                int nameWidth = Console.WindowWidth -
-                                (stateWidth + hashWidth + upSpeedWidth + downSpeedWidth + eatWidth + spaceWidth) - 1;
-
-                console.WriteLine($"ST\u2502{"Name".PadRight(nameWidth)}\u2502 Hash \u2502 DL Speed \u2502 UL Speed \u2502   EAT   ");
-                console.WriteLine($"  \u253c{"    ".PadRight(nameWidth)}\u253c      \u253c          \u253c          \u253c         ".Replace(' ', '\u2500'));
-                foreach (var torrent in torrents)
-                {
-                    PrintState(console, torrent.State);
-                    console.Write("\u2502");
-                    console.Write(TrimPadName(torrent.Name));
-                    console.Write("\u2502");
-                    console.Write(torrent.Hash.Substring(0, 6));
-                    console.Write("\u2502");
-                    console.Write(FormatSpeed(torrent.DownloadSpeed).PadLeft(10));
-                    console.Write("\u2502");
-                    console.Write(FormatSpeed(torrent.UploadSpeed).PadLeft(10));
-                    console.Write("\u2502");
-                    console.Write(FormatEta(torrent.EstimatedTime));
-                    console.WriteLine(string.Empty);
-                }
-
-                string TrimPadName(string name)
-                {
-                    return name.Length > nameWidth
-                        ? name.Substring(0, nameWidth - 3) + "..."
-                        : name.PadRight(nameWidth);
                 }
             }
 

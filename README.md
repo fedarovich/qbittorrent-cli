@@ -1,45 +1,10 @@
 # qbittorrent-cli
 ![](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/2/badge)
 
-Command line interface for QBittorrent
+qBittorrent CLI is a cross-platform command line interface for remote qBittorrent instances.
 
-The binaries are available for different platforms:
+It can be useful for torrent management automation or if you just prefer using command line.
 
-Package | Platform | Dependencies
----- | -------- | ------------
-qbt-netfx461.zip | Windows 7 or later | .Net Framework 4.6.1 or later (included in Windows 10 v1511)
-qbt-core20-portable | Any platform | .Net Core runtime 2.0 or later
-qbt-win-x86.zip | Windows 7 or later (32-bit) | None
-qbt-win-x64.zip | Windows 7 or later (64-bit) | None
-qbt-linux-x64.zip | Linux (64-bit) | *See below*
-qbt-osx-x64.zip | Mac OS X 10.10 or later (64-bit) | None
+qBittorrent CLI can be used on Windows, Linux and Mac OS X running on various devices like PCs, laptops and even single-board computers like Raspberry Pi or Orange Pi.
 
-**This software is at an early development stage and only several commands are available now. The syntax of the commands may change in future**
-
-To see the list of currently available commands run:
-
-    qbt --help
-
-### Prerequisites on Linux
-The application has been tested on **Ubuntu 16.04 TLS** and **openSUSE Leap 42**, but it should run on any distro supported by .Net Core:
-* Red Hat Enterprise Linux 7
-* CentOS 7
-* Oracle Linux 7
-* Fedora 25, Fedora 26
-* Debian 8.7 or later versions
-* Ubuntu 17.04, Ubuntu 16.04, Ubuntu 14.04
-* Linux Mint 18, Linux Mint 17
-* openSUSE 42.2 or later versions
-* SUSE Enterprise Linux (SLES) 12 SP2 or later versions
-
-#### The following libraries are known to be required in order to run the application:
-##### Ubuntu 16.04
-* libunwind8
-* libcurl3
-* libssl1.0.0
-* libicu55
-##### openSUSE 42
-* libunwind
-* libicu
-
-To see the full list of libraries required by .Net Core 2.0 (but not necessary by this application) follow the [link](https://docs.microsoft.com/en-us/dotnet/core/linux-prerequisites?tabs=netcore2x).
+Please, see the [Wiki](https://github.com/fedarovich/qbittorrent-cli/wiki) to get information about the product setup and usage.
