@@ -11,14 +11,14 @@ namespace QBittorrent.CommandLineInterface.Services
 {
     internal class UnixEncryptionService : EncryptionService
     {
-        private static readonly byte[] Key = 
+        private static readonly byte[] Key =
         {
             237, 158, 211, 168, 18, 187, 41, 93, 36, 150, 14, 142, 137, 9, 29, 108, 194, 174, 191, 28, 5, 9, 127, 78,
             84, 84, 6, 255, 195, 246, 124, 89, 89, 249, 104, 253, 177, 52, 111, 43, 223, 152, 114, 122, 79, 211, 28, 67,
             76, 148, 161, 180, 39, 202, 153, 67, 1, 155, 183, 106, 247, 64, 220, 140
         };
 
-    public override string Encrypt(string input)
+        public override string Encrypt(string input)
         {
             var key = EnsureKeyFile();
             using (var aes = Aes.Create())
@@ -64,10 +64,9 @@ namespace QBittorrent.CommandLineInterface.Services
         {
             var directory = GetKeyFileDir();
             CreateDirectory(directory);
-            directory.FileAccessPermissions = FileAccessPermissions.UserExecute | FileAccessPermissions.UserWrite;
-            directory.FileSpecialAttributes = FileSpecialAttributes.Sticky;
             directory.Refresh();
-            
+            directory.FileAccessPermissions = FileAccessPermissions.UserExecute | FileAccessPermissions.UserWrite;
+
             using (var aes = Aes.Create())
             {
                 aes.GenerateKey();
