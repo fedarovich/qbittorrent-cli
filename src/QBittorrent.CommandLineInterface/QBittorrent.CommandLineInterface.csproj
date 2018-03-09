@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;netframework4.6.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netframework4.6</TargetFrameworks>
     <AssemblyName>qbt</AssemblyName>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netframework4.6.1'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netframework4.6'">
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
   </PropertyGroup>
 
@@ -24,7 +24,8 @@
 
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.1.1" />
-    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0-beta3" />
+    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'netframework4.6'" />
+    <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'netframework4.6'" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
   </ItemGroup>
@@ -33,10 +34,15 @@
     <ProjectReference Include="..\QBittorrent.Client\QBittorrent.Client.csproj" />
   </ItemGroup>
 
-  <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == ''">
+  <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == '' AND '$(TargetFramework)' != 'netframework4.6'">
     <ItemGroup>
       <ResolvedFileToPublish Include="qbt.cmd" RelativePath="qbt.cmd" />
       <ResolvedFileToPublish Include="qbt.sh" RelativePath="qbt" />
+    </ItemGroup>
+  </Target>
+  <Target Name="IncludeMonoRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(TargetFramework)' == 'netframework4.6'">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="qbt-mono.sh" RelativePath="qbt" />
     </ItemGroup>
   </Target>
 </Project>
