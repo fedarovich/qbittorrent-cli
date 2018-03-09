@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -55,6 +56,24 @@ namespace QBittorrent.Client
             _uri = uri ?? throw new ArgumentNullException(nameof(uri));
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the timespan to wait before the request times out.
+        /// </summary>
+        public TimeSpan Timeout
+        {
+            get => _client.Timeout;
+            set => _client.Timeout = value;
+        }
+
+        /// <summary>
+        /// Gets the headers which should be sent with each request.
+        /// </summary>
+        public HttpRequestHeaders DefaultRequestHeaders => _client.DefaultRequestHeaders;
+
+        #endregion  
 
         #region Authentication
 
