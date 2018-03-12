@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -11,6 +12,16 @@ namespace QBittorrent.Client
     /// </summary>
     public interface IQBittorrentClient
     {
+        /// <summary>
+        /// Gets or sets the timespan to wait before the request times out.
+        /// </summary>
+        TimeSpan Timeout { get; set; }
+
+        /// <summary>
+        /// Gets the headers which should be sent with each request.
+        /// </summary>
+        HttpRequestHeaders DefaultRequestHeaders { get; }
+
         /// <summary>
         /// Authenticates this client with the remote qBittorrent server.
         /// </summary>
