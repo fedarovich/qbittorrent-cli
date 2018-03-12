@@ -8,6 +8,12 @@ namespace QBittorrent.Client
     public enum TorrentState
     {
         /// <summary>
+        /// Unknown
+        /// </summary>
+        [EnumMember(Value = "unknown")]
+        Unknown,
+
+        /// <summary>
         /// Some error occurred, applies to paused torrents
         /// </summary>
         [EnumMember(Value = "error")]
@@ -90,6 +96,30 @@ namespace QBittorrent.Client
         /// 
         /// </summary>
         [EnumMember(Value = "forcedDL")]
-        ForcedDownload
+        ForcedDownload,
+
+        /// <summary>
+        /// The files are missing
+        /// </summary>
+        [EnumMember(Value = "missingFiles")]
+        MissingFiles,
+
+        /// <summary>
+        /// Allocating space on disk
+        /// </summary>
+        [EnumMember(Value = "allocating")]
+        Allocating,
+
+        /// <summary>
+        /// Queued for checking
+        /// </summary>
+        [EnumMember(Value = "queuedForChecking")]
+        QueuedForChecking,
+
+        /// <summary>
+        /// Resume data is being checked
+        /// </summary>
+        [EnumMember(Value = "checkingResumeData")]
+        CheckingResumeData
     }
 }

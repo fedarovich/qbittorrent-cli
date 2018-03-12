@@ -22,6 +22,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             private const string ExtendedHelpText =
                 "\n" +
                 "Torrent Statuses in ST column:\n" +
+                "   A - Allocating space on disk\n" +
                 "   D - Downloading\n" +
                 "  CD - Checking Download\n" +
                 "  FD - Forced Download\n" +
@@ -30,13 +31,16 @@ namespace QBittorrent.CommandLineInterface.Commands
                 "  QD - Queued Download\n" +
                 "  SD - Stalled Download\n" +
                 "   E - Error\n" +
+                "  MF - Missing File\n" +
                 "   U - Uploading\n" +
                 "  CU - Checking Upload\n" +
                 "  FU - Forced Upload\n" +
                 "  PU - Paused Upload\n" +
                 "  QU - Queued Upload\n" +
-                "  SU - Stalled Upload\n"
-                ;
+                "  SU - Stalled Upload\n" +
+                "  QC - Queued for Checking\n" +
+                "  CR - Checking Resume Data\n" +
+                "   ? - Unknown";
 
 
             private static readonly Dictionary<string, string> SortColumns;
@@ -242,8 +246,17 @@ namespace QBittorrent.CommandLineInterface.Commands
                             return new Cell("FU") { Color = ConsoleColor.Cyan };
                         case TorrentState.ForcedDownload:
                             return new Cell("FD") { Color = ConsoleColor.Cyan };
+                        case TorrentState.MissingFiles:
+                            return new Cell("MF") { Color = ConsoleColor.Red };
+                        case TorrentState.Allocating:
+                            return new Cell(" A") { Color = ConsoleColor.Green };
+                        case TorrentState.QueuedForChecking:
+                            return new Cell("QC") { Color = ConsoleColor.DarkBlue };
+                        case TorrentState.CheckingResumeData:
+                            return new Cell("CR") { Color = ConsoleColor.Yellow };
+                        case TorrentState.Unknown:
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(state), state, null);
+                            return new Cell(" ?") { Color = ConsoleColor.Magenta };
                     }
                 }
             }
