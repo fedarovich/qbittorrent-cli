@@ -342,6 +342,18 @@ namespace QBittorrent.Client
             return result;
         }
 
+        /// <summary>
+        /// Get the path to the folder where the downloaded files are saved by default.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        public Task<string> GetDefaultSavePathAsync(
+            CancellationToken token = default)
+        {
+            var uri = BuildUri("/command/getSavePath");
+            return _client.GetStringAsync(uri, token);
+        }
+
         #endregion
 
         #region Add

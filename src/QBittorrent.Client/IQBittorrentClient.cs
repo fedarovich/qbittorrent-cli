@@ -656,5 +656,13 @@ namespace QBittorrent.Client
         /// <param name="token">The cancellation token.</param>
         /// <returns></returns>
         Task<string> GetQBittorrentVersionAsync(CancellationToken token = default);
+
+        /// <summary>
+        /// Get the path to the folder where the downloaded files are saved by default.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        Task<string> GetDefaultSavePathAsync(
+            CancellationToken token = default);
     }
 }
