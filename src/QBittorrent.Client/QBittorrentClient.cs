@@ -122,6 +122,41 @@ namespace QBittorrent.Client
         #region Get
 
         /// <summary>
+        /// Gets the current API version of the server.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<int> GetApiVersionAsync(CancellationToken token = default)
+        {
+            var uri = BuildUri("/version/api");
+            var version = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
+            return Convert.ToInt32(version);
+        }
+
+        /// <summary>
+        /// Get the minimum API version supported by server. Any application designed to work with an API version greater than or equal to the minimum API version is guaranteed to work.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task<int> GetMinApiVersionAsync(CancellationToken token = default)
+        {
+            var uri = BuildUri("/version/api_min");
+            var version = await _client.GetStringAsync(uri, token).ConfigureAwait(false);
+            return Convert.ToInt32(version);
+        }
+
+        /// <summary>
+        /// Gets the qBittorrent version.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        public Task<string> GetQBittorrentVersionAsync(CancellationToken token = default)
+        {
+            var uri = BuildUri("/version/qbittorrent");
+            return _client.GetStringAsync(uri, token);
+        }
+
+        /// <summary>
         /// Gets the torrent list.
         /// </summary>
         /// <param name="query">The query.</param>

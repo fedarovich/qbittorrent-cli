@@ -9,9 +9,10 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Manage qBittorrent server.")]
     [Subcommand("log", typeof(Log))]
+    [Subcommand("info", typeof(Info))]
     public class ServerCommand : ClientRootCommandBase
     {
-
+        [Command(Description = "Gets the qBittorrent log.")]
         public class Log : AuthenticatedCommandBase
         {
             [Option("--after-id <ID>", "Display only log entries with ID more than the specified one.", CommandOptionType.SingleValue)]
@@ -57,6 +58,25 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 return ExitCodes.Success;
             }
-        }        
+        }
+
+        [Command(Description = "Gets the qBittorrent server info.")]
+        public class Info : AuthenticatedCommandBase
+        {
+            protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                var (apiVersion, apiMinVersion, qVersion) = await TaskHelper.WhenAll(
+                    client.GetApiVersionAsync(),
+                    client.GetMinApiVersionAsync(),
+                    client.GetQBittorrentVersionAsync());
+
+                console
+                    .WriteLine($"QBittorrent version: {qVersion}")
+                    .WriteLine($"API version: {apiVersion}")
+                    .WriteLine($"API min version: {apiMinVersion}");
+
+                return ExitCodes.Success;
+            }
+        }
     }
 }

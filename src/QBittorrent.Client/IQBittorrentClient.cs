@@ -635,5 +635,26 @@ namespace QBittorrent.Client
         Task ToggleSequentialDownloadAsync(
             [NotNull, ItemNotNull] IEnumerable<string> hashes,
             CancellationToken token = default);
+
+        /// <summary>
+        /// Gets the current API version of the server.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        Task<int> GetApiVersionAsync(CancellationToken token = default);
+
+        /// <summary>
+        /// Get the minimum API version supported by server. Any application designed to work with an API version greater than or equal to the minimum API version is guaranteed to work.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        Task<int> GetMinApiVersionAsync(CancellationToken token = default);
+
+        /// <summary>
+        /// Gets the qBittorrent version.
+        /// </summary>
+        /// <param name="token">The cancellation token.</param>
+        /// <returns></returns>
+        Task<string> GetQBittorrentVersionAsync(CancellationToken token = default);
     }
 }
