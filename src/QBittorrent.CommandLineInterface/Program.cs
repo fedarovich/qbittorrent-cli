@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.CommandLineInterface.Commands;
-using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface
 {
