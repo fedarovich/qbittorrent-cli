@@ -24,6 +24,13 @@ namespace QBittorrent.CommandLineInterface
                 int code = await CommandLineApplication.ExecuteAsync<Program>(args);
                 return code;
             }
+            catch (TargetInvocationException e) when (e.InnerException != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(e.InnerException.Message);
+                Console.ResetColor();
+                return ExitCodes.Failure;
+            }
             catch (Exception e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
