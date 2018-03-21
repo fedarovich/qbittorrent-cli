@@ -6,6 +6,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Gets or sets global qBittorrent settings.")]
     [Subcommand("info", typeof(Info))]
+    [Subcommand("save-path", typeof(SavePath))]
     public partial class GlobalCommand : ClientRootCommandBase
     {
         [Command(Description = "Gets the global transfer info.")]
@@ -15,6 +16,17 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 var info = await client.GetGlobalTransferInfoAsync();
                 console.PrintObject(info);
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Gets the default folder for downloaded torrents.")]
+        public class SavePath : AuthenticatedCommandBase
+        {
+            protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                var path = await client.GetDefaultSavePathAsync();
+                console.WriteLine(path);
                 return ExitCodes.Success;
             }
         }
