@@ -13,6 +13,7 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand("server", typeof(ServerCommand))]
     [Subcommand("settings", typeof(SettingsCommand))]
     [Subcommand("torrent", typeof(TorrentCommand))]
+    [Subcommand("inspect", typeof(InspectCommand))]
     [HelpOption]
     class Program
     {
