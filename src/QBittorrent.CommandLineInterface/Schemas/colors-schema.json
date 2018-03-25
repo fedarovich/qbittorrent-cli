@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for the qBittorrent CLI color scheme.",
+
+  "type": "object",
+  "definitions": {
+    "color": {
+        "type": "string",
+        "enum": [ "black", "blue", "cyan", "dark-blue", "dark-cyan", "dark-gray", "dark-green", "dark-magenta", "dark-red", "dark-yellow", "gray", "green", "magenta", "red", "white", "yellow", "system-bg", "system-fg" ]
+    },
+    "colors": {
+      "type": "object",
+      "properties": {
+        "bg": { "$ref": "#/definitions/color" }, 
+        "fg": { "$ref": "#/definitions/color" }, 
+        "fg-alt": { "$ref": "#/definitions/color" } 
+      }
+    } 
+  },
+
+  "properties": {
+    "normal": { "$ref": "#/definitions/colors" },
+    "label": { "$ref": "#/definitions/colors" },
+    "warning": { "$ref": "#/definitions/colors" }
+  },
+
+  "required": ["normal", "label", "warning"]
+}

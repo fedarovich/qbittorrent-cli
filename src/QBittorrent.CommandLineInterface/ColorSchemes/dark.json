@@ -1,0 +1,20 @@
+﻿{
+  "$schema": "../Schemas/colors-schema.json",
+
+  "normal": {
+    "bg": "system-bg",
+    "fg": "system-fg"
+  },
+
+  "label": {
+    "bg": "system-bg",
+    "fg": "yellow",
+    "fg-alt": "dark-yellow"
+  },
+
+  "warning": {
+    "bg": "system-bg",
+    "fg": "yellow",
+    "fg-alt": "dark-yellow"
+  }
+}

@@ -23,12 +23,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ColorSchemes\dark.json" />
+    <None Remove="ColorSchemes\light.json" />
+    <None Remove="Schemas\colors-schema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ColorSchemes\light.json" />
+    <EmbeddedResource Include="ColorSchemes\dark.json" />
+    <EmbeddedResource Include="Schemas\colors-schema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="BencodeNET" Version="2.2.24" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.1.1" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'netframework4.6'" />
     <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'netframework4.6'" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NJsonSchema" Version="9.10.41" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
   </ItemGroup>
 
