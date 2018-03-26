@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
 
@@ -17,22 +18,20 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
         private const string DarkResource = "QBittorrent.CommandLineInterface.ColorSchemes.dark.json";
         private const string LightResource = "QBittorrent.CommandLineInterface.ColorSchemes.light.json";
 
-        private static Lazy<ColorScheme> _dark;
-        private static Lazy<ColorScheme> _light;
-        private static Lazy<ColorScheme> _default;
+        // ReSharper disable InconsistentNaming
+        private static readonly Lazy<ColorScheme> _dark;
+        private static readonly Lazy<ColorScheme> _light;
+        private static readonly Lazy<ColorScheme> _default;
+        // ReSharper restore InconsistentNaming
+
         private static ColorScheme _current;
-
-        private JObject _config;
-
-        private ColorScheme(JObject config)
-        {
-            _config = config;
-        }
 
         static ColorScheme()
         {
-            _dark = new Lazy<ColorScheme>(() => new ColorScheme(JObject.Parse(ReadJsonFromResource(DarkResource))));
-            _light = new Lazy<ColorScheme>(() => new ColorScheme(JObject.Parse(ReadJsonFromResource(LightResource))));
+            _dark = new Lazy<ColorScheme>(() => JsonConvert.DeserializeObject<ColorScheme>(
+                ReadJsonFromResource(DarkResource)));
+            _light = new Lazy<ColorScheme>(() => JsonConvert.DeserializeObject<ColorScheme>(
+                ReadJsonFromResource(LightResource)));
             _default = new Lazy<ColorScheme>(() => IsLight() ? _light.Value : _dark.Value);
 
             bool IsLight()
@@ -55,6 +54,15 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
             set => _current = value;
         }
 
+        [JsonProperty("normal")]
+        public ColorSet Normal { get; private set; }
+
+        [JsonProperty("strong")]
+        public ColorSet Strong { get; private set; }
+
+        [JsonProperty("warning")]
+        public ColorSet Warning { get; private set; }
+
         public static async Task<ColorScheme> FromJsonAsync(string json)
         {
             var config = JObject.Parse(json);
@@ -63,7 +71,7 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
             if (errors != null && errors.Any())
                 throw new Exception("The color scheme file is invalid."); // TODO: Throw specific exception.
 
-            return new ColorScheme(config);
+            return config.ToObject<ColorScheme>();
         }
 
         private static async Task<JsonSchema4> LoadSchemaAsync()
@@ -82,18 +90,9 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
             }
         }
 
-        private static ConsoleColor ConvertColor(string colorName)
+        public override string ToString()
         {
-            switch (colorName)
-            {
-                case "system-bg":
-                    return Console.BackgroundColor;
-                case "system-fg":
-                    return Console.ForegroundColor;
-                default:
-                    var str = colorName.Replace("-", "");
-                    return Enum.Parse<ConsoleColor>(str, true);
-            }
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

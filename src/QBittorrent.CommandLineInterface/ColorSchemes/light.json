@@ -6,9 +6,9 @@
     "fg": "system-fg"
   },
 
-  "label": {
+  "strong": {
     "bg": "system-bg",
-    "fg": "dark-yellow",
+    "fg": "dark-blue",
     "fg-alt": "yellow"
   },
 

@@ -10,6 +10,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -92,11 +93,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                     Offset = Offset
                 };
                 var torrents = await client.GetTorrentListAsync(query);
-                PrintTorrents(console, torrents);
+                PrintTorrents(torrents);
                 return ExitCodes.Success;
             }
 
-            private void PrintTorrents(IConsole console, IEnumerable<TorrentInfo> torrents)
+            private void PrintTorrents(IEnumerable<TorrentInfo> torrents)
             {
                 if (Verbose)
                 {
@@ -149,7 +150,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 ConsoleRenderer.RenderDocument(doc);
 
-                Cell Label(string text) => new Cell(text + ":") { Color = ConsoleColor.Yellow, Stroke = cellStroke };
+                Cell Label(string text) => new Cell(text + ":") { Color = ColorScheme.Current.Strong.Foreground, Stroke = cellStroke };
 
                 Cell Data<T>(T data) => new Cell(data.ToString()) { Stroke = cellStroke, Padding = new Thickness(3, 0, 0, 0) };
 
@@ -176,6 +177,8 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 var doc = new Document
                 {
+                    Color = ColorScheme.Current.Normal.GetEffectiveForeground(),
+                    Background = ColorScheme.Current.Normal.GetEffectiveBackground(),
                     Children =
                     {
                         new Grid
@@ -196,7 +199,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                                 new Cell("Hash") { Stroke = headerStroke },
                                 new Cell("DL Speed") { Stroke = headerStroke, TextAlign = TextAlign.Center },
                                 new Cell("UL Speed") { Stroke = headerStroke, TextAlign = TextAlign.Center },
-                                new Cell("EAT") { Stroke = headerStroke, TextAlign = TextAlign.Center, MinWidth = 9 },
+                                new Cell("ETA") { Stroke = headerStroke,  TextAlign = TextAlign.Center, MinWidth = 9 },
                                 torrents.Select(t => new[]
                                 {
                                     FormatState(t.State),
@@ -283,7 +286,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 var ts = TimeSpan.FromSeconds(eta);
                 if (ts < TimeSpan.FromHours(100))
                 {
-                    return $" {ts.Hours}.{ts.Minutes}.{ts.Seconds}";
+                    return $" {ts.Hours:00}.{ts.Minutes:00}.{ts.Seconds:00}";
                 }
                 return string.Empty;
             }

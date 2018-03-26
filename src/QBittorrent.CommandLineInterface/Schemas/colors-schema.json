@@ -20,9 +20,9 @@
 
   "properties": {
     "normal": { "$ref": "#/definitions/colors" },
-    "label": { "$ref": "#/definitions/colors" },
+    "strong": { "$ref": "#/definitions/colors" },
     "warning": { "$ref": "#/definitions/colors" }
   },
 
-  "required": ["normal", "label", "warning"]
+  "required": ["normal", "strong", "warning"]
 }

@@ -6,10 +6,10 @@
     "fg": "system-fg"
   },
 
-  "label": {
+  "strong": {
     "bg": "system-bg",
     "fg": "yellow",
-    "fg-alt": "dark-yellow"
+    "fg-alt": "dark-blue"
   },
 
   "warning": {
