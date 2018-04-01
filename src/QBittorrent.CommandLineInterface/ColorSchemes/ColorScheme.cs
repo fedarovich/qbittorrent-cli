@@ -63,6 +63,15 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
         [JsonProperty("warning")]
         public ColorSet Warning { get; private set; }
 
+        [JsonProperty("active")]
+        public ColorSet Active { get; private set; }
+
+        [JsonProperty("inactive")]
+        public ColorSet Inactive { get; private set; }
+
+        [JsonProperty("log")]
+        public IReadOnlyDictionary<string, ColorSet> LogColors { get; private set; }
+
         public static async Task<ColorScheme> FromJsonAsync(string json)
         {
             var config = JObject.Parse(json);

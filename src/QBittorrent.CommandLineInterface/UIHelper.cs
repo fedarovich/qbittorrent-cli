@@ -1,0 +1,95 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
+using Alba.CsConsoleFormat;
+using QBittorrent.CommandLineInterface.ColorSchemes;
+
+namespace QBittorrent.CommandLineInterface
+{
+    public static class UIHelper
+    {
+        public static readonly LineThickness NoneStroke = new LineThickness(LineWidth.None, LineWidth.None);
+
+        public static Cell Label(string text) => new Cell(text + ":") { Color = ColorScheme.Current.Strong.Foreground, Stroke = NoneStroke };
+
+        public static Cell Data<T>(T data) => new Cell(data.ToString()) { Stroke = NoneStroke, Padding = new Thickness(1, 0, 0, 0) };
+
+        public static object[] Row<T>(string label, T data)
+        {
+            Cell dataCell;
+            switch (data)
+            {
+                case Cell cell:
+                    dataCell = cell;
+                    break;
+                case Element element:
+                    dataCell = new Cell(element) { Stroke = NoneStroke, Padding = new Thickness(1, 0, 0, 0) };
+                    break;
+                default:
+                    dataCell = Data(data);
+                    break;
+            }
+
+            return new object[] { Label(label), dataCell };
+        }
+
+        public static void PrintObject<T>(T obj)
+        {
+            const string DefaultFormat = "{0}";
+
+            var properties = (
+                    from prop in typeof(T).GetRuntimeProperties()
+                    let attr = prop.GetCustomAttribute<DisplayAttribute>()
+                    let name = attr?.Name ?? prop.Name
+                    let formatAttr = prop.GetCustomAttribute<DisplayFormatAttribute>()
+                    orderby attr?.GetOrder() ?? 0
+                    select (name, value: prop.GetValue(obj), format: formatAttr?.DataFormatString ?? DefaultFormat, nullString: formatAttr?.NullDisplayText)
+                ).ToList();
+
+            var document = new Document
+            {
+                Background = ColorScheme.Current.Normal.GetEffectiveBackground(),
+                Color = ColorScheme.Current.Normal.GetEffectiveForeground(),
+                Children =
+                {
+                    new Grid
+                    {
+                        Stroke = NoneStroke,
+                        Columns =
+                        {
+                            new Column { Width = GridLength.Auto },
+                            new Column { Width = GridLength.Star(1) }
+                        },
+                        Children =
+                        {
+                            GetPairs().Select(p => Row(p.label, p.value))
+                        }
+                    }
+                }
+            };
+            ConsoleRenderer.RenderDocument(document);
+
+            IEnumerable<(string label, string value)> GetPairs()
+            {
+                foreach (var property in properties)
+                {
+                    var label = property.name;
+                    var value = (property.value == null && property.nullString != null)
+                        ? property.nullString
+                        : String.Format(property.format, property.value);
+                    yield return (label, value);
+                }
+            }
+        }
+
+        public static T SetColors<T>(this T element, ColorSet colors)
+            where T : Element
+        {
+            element.Background = colors.GetEffectiveBackground();
+            element.Color = colors.GetEffectiveForeground();
+            return element;
+        }
+    }
+}

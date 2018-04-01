@@ -45,34 +45,26 @@ namespace QBittorrent.CommandLineInterface.Commands
                         },
                         Children =
                         {
-                            DataRow("Name", torrent.DisplayName),
-                            DataRow("Hash", torrent.OriginalInfoHash),
-                            DataRow("Size", $"{torrent.TotalSize:N0} bytes"),
-                            DataRow("Created at", torrent.CreationDate),
-                            DataRow("Created by", torrent.CreatedBy),
-                            DataRow("Comment", torrent.Comment),
-                            DataRow("Is Private", torrent.IsPrivate),
-                            DataRow("Pieces", torrent.NumberOfPieces),
-                            DataRow("Piece Size", $"{torrent.PieceSize:N0} bytes"),
-                            DataRow("Is Private", torrent.IsPrivate),
-                            DataRow("Magnet", torrent.GetMagnetLink()),
-                            DataRow("File Mode", torrent.FileMode),
-                            ElementRow("Files", BuildFileTable(torrent)),
-                            ElementRow("Trackers", BuildTrackerList(torrent)),
-                            ElementRow("Extra Fields", BuildExtraFields(torrent)),
+                            UIHelper.Row("Name", torrent.DisplayName),
+                            UIHelper.Row("Hash", torrent.OriginalInfoHash),
+                            UIHelper.Row("Size", $"{torrent.TotalSize:N0} bytes"),
+                            UIHelper.Row("Created at", torrent.CreationDate),
+                            UIHelper.Row("Created by", torrent.CreatedBy),
+                            UIHelper.Row("Comment", torrent.Comment),
+                            UIHelper.Row("Is Private", torrent.IsPrivate),
+                            UIHelper.Row("Pieces", torrent.NumberOfPieces),
+                            UIHelper.Row("Piece Size", $"{torrent.PieceSize:N0} bytes"),
+                            UIHelper.Row("Is Private", torrent.IsPrivate),
+                            UIHelper.Row("Magnet", torrent.GetMagnetLink()),
+                            UIHelper.Row("File Mode", torrent.FileMode),
+                            UIHelper.Row("Files", BuildFileTable(torrent)),
+                            UIHelper.Row("Trackers", BuildTrackerList(torrent)),
+                            UIHelper.Row("Extra Fields", BuildExtraFields(torrent)),
                         }
                     });
 
                 ConsoleRenderer.RenderDocument(document);
                 return ExitCodes.Success;
-
-                Cell Label(string text) => new Cell(text + ":") {Color = ConsoleColor.Yellow, Stroke = cellStroke};
-
-                Cell Data<T>(T data) => new Cell(data?.ToString()) {Stroke = cellStroke, Padding = DataPadding};
-
-                object[] ElementRow(string label, Element element) => new object[] {Label(label), element};
-
-                object[] DataRow<T>(string label, T data) => new object[] {Label(label), Data(data)};
             }
 
             private Torrent ReadAndParseTorrent()

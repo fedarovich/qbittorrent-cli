@@ -15,6 +15,51 @@
   "warning": {
     "bg": "system-bg",
     "fg": "dark-yellow",
-    "fg-alt": "yellow" 
+    "fg-alt": "yellow"
+  },
+
+  "active": {
+    "bg": "system-bg",
+    "fg": "dark-green",
+    "fg-alt": "cyan"
+  },
+
+  "inactive": {
+    "bg": "system-bg",
+    "fg": "gray",
+    "fg-alt": "dark-gray"
+  },
+
+  "log": {
+    "status-normal": {
+      "bg": "system-bg",
+      "fg": "dark-green",
+      "fg-alt": "green"
+    },
+    "status-info": {
+      "bg": "system-bg",
+      "fg": "dark-blue",
+      "fg-alt": "blue"
+    },
+    "status-warning": {
+      "bg": "system-bg",
+      "fg": "dark-yellow",
+      "fg-alt": "yellow"
+    },
+    "status-critical": {
+      "bg": "system-bg",
+      "fg": "red",
+      "fg-alt": "dark-red"
+    },
+    "timestamp": {
+      "bg": "system-bg",
+      "fg": "dark-cyan",
+      "fg-alt": "dark-cyan"
+    },
+    "message": {
+      "bg": "system-bg",
+      "fg": "black",
+      "fg-alt": "dark-gray"
+    }
   }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -171,28 +173,37 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             var settings = SettingsService.Instance.Get();
 
-            console.WriteColored("URL:       ", ConsoleColor.Yellow).WriteLineColored(settings.Url, ConsoleColor.White);
+            var doc = new Document
+            {
+                Background = ColorScheme.Current.Normal.GetEffectiveBackground(),
+                Color = ColorScheme.Current.Normal.GetEffectiveForeground(),
+                Children =
+                {
+                    new Grid
+                    {
+                        Stroke = UIHelper.NoneStroke,
+                        Columns =
+                        {
+                            new Column {Width = GridLength.Auto},
+                            new Column {Width = GridLength.Star(1)}
+                        },
+                        Children =
+                        {
+                            UIHelper.Row("URL", settings.Url),
+                            UIHelper.Row("User name",
+                                settings.Username != null
+                                    ? new Span(settings.Username).SetColors(ColorScheme.Current.Normal)
+                                    : new Span("<not set>").SetColors(ColorScheme.Current.Inactive)),
+                            UIHelper.Row("Password",
+                                settings.Password != null
+                                    ? new Span("<encrypted>").SetColors(ColorScheme.Current.Active)
+                                    : new Span("<not set>").SetColors(ColorScheme.Current.Inactive))
+                        }
+                    }
+                }
+            };
 
-            console.WriteColored("User name: ", ConsoleColor.Yellow);
-            if (settings.Username == null)
-            {
-                console.WriteLineColored("<not set>", ConsoleColor.DarkGray);
-            }
-            else
-            {
-                console.WriteLineColored(settings.Username, ConsoleColor.White);
-            }
-
-            console.WriteColored("Password:  ", ConsoleColor.Yellow);
-            if (settings.Password != null)
-            {
-                console.WriteLineColored("<encrypted>", ConsoleColor.Green);
-            }
-            else
-            {
-                console.WriteLineColored("<not set>", ConsoleColor.DarkGray);
-            }
-
+            ConsoleRenderer.RenderDocument(doc);
             return ExitCodes.Success;
         }
     }

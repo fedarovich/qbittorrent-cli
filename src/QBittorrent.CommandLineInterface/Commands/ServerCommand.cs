@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -32,31 +34,51 @@ namespace QBittorrent.CommandLineInterface.Commands
                     severity = TorrentLogSeverity.All;
                 }
 
+                var colorScheme = ColorScheme.Current;
+                var normal = GetColors(colorScheme, "status-normal", colorScheme.Strong);
+                var info = GetColors(colorScheme, "status-info", colorScheme.Strong);
+                var warn = GetColors(colorScheme, "status-warning", colorScheme.Strong);
+                var critical = GetColors(colorScheme, "status-critical", colorScheme.Strong);
+                var timestamp = GetColors(colorScheme, "timestamp", colorScheme.Normal);
+                var message = GetColors(colorScheme, "message", colorScheme.Normal);
+
                 var log = await client.GetLogAsync(severity, AfterId ?? -1);
                 foreach (var entry in log)
                 {
                     switch (entry.Severity)
                     {
                         case TorrentLogSeverity.Normal:
-                            console.WriteColored("[ Normal ]", ConsoleColor.Green);
+                            console.WriteColored("[ Normal ]", normal.fg, normal.bg);
                             break;
                         case TorrentLogSeverity.Info:
-                            console.WriteColored("[  Info  ]", ConsoleColor.Blue);
+                            console.WriteColored("[  Info  ]", info.fg, info.bg);
                             break;
                         case TorrentLogSeverity.Warning:
-                            console.WriteColored("[  Warn  ]", ConsoleColor.Yellow);
+                            console.WriteColored("[  Warn  ]", warn.fg, warn.bg);
                             break;
                         case TorrentLogSeverity.Critical:
-                            console.WriteColored("[Critical]", ConsoleColor.Red);
+                            console.WriteColored("[Critical]", critical.fg, critical.bg);
                             break;
                     }
 
                     var time = DateTimeOffset.FromUnixTimeMilliseconds(entry.Timestamp).ToString("s").Replace("T", " ");
-                    console.WriteColored($" {entry.Id:D6} {time} ", ConsoleColor.White);
-                    console.WriteLine(entry.Message);
+                    console.WriteColored($" {entry.Id:D6} {time} ", timestamp.fg, timestamp.bg);
+                    console.WriteLineColored(entry.Message, message.fg, message.bg);
                 }
 
                 return ExitCodes.Success;
+            }
+
+            private (ConsoleColor bg, ConsoleColor fg) GetColors(ColorScheme scheme, string name, ColorSet fallback)
+            {
+                if (scheme.LogColors == null || !scheme.LogColors.TryGetValue(name, out var colorSet))
+                {
+                    colorSet = fallback;
+                }
+
+                var bg = colorSet?.GetEffectiveBackground() ?? fallback.GetEffectiveBackground();
+                var fg = colorSet?.GetEffectiveForeground() ?? fallback.GetEffectiveForeground();
+                return (bg, fg);
             }
         }
 
@@ -74,6 +96,29 @@ namespace QBittorrent.CommandLineInterface.Commands
                     .WriteLine($"QBittorrent version: {qVersion}")
                     .WriteLine($"API version: {apiVersion}")
                     .WriteLine($"API min version: {apiMinVersion}");
+
+                var doc = new Document
+                {
+                    Background = ColorScheme.Current.Normal.GetEffectiveBackground(),
+                    Color = ColorScheme.Current.Normal.GetEffectiveForeground(),
+                    Children =
+                    {
+                        new Grid
+                        {
+                            Columns =
+                            {
+                                new Column {Width = GridLength.Auto},
+                                new Column {Width = GridLength.Star(1)}
+                            },
+                            Children =
+                            {
+
+                            }
+                        }
+                    }
+                };
+
+                ConsoleRenderer.RenderDocument(doc);
 
                 return ExitCodes.Success;
             }

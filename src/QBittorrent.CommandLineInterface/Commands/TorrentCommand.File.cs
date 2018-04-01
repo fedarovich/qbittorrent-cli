@@ -24,8 +24,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var contents = await client.GetTorrentContentsAsync(Hash);
                     foreach (var (content, id) in contents.Select((x, i) => (x, i)))
                     {
-                        console.PrintObject(new {Id = id});
-                        console.PrintObject(content);
+                        UIHelper.PrintObject(new {Id = id});
+                        UIHelper.PrintObject(content);
                         console.WriteLine();
                     }
                     return ExitCodes.Success;

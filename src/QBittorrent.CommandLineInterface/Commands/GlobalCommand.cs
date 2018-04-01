@@ -15,7 +15,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var info = await client.GetGlobalTransferInfoAsync();
-                console.PrintObject(info);
+                UIHelper.PrintObject(info);
                 return ExitCodes.Success;
             }
         }

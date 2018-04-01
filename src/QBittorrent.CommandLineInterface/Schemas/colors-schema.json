@@ -21,8 +21,42 @@
   "properties": {
     "normal": { "$ref": "#/definitions/colors" },
     "strong": { "$ref": "#/definitions/colors" },
-    "warning": { "$ref": "#/definitions/colors" }
+    "warning": { "$ref": "#/definitions/colors" },
+    "active":  { "$ref": "#/definitions/colors" }, 
+    "inactive": { "$ref": "#/definitions/colors" },
+    "log": {
+      "type": "object",
+      "properties": {
+        "status-normal": { "$ref": "#/definitions/colors" },
+        "status-info": { "$ref": "#/definitions/colors" },
+        "status-warning": { "$ref": "#/definitions/colors" },
+        "status-critical": { "$ref": "#/definitions/colors" },
+        "timestamp": { "$ref": "#/definitions/colors" },
+        "message": { "$ref": "#/definitions/colors" }
+      },
+      "torrent-status": {
+        "error": { "$ref": "#/definitions/colors" },
+        "download": { "$ref": "#/definitions/colors" },
+        "upload": { "$ref": "#/definitions/colors" },
+        "paused-download": { "$ref": "#/definitions/colors" },
+        "paused-upload": { "$ref": "#/definitions/colors" },
+        "queued-download": { "$ref": "#/definitions/colors" },
+        "queued-upload": { "$ref": "#/definitions/colors" },
+        "queued-checking": { "$ref": "#/definitions/colors" },
+        "checking-download": { "$ref": "#/definitions/colors" },
+        "checking-upload": { "$ref": "#/definitions/colors" },
+        "checking-resume-data": { "$ref": "#/definitions/colors" },
+        "stalled-download": { "$ref": "#/definitions/colors" },
+        "stalled-upload": { "$ref": "#/definitions/colors" },
+        "forced-download": { "$ref": "#/definitions/colors" },
+        "forced-upload": { "$ref": "#/definitions/colors" },
+        "fetching-metadata": { "$ref": "#/definitions/colors" },
+        "missing-files": { "$ref": "#/definitions/colors" },
+        "allocating": { "$ref": "#/definitions/colors" },
+        "unknown": { "$ref": "#/definitions/colors" }
+      } 
+    }
   },
 
-  "required": ["normal", "strong", "warning"]
+  "required": ["normal", "strong", "warning", "active", "inactive"]
 }

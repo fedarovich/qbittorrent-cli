@@ -127,20 +127,20 @@ namespace QBittorrent.CommandLineInterface.Commands
                                  },
                                  Children =
                                  {
-                                     Row("Name", torrent.Name),
-                                     Row("State", torrent.State),
-                                     Row("Hash", torrent.Hash),
-                                     Row("Size", $"{torrent.Size:N0} bytes"),
-                                     Row("Progress", $"{torrent.Progress:P0}"),
-                                     Row("DL Speed", $"{FormatSpeed(torrent.DownloadSpeed)}"),
-                                     Row("UP Speed", $"{FormatSpeed(torrent.UploadSpeed)}"),
-                                     Row("Priority", torrent.Priority),
-                                     Row("Seeds", $"{torrent.ConnectedSeeds} of {torrent.TotalSeeds}"),
-                                     Row("Leechers", $"{torrent.ConnectedLeechers} of {torrent.TotalLeechers}"),
-                                     Row("Ratio", $"{torrent.Ratio:F2}"),
-                                     Row("ETA", FormatEta(torrent.EstimatedTime)),
-                                     Row("Category", torrent.Category),
-                                     Row("Options", GetOptions(torrent)),
+                                     UIHelper.Row("Name", torrent.Name),
+                                     UIHelper.Row("State", torrent.State),
+                                     UIHelper.Row("Hash", torrent.Hash),
+                                     UIHelper.Row("Size", $"{torrent.Size:N0} bytes"),
+                                     UIHelper.Row("Progress", $"{torrent.Progress:P0}"),
+                                     UIHelper.Row("DL Speed", $"{FormatSpeed(torrent.DownloadSpeed)}"),
+                                     UIHelper.Row("UP Speed", $"{FormatSpeed(torrent.UploadSpeed)}"),
+                                     UIHelper.Row("Priority", torrent.Priority),
+                                     UIHelper.Row("Seeds", $"{torrent.ConnectedSeeds} of {torrent.TotalSeeds}"),
+                                     UIHelper.Row("Leechers", $"{torrent.ConnectedLeechers} of {torrent.TotalLeechers}"),
+                                     UIHelper.Row("Ratio", $"{torrent.Ratio:F2}"),
+                                     UIHelper.Row("ETA", FormatEta(torrent.EstimatedTime)),
+                                     UIHelper.Row("Category", torrent.Category),
+                                     UIHelper.Row("Options", GetOptions(torrent)),
                                  },
                                  Margin = new Thickness(0, 0, 0, 2)
                             }
@@ -149,12 +149,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                 };
 
                 ConsoleRenderer.RenderDocument(doc);
-
-                Cell Label(string text) => new Cell(text + ":") { Color = ColorScheme.Current.Strong.Foreground, Stroke = cellStroke };
-
-                Cell Data<T>(T data) => new Cell(data.ToString()) { Stroke = cellStroke, Padding = new Thickness(3, 0, 0, 0) };
-
-                object[] Row<T>(string label, T data) => new object[] { Label(label), Data(data) };
 
                 string GetOptions(TorrentInfo torrent)
                 {
@@ -289,58 +283,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return $" {ts.Hours:00}.{ts.Minutes:00}.{ts.Seconds:00}";
                 }
                 return string.Empty;
-            }
-
-            private void PrintState(IConsole console, TorrentState state)
-            {
-                switch (state)
-                {
-                    case TorrentState.Error:
-                        console.WriteColored(" E", ConsoleColor.Red);
-                        break;
-                    case TorrentState.PausedUpload:
-                        console.WriteColored("PU", ConsoleColor.DarkGray);
-                        break;
-                    case TorrentState.PausedDownload:
-                        console.WriteColored("PD", ConsoleColor.DarkGray);
-                        break;
-                    case TorrentState.QueuedUpload:
-                        console.WriteColored("QU", ConsoleColor.DarkBlue);
-                        break;
-                    case TorrentState.QueuedDownload:
-                        console.WriteColored("QD", ConsoleColor.DarkBlue);
-                        break;
-                    case TorrentState.Uploading:
-                        console.WriteColored(" U", ConsoleColor.Green);
-                        break;
-                    case TorrentState.StalledUpload:
-                        console.WriteColored("SU", ConsoleColor.DarkYellow);
-                        break;
-                    case TorrentState.CheckingUpload:
-                        console.WriteColored("CU", ConsoleColor.Yellow);
-                        break;
-                    case TorrentState.CheckingDownload:
-                        console.WriteColored("CD", ConsoleColor.Yellow);
-                        break;
-                    case TorrentState.Downloading:
-                        console.WriteColored(" D", ConsoleColor.Green);
-                        break;
-                    case TorrentState.StalledDownload:
-                        console.WriteColored("SD", ConsoleColor.DarkYellow);
-                        break;
-                    case TorrentState.FetchingMetadata:
-                        console.WriteColored("MD", ConsoleColor.Blue);
-                        break;
-                    case TorrentState.ForcedUpload:
-                        console.WriteColored("FU", ConsoleColor.Cyan);
-                        break;
-                    case TorrentState.ForcedDownload:
-                        console.WriteColored("FD", ConsoleColor.Cyan);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(state), state, null);
-                }
-                Console.ResetColor();
             }
 
             private class SortValidationAttribute : ValidationAttribute

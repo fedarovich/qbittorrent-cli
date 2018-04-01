@@ -24,7 +24,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var trackers = await client.GetTorrentTrackersAsync(Hash);
                     foreach (var tracker in trackers)
                     {
-                        console.PrintObject(tracker);
+                        UIHelper.PrintObject(tracker);
                         console.WriteLine();
                     }
                     return ExitCodes.Success;

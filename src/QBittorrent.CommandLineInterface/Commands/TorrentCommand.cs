@@ -1,10 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
-using QBittorrent.CommandLineInterface.Attributes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -27,7 +24,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var props = await client.GetTorrentPropertiesAsync(Hash);
-                console.PrintObject(props);
+                UIHelper.PrintObject(props);
                 return ExitCodes.Success;
             }
         }
@@ -40,7 +37,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 var contents = await client.GetTorrentContentsAsync(Hash);
                 foreach (var content in contents)
                 {
-                    console.PrintObject(content);
+                    UIHelper.PrintObject(content);
                     console.WriteLine();
                 }
                 return ExitCodes.Success;
