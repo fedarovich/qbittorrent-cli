@@ -78,11 +78,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return torrents.Single(t => string.Equals(t.Hash, Hash, StringComparison.InvariantCultureIgnoreCase));
                 }
 
-                void Print(string header, bool value)
-                {
-                    console.WriteColored(header, ConsoleColor.Yellow).WriteLine(value.ToString());
-                }
-
                 async Task SetFirstLastPriority(Lazy<Task<TorrentInfo>> torrentTask)
                 {
                     if (FirstLastPriority != null)

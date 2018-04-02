@@ -72,6 +72,9 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
         [JsonProperty("log")]
         public IReadOnlyDictionary<string, ColorSet> LogColors { get; private set; }
 
+        [JsonProperty("torrent-status")]
+        public IReadOnlyDictionary<string, ColorSet> TorrentStateColors { get; private set; }
+
         public static async Task<ColorScheme> FromJsonAsync(string json)
         {
             var config = JObject.Parse(json);

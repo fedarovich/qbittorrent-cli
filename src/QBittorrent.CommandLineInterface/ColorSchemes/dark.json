@@ -61,5 +61,103 @@
       "fg": "gray",
       "fg-alt": "dark-gray"
     }
+  },
+
+  "torrent-status": {
+    "allocating": {
+      "bg": "system-bg",
+      "fg": "green",
+      "fg-alt": "dark-green" 
+    },
+    "checking-download": {
+      "bg": "system-bg",
+      "fg": "yellow",
+      "fg-alt": "dark-yellow" 
+    },
+    "checking-resume-data": {
+      "bg": "system-bg",
+      "fg": "yellow",
+      "fg-alt": "dark-yellow" 
+    },
+    "checking-upload": {
+      "bg": "system-bg",
+      "fg": "yellow",
+      "fg-alt": "dark-yellow" 
+    },
+    "download": {
+      "bg": "system-bg",
+      "fg": "green",
+      "fg-alt": "dark-green" 
+    },
+    "error": {
+      "bg": "system-bg",
+      "fg": "red",
+      "fg-alt": "dark-red" 
+    },
+    "fetching-metadata": {
+      "bg": "system-bg",
+      "fg": "blue",
+      "fg-alt": "dark-blue" 
+    },
+    "forced-download": {
+      "bg": "system-bg",
+      "fg": "cyan",
+      "fg-alt": "dark-cyan" 
+    },
+    "forced-upload": {
+      "bg": "system-bg",
+      "fg": "cyan",
+      "fg-alt": "dark-cyan" 
+    },
+    "missing-files": {
+      "bg": "system-bg",
+      "fg": "red",
+      "fg-alt": "dark-red" 
+    },
+    "paused-download": {
+      "bg": "system-bg",
+      "fg": "dark-gray",
+      "fg-alt": "gray" 
+    },
+    "paused-upload": {
+      "bg": "system-bg",
+      "fg": "dark-gray",
+      "fg-alt": "gray" 
+    },
+    "queued-checking": {
+      "bg": "system-bg",
+      "fg": "dark-blue",
+      "fg-alt": "blue" 
+    },
+    "queued-download": {
+      "bg": "system-bg",
+      "fg": "dark-blue",
+      "fg-alt": "blue" 
+    },
+    "queued-upload": {
+      "bg": "system-bg",
+      "fg": "dark-blue",
+      "fg-alt": "blue" 
+    },
+    "stalled-download": {
+      "bg": "system-bg",
+      "fg": "dark-yellow",
+      "fg-alt": "gray" 
+    },
+    "stalled-upload": {
+      "bg": "system-bg",
+      "fg": "dark-yellow",
+      "fg-alt": "gray" 
+    },
+    "unknown": {
+      "bg": "system-bg",
+      "fg": "magenta",
+      "fg-alt": "dark-magenta" 
+    },
+    "upload": {
+      "bg": "system-bg",
+      "fg": "green",
+      "fg-alt": "dark-green" 
+    }
   }
 }

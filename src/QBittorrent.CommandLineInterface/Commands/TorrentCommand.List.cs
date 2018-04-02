@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using Color = System.Drawing.Color;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -43,6 +45,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                 "  CR - Checking Resume Data\n" +
                 "   ? - Unknown";
 
+            private static readonly IReadOnlyDictionary<TorrentState, string> TorrentStateColorKeys;
+
 
             private static readonly Dictionary<string, string> SortColumns;
 
@@ -54,6 +58,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                     select (property.Name, json);
 
                 SortColumns = fields.ToDictionary(x => x.Name, x => x.json, StringComparer.InvariantCultureIgnoreCase);
+
+                var regex = new Regex("[A-Z]{1}[a-z]*");
+                var states = 
+                    from state in Enum.GetValues(typeof(TorrentState)).Cast<TorrentState>()
+                    let name = string.Join("-", regex.Matches(state.ToString()).Cast<Match>().Select(m => m.Value.ToLowerInvariant()))
+                    select (state, name);
+
+                TorrentStateColorKeys = states.ToDictionary(x => x.state, x => x.name);
             }
 
             [Option("--verbose", "Displays verbose information.", CommandOptionType.NoValue)]
@@ -193,51 +205,65 @@ namespace QBittorrent.CommandLineInterface.Commands
                 ).SetColors(ColorScheme.Current.Normal);
 
                 ConsoleRenderer.RenderDocument(doc);
-
+                
                 Cell FormatState(TorrentState state)
                 {
+                    var colorSet = GetStateColors(state);
                     switch (state)
                     {
                         case TorrentState.Error:
-                            return new Cell(" E") { Color = ConsoleColor.Red };
+                            return new Cell(" E").SetColors(colorSet);
                         case TorrentState.PausedUpload:
-                            return new Cell("PU") { Color = ConsoleColor.DarkGray };
+                            return new Cell("PU").SetColors(colorSet);
                         case TorrentState.PausedDownload:
-                            return new Cell("PD") { Color = ConsoleColor.DarkGray };
+                            return new Cell("PD").SetColors(colorSet);
                         case TorrentState.QueuedUpload:
-                            return new Cell("QU") { Color = ConsoleColor.DarkBlue };
+                            return new Cell("QU").SetColors(colorSet);
                         case TorrentState.QueuedDownload:
-                            return new Cell("QD") { Color = ConsoleColor.DarkBlue };
+                            return new Cell("QD").SetColors(colorSet);
                         case TorrentState.Uploading:
-                            return new Cell(" U") { Color = ConsoleColor.Green };
+                            return new Cell(" U").SetColors(colorSet);
                         case TorrentState.StalledUpload:
-                            return new Cell("SU") { Color = ConsoleColor.DarkYellow };
+                            return new Cell("SU").SetColors(colorSet);
                         case TorrentState.CheckingUpload:
-                            return new Cell("CU") { Color = ConsoleColor.Yellow };
+                            return new Cell("CU").SetColors(colorSet);
                         case TorrentState.CheckingDownload:
-                            return new Cell("CD") { Color = ConsoleColor.Yellow };
+                            return new Cell("CD").SetColors(colorSet);
                         case TorrentState.Downloading:
-                            return new Cell(" D") { Color = ConsoleColor.Green };
+                            return new Cell(" D").SetColors(colorSet);
                         case TorrentState.StalledDownload:
-                            return new Cell("SD") { Color = ConsoleColor.DarkYellow };
+                            return new Cell("SD").SetColors(colorSet);
                         case TorrentState.FetchingMetadata:
-                            return new Cell("MD") { Color = ConsoleColor.Blue };
+                            return new Cell("MD").SetColors(colorSet);
                         case TorrentState.ForcedUpload:
-                            return new Cell("FU") { Color = ConsoleColor.Cyan };
+                            return new Cell("FU").SetColors(colorSet);
                         case TorrentState.ForcedDownload:
-                            return new Cell("FD") { Color = ConsoleColor.Cyan };
+                            return new Cell("FD").SetColors(colorSet);
                         case TorrentState.MissingFiles:
-                            return new Cell("MF") { Color = ConsoleColor.Red };
+                            return new Cell("MF").SetColors(colorSet);
                         case TorrentState.Allocating:
-                            return new Cell(" A") { Color = ConsoleColor.Green };
+                            return new Cell(" A").SetColors(colorSet);
                         case TorrentState.QueuedForChecking:
-                            return new Cell("QC") { Color = ConsoleColor.DarkBlue };
+                            return new Cell("QC").SetColors(colorSet);
                         case TorrentState.CheckingResumeData:
-                            return new Cell("CR") { Color = ConsoleColor.Yellow };
+                            return new Cell("CR").SetColors(colorSet);
                         case TorrentState.Unknown:
                         default:
-                            return new Cell(" ?") { Color = ConsoleColor.Magenta };
+                            return new Cell(" ?").SetColors(colorSet);
                     }
+                }
+
+                ColorSet GetStateColors(TorrentState state)
+                {
+                    var colorScheme = ColorScheme.Current;
+
+                    if (!TorrentStateColorKeys.TryGetValue(state, out var name))
+                        return colorScheme.Normal;
+
+                    if (colorScheme.TorrentStateColors == null || !colorScheme.TorrentStateColors.TryGetValue(name, out var colorSet))
+                        return colorScheme.Normal;
+
+                    return colorSet;
                 }
             }
 

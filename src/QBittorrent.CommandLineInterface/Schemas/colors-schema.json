@@ -22,7 +22,7 @@
     "normal": { "$ref": "#/definitions/colors" },
     "strong": { "$ref": "#/definitions/colors" },
     "warning": { "$ref": "#/definitions/colors" },
-    "active":  { "$ref": "#/definitions/colors" }, 
+    "active": { "$ref": "#/definitions/colors" },
     "inactive": { "$ref": "#/definitions/colors" },
     "log": {
       "type": "object",
@@ -33,8 +33,11 @@
         "status-critical": { "$ref": "#/definitions/colors" },
         "timestamp": { "$ref": "#/definitions/colors" },
         "message": { "$ref": "#/definitions/colors" }
-      },
-      "torrent-status": {
+      }
+    },
+    "torrent-status": {
+      "type": "object",
+      "properties": {
         "error": { "$ref": "#/definitions/colors" },
         "download": { "$ref": "#/definitions/colors" },
         "upload": { "$ref": "#/definitions/colors" },
@@ -54,7 +57,7 @@
         "missing-files": { "$ref": "#/definitions/colors" },
         "allocating": { "$ref": "#/definitions/colors" },
         "unknown": { "$ref": "#/definitions/colors" }
-      } 
+      }
     }
   },
 

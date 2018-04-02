@@ -14,8 +14,6 @@ namespace QBittorrent.CommandLineInterface.Commands
     [HelpOption]
     public class InspectCommand
     {
-        private static readonly LineThickness HeaderStroke = new LineThickness(LineWidth.Single, LineWidth.Double);
-
         [Command(Description = "Inspects the torrent file.")]
         [HelpOption]
         public class File
@@ -84,11 +82,15 @@ namespace QBittorrent.CommandLineInterface.Commands
                     new Grid
                     {
                         Stroke = new LineThickness(LineWidth.None, LineWidth.None),
-                        Columns = { UIHelper.FieldsColumns },
+                        Columns =
+                        {
+                            new Column {Width = GridLength.Star(1)},
+                            new Column {Width = GridLength.Auto}
+                        },
                         Children =
                         {
-                            new Cell("Path") {Stroke = HeaderStroke},
-                            new Cell("Size") {Stroke = HeaderStroke, TextAlign = TextAlign.Center},
+                            UIHelper.Header("Path"),
+                            UIHelper.Header("Size", TextAlign.Center),
                             torrent.Files.Select(f => new[]
                             {
                                 new Cell(f.FullPath),
@@ -103,11 +105,15 @@ namespace QBittorrent.CommandLineInterface.Commands
                 return new Grid
                 {
                     Stroke = new LineThickness(LineWidth.None, LineWidth.None),
-                    Columns = { UIHelper.FieldsColumns },
+                    Columns =
+                    {
+                        new Column {Width = GridLength.Star(1)},
+                        new Column {Width = GridLength.Auto}
+                    },
                     Children =
                     {
-                        new Cell("Name") {Stroke = HeaderStroke},
-                        new Cell("Size") {Stroke = HeaderStroke, TextAlign = TextAlign.Center},
+                        UIHelper.Header("Name"),
+                        UIHelper.Header("Size", TextAlign.Center),
                         new Cell(torrent.File.FileName),
                         new Cell(torrent.File.FileSize.ToString("N0")) { TextAlign = TextAlign.Right },
                     }
@@ -138,8 +144,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                     Columns = { UIHelper.FieldsColumns },
                     Children =
                     {
-                        new Cell("Key") {Stroke = HeaderStroke},
-                        new Cell("Value") {Stroke = HeaderStroke},
+                        UIHelper.Header("Key"),
+                        UIHelper.Header("Value"),
                         dict.Select(f => new []
                         {
                             new Cell(f.Key.ToString()),
