@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -49,7 +50,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     int index = 0;
                     foreach (var (hash, state) in sequence)
                     {
-                        console.WriteLine($"{(index++).ToString().PadLeft(width)}  {hash}  {state}");
+                        console.WriteLineColored($"{(index++).ToString().PadLeft(width)}  {hash}  {state}", ColorScheme.Current.Normal);
                     }
                 }
 
@@ -61,7 +62,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     int index = 0;
                     foreach (var hash in hashes)
                     {
-                        console.WriteLine($"{(index++).ToString().PadLeft(width)}  {hash}");
+                        console.WriteLineColored($"{(index++).ToString().PadLeft(width)}  {hash}", ColorScheme.Current.Normal);
                     }
                 }
 
@@ -73,7 +74,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     int index = 0;
                     foreach (var state in states)
                     {
-                        console.WriteLine($"{(index++).ToString().PadLeft(width)}  {state}");
+                        console.WriteLineColored($"{(index++).ToString().PadLeft(width)}  {state}", ColorScheme.Current.Normal);
                     }
                 }
 

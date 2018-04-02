@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -52,7 +53,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     else
                     {
                         var contents = (await client.GetTorrentContentsAsync(Hash))?.ToList();
-                        console.WriteLine(contents?[File]?.Priority.ToString());
+                        console.WriteLineColored(contents?[File]?.Priority.ToString(), ColorScheme.Current.Normal);
                     }
 
                     return ExitCodes.Success;

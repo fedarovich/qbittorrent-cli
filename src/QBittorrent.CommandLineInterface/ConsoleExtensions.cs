@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.CommandLineInterface.ColorSchemes;
 
@@ -65,6 +66,12 @@ namespace QBittorrent.CommandLineInterface
             }
 
             return console;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IConsole WriteLineColored(this IConsole console, string text, ColorSet colorSet)
+        {
+            return console.WriteLineColored(text, colorSet?.GetEffectiveForeground(), colorSet?.GetEffectiveBackground());
         }
     }
 }

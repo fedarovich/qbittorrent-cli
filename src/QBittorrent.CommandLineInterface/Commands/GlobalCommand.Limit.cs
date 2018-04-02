@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -21,15 +22,15 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 if (limit == null || limit < 0)
                 {
-                    console.WriteLine("n/a");
+                    console.WriteLineColored("n/a", ColorScheme.Current.Normal);
                 }
                 else if (limit == 0)
                 {
-                    console.WriteLine("unlimited");
+                    console.WriteLineColored("unlimited", ColorScheme.Current.Normal);
                 }
                 else
                 {
-                    console.WriteLine($"{limit:N0} bytes/s");
+                    console.WriteLineColored($"{limit:N0} bytes/s", ColorScheme.Current.Normal);
                 }
             }
 
@@ -90,7 +91,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var isAlternative = await client.GetAlternativeSpeedLimitsEnabledAsync();
                     if (Set == null)
                     {
-                        console.WriteLine($"Alternative speed mode enabled: {isAlternative}");
+                        console.WriteLineColored($"Alternative speed mode enabled: {isAlternative}", ColorScheme.Current.Normal);
                     }
                     else if (isAlternative != Set)
                     {

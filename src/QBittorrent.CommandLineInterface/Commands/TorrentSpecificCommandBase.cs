@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -30,7 +31,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 if (matching.Count == 0)
                 {
-                    console.WriteLine($"No torrent matching hash {Hash} is found.");
+                    console.WriteLineColored($"No torrent matching hash {Hash} is found.", ColorScheme.Current.Warning);
                     return ExitCodes.NotFound;
                 }
                 if (matching.Count == 1)
@@ -39,7 +40,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
                 else
                 {
-                    console.WriteLine($"The are several torrents matching partial hash {Hash}:");
+                    console.WriteLineColored($"The are several torrents matching partial hash {Hash}:", ColorScheme.Current.Normal);
                     var numbers = (int)Math.Log10(matching.Count) + 1;
                     var nameWidth = Console.BufferWidth - (numbers + 45);
                     for (int i = 0; i < matching.Count; i++)
@@ -48,7 +49,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         var name = torrent.Name.Length < nameWidth
                             ? torrent.Name
                             : torrent.Name.Substring(0, nameWidth - 3) + "...";
-                        console.WriteLine($"[{(i + 1).ToString().PadLeft(numbers)}] {torrent.Hash} {name}");
+                        console.WriteLineColored($"[{(i + 1).ToString().PadLeft(numbers)}] {torrent.Hash} {name}", ColorScheme.Current.Normal);
                     }
 
                     int index = 0;

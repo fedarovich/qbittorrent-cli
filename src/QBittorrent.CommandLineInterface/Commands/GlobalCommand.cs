@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -26,7 +27,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var path = await client.GetDefaultSavePathAsync();
-                console.WriteLine(path);
+                console.WriteLineColored(path, ColorScheme.Current.Normal);
                 return ExitCodes.Success;
             }
         }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -52,7 +53,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 var urls = await client.GetTorrentWebSeedsAsync(Hash);
                 foreach (var url in urls)
                 {
-                    console.WriteLine(url.AbsoluteUri);
+                    console.WriteLineColored(url.AbsoluteUri, ColorScheme.Current.Normal);
                 }
                 return ExitCodes.Success;
             }
