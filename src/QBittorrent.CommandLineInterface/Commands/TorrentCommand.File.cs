@@ -6,6 +6,7 @@ using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -25,8 +26,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var contents = await client.GetTorrentContentsAsync(Hash);
                     foreach (var (content, id) in contents.Select((x, i) => (x, i)))
                     {
-                        UIHelper.PrintObject(new {Id = id});
-                        UIHelper.PrintObject(content);
+                        UIHelper.PrintObject(new TorrentContentViewModel(content, id));
                         console.WriteLine();
                     }
                     return ExitCodes.Success;

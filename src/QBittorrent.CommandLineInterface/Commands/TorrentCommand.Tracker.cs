@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -24,7 +25,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var trackers = await client.GetTorrentTrackersAsync(Hash);
                     foreach (var tracker in trackers)
                     {
-                        UIHelper.PrintObject(tracker);
+                        UIHelper.PrintObject(new TorrentTrackerViewModel(tracker));
                         console.WriteLine();
                     }
                     return ExitCodes.Success;

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -25,7 +27,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var props = await client.GetTorrentPropertiesAsync(Hash);
-                UIHelper.PrintObject(props);
+                UIHelper.PrintObject(new TorrentPropertiesViewModel(props));
                 return ExitCodes.Success;
             }
         }
@@ -36,9 +38,9 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var contents = await client.GetTorrentContentsAsync(Hash);
-                foreach (var content in contents)
+                foreach (var (content, id) in contents.Select((x, i) => (x, i)))
                 {
-                    UIHelper.PrintObject(content);
+                    UIHelper.PrintObject(new TorrentContentViewModel(content, id));
                     console.WriteLine();
                 }
                 return ExitCodes.Success;

@@ -2,6 +2,7 @@
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -16,7 +17,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var info = await client.GetGlobalTransferInfoAsync();
-                UIHelper.PrintObject(info);
+                UIHelper.PrintObject(new GlobalTransferInfoViewModel(info));
                 return ExitCodes.Success;
             }
         }
