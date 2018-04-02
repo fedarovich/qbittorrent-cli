@@ -5,7 +5,6 @@ using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [HelpOption]
     public abstract class ClientCommandBase
     {
         [Option("--url <SERVER_URL>", "QBittorrent Server URL", CommandOptionType.SingleValue)]

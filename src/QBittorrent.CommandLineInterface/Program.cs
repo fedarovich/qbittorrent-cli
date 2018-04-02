@@ -14,14 +14,17 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand("settings", typeof(SettingsCommand))]
     [Subcommand("torrent", typeof(TorrentCommand))]
     [Subcommand("inspect", typeof(InspectCommand))]
-    [HelpOption]
+    [HelpOption(Inherited = true)]
+    [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     class Program
     {
-        static async Task<int> Main(string[] args)
+        static int Main(string[] args)
         {
             try
             {
-                int code = await CommandLineApplication.ExecuteAsync<Program>(args);
+                var app = new CommandLineApplication<Program>();
+                app.Conventions.UseDefaultConventions();
+                int code = app.Execute(args);
                 return code;
             }
             catch (TargetInvocationException e) when (e.InnerException != null)
@@ -50,22 +53,16 @@ namespace QBittorrent.CommandLineInterface
             }
         }
 
-        [Option("--version", "Displays the program version.", CommandOptionType.NoValue)]
-        public bool ShowVersion { get; set; }
-
-        int OnExecute(CommandLineApplication app, IConsole console)
+        private int OnExecute(CommandLineApplication app, IConsole console)
         {
-            if (ShowVersion)
-            {
-                var attr = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-                console.WriteLine(attr.InformationalVersion);
-            }
-            else
-            {
-                app.ShowHelp();
-            }
-
+            app.ShowHelp();
             return ExitCodes.Success;
+        }
+
+        private string GetVersion()
+        {
+            var attr = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            return attr.InformationalVersion;
         }
     }
 }

@@ -11,11 +11,9 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Inspects the torrent.")]
     [Subcommand("file", typeof(File))]
-    [HelpOption]
     public class InspectCommand
     {
         [Command(Description = "Inspects the torrent file.")]
-        [HelpOption]
         public class File
         {
             [Argument(0, "path", "The path to the torrent file.")]

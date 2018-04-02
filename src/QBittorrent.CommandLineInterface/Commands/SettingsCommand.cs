@@ -10,18 +10,15 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Command(Description = "Gets or sets this application's settings.")]
     [Subcommand("set", typeof(Set))]
     [Subcommand("reset", typeof(Reset))]
-    [HelpOption]
     public class SettingsCommand
     {
         [Command(Description = "Sets the new value for the specified setting.")]
         [Subcommand("url", typeof(Url))]
         [Subcommand("username", typeof(Username))]
         [Subcommand("password", typeof(Password))]
-        [HelpOption]
         public class Set
         {
             [Command(Description = "Sets the default server URL.")]
-            [HelpOption]
             public class Url
             {
                 [Argument(0, "URL", "The default server URL.")]
@@ -39,7 +36,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
 
             [Command(Description = "Sets the default user name.")]
-            [HelpOption]
             public class Username
             {
                 [Argument(0, "username", "The default user name.")]
@@ -56,7 +52,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
 
             [Command(Description = "Sets the default password.", ExtendedHelpText = ExtendedHelp)]
-            [HelpOption]
             public class Password
             {
                 private const string ExtendedHelp = 
@@ -109,11 +104,9 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("username", typeof(Username))]
         [Subcommand("password", typeof(Password))]
         [Subcommand("all", typeof(All))]
-        [HelpOption]
         public class Reset
         {
             [Command(Description = "Resets the server URL to " + Settings.DefaultUrl)]
-            [HelpOption]
             public class Url
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
@@ -126,7 +119,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
 
             [Command(Description = "Resets the user name.")]
-            [HelpOption]
             public class Username
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
@@ -139,7 +131,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
 
             [Command(Description = "Resets the password")]
-            [HelpOption]
             public class Password
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
@@ -152,7 +143,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
 
             [Command(Description = "Resets all settings to their defaults.")]
-            [HelpOption]
             public class All
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
