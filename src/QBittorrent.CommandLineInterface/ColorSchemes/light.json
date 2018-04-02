@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "../Schemas/colors-schema.json",
+  "$schema": "https://raw.githubusercontent.com/fedarovich/qbittorrent-cli/master/src/QBittorrent.CommandLineInterface/Schemas/colors-schema.json",
 
   "normal": {
     "bg": "system-bg",
