@@ -111,42 +111,33 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             private void PrintTorrentsVerbose(IEnumerable<TorrentInfo> torrents)
             {
-                var cellStroke = new LineThickness(LineWidth.None, LineWidth.None);
-                var doc = new Document
-                {
-                    Children =
-                     {
-                         torrents.Select(torrent =>
-                            new Grid
-                            {
-                                 Stroke = new LineThickness(LineWidth.None),
-                                 Columns =
-                                 {
-                                     new Column() { Width = GridLength.Auto },
-                                     new Column() { Width = GridLength.Star(1) }
-                                 },
-                                 Children =
-                                 {
-                                     UIHelper.Row("Name", torrent.Name),
-                                     UIHelper.Row("State", torrent.State),
-                                     UIHelper.Row("Hash", torrent.Hash),
-                                     UIHelper.Row("Size", $"{torrent.Size:N0} bytes"),
-                                     UIHelper.Row("Progress", $"{torrent.Progress:P0}"),
-                                     UIHelper.Row("DL Speed", $"{FormatSpeed(torrent.DownloadSpeed)}"),
-                                     UIHelper.Row("UP Speed", $"{FormatSpeed(torrent.UploadSpeed)}"),
-                                     UIHelper.Row("Priority", torrent.Priority),
-                                     UIHelper.Row("Seeds", $"{torrent.ConnectedSeeds} of {torrent.TotalSeeds}"),
-                                     UIHelper.Row("Leechers", $"{torrent.ConnectedLeechers} of {torrent.TotalLeechers}"),
-                                     UIHelper.Row("Ratio", $"{torrent.Ratio:F2}"),
-                                     UIHelper.Row("ETA", FormatEta(torrent.EstimatedTime)),
-                                     UIHelper.Row("Category", torrent.Category),
-                                     UIHelper.Row("Options", GetOptions(torrent)),
-                                 },
-                                 Margin = new Thickness(0, 0, 0, 2)
-                            }
-                         )
-                     }
-                };
+                var doc = new Document(
+                    torrents.Select(torrent =>
+                        new Grid
+                        {
+                            Stroke = new LineThickness(LineWidth.None),
+                            Columns = { UIHelper.FieldsColumns },
+                            Children =
+                                {
+                                    UIHelper.Row("Name", torrent.Name),
+                                    UIHelper.Row("State", torrent.State),
+                                    UIHelper.Row("Hash", torrent.Hash),
+                                    UIHelper.Row("Size", $"{torrent.Size:N0} bytes"),
+                                    UIHelper.Row("Progress", $"{torrent.Progress:P0}"),
+                                    UIHelper.Row("DL Speed", $"{FormatSpeed(torrent.DownloadSpeed)}"),
+                                    UIHelper.Row("UP Speed", $"{FormatSpeed(torrent.UploadSpeed)}"),
+                                    UIHelper.Row("Priority", torrent.Priority),
+                                    UIHelper.Row("Seeds", $"{torrent.ConnectedSeeds} of {torrent.TotalSeeds}"),
+                                    UIHelper.Row("Leechers", $"{torrent.ConnectedLeechers} of {torrent.TotalLeechers}"),
+                                    UIHelper.Row("Ratio", $"{torrent.Ratio:F2}"),
+                                    UIHelper.Row("ETA", FormatEta(torrent.EstimatedTime)),
+                                    UIHelper.Row("Category", torrent.Category),
+                                    UIHelper.Row("Options", GetOptions(torrent)),
+                                },
+                            Margin = new Thickness(0, 0, 0, 2)
+                        }
+                    )
+                ).SetColors(ColorScheme.Current.Normal);
 
                 ConsoleRenderer.RenderDocument(doc);
 
@@ -167,47 +158,39 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             private void PrintTorrentsTable(IEnumerable<TorrentInfo> torrents)
             {
-                var headerStroke = new LineThickness(LineWidth.Single, LineWidth.Double);
-
-                var doc = new Document
-                {
-                    Color = ColorScheme.Current.Normal.GetEffectiveForeground(),
-                    Background = ColorScheme.Current.Normal.GetEffectiveBackground(),
-                    Children =
+                var doc = new Document(
+                    new Grid
                     {
-                        new Grid
+                        Columns =
                         {
-                            Columns =
+                            new Column {Width = GridLength.Auto},
+                            new Column {Width = GridLength.Star(1)},
+                            new Column {Width = GridLength.Auto},
+                            new Column {Width = GridLength.Auto},
+                            new Column {Width = GridLength.Auto},
+                            new Column {Width = GridLength.Auto},
+                        },
+                        Children =
+                        {
+                            UIHelper.Header("ST"),
+                            UIHelper.Header("Name"),
+                            UIHelper.Header("Hash"),
+                            UIHelper.Header("DL Speed", TextAlign.Center),
+                            UIHelper.Header("UL Speed", TextAlign.Center),
+                            UIHelper.Header("ETA", TextAlign.Center, 9),
+                            torrents.Select(t => new[]
                             {
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Star(1)},
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Auto},
-                            },
-                            Children =
-                            {
-                                new Cell("ST") { Stroke = headerStroke },
-                                new Cell("Name") { Stroke = headerStroke },
-                                new Cell("Hash") { Stroke = headerStroke },
-                                new Cell("DL Speed") { Stroke = headerStroke, TextAlign = TextAlign.Center },
-                                new Cell("UL Speed") { Stroke = headerStroke, TextAlign = TextAlign.Center },
-                                new Cell("ETA") { Stroke = headerStroke,  TextAlign = TextAlign.Center, MinWidth = 9 },
-                                torrents.Select(t => new[]
-                                {
-                                    FormatState(t.State),
-                                    new Cell(t.Name),
-                                    new Cell(t.Hash.Substring(0, 6)),
-                                    new Cell(FormatSpeed(t.DownloadSpeed).PadLeft(10)),
-                                    new Cell(FormatSpeed(t.UploadSpeed).PadLeft(10)),
-                                    new Cell(FormatEta(t.EstimatedTime))
-                                })
-                            },
-                            Stroke = LineThickness.Single
-                        }
-                    },
-                };
+                                FormatState(t.State),
+                                new Cell(t.Name),
+                                new Cell(t.Hash.Substring(0, 6)),
+                                new Cell(FormatSpeed(t.DownloadSpeed).PadLeft(10)),
+                                new Cell(FormatSpeed(t.UploadSpeed).PadLeft(10)),
+                                new Cell(FormatEta(t.EstimatedTime))
+                            })
+                        },
+                        Stroke = LineThickness.Single
+                    }
+                ).SetColors(ColorScheme.Current.Normal);
 
                 ConsoleRenderer.RenderDocument(doc);
 

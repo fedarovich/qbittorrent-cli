@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -40,11 +41,24 @@ namespace QBittorrent.CommandLineInterface.Commands
                     && SuperSeeding == null)
                 {
                     var torrent = await GetTorrent();
-                    //Print("Automatic Torrent Management: ", ???);
-                    Print("First/last piece prioritized: ", torrent.FirstLastPiecePrioritized);
-                    Print("Force start:                  ", torrent.ForceStart);
-                    Print("Sequential download:          ", torrent.SequentialDownload);
-                    Print("Super seeding:                ", torrent.SuperSeeding);
+
+                    var doc = new Document(
+                        new Grid
+                        {
+                            Stroke = UIHelper.NoneStroke,
+                            Columns = { UIHelper.FieldsColumns },
+                            Children =
+                            {
+                                //UIHelper.Row("Automatic Torrent Management", ???),
+                                UIHelper.Row("First/last piece prioritized", torrent.FirstLastPiecePrioritized),
+                                UIHelper.Row("Force start", torrent.ForceStart),
+                                UIHelper.Row("Sequential download", torrent.SequentialDownload),
+                                UIHelper.Row("Super seeding", torrent.SuperSeeding),
+                            }
+                        }
+                    ).SetColors(ColorScheme.Current.Normal);
+
+                    ConsoleRenderer.RenderDocument(doc);
                 }
                 else
                 {
@@ -118,7 +132,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
-            
+
         }
     }
 }

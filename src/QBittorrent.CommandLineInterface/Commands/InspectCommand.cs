@@ -1,11 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Alba.CsConsoleFormat;
 using BencodeNET.Objects;
 using BencodeNET.Parsing;
 using BencodeNET.Torrents;
 using McMaster.Extensions.CommandLineUtils;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -15,7 +15,6 @@ namespace QBittorrent.CommandLineInterface.Commands
     public class InspectCommand
     {
         private static readonly LineThickness HeaderStroke = new LineThickness(LineWidth.Single, LineWidth.Double);
-        private static readonly Thickness DataPadding = new Thickness(1, 0, 0, 0);
 
         [Command(Description = "Inspects the torrent file.")]
         [HelpOption]
@@ -38,11 +37,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     new Grid
                     {
                         Stroke = cellStroke,
-                        Columns =
-                        {
-                            new Column {Width = GridLength.Auto},
-                            new Column {Width = GridLength.Star(1)}
-                        },
+                        Columns = { UIHelper.FieldsColumns },
                         Children =
                         {
                             UIHelper.Row("Name", torrent.DisplayName),
@@ -61,7 +56,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             UIHelper.Row("Trackers", BuildTrackerList(torrent)),
                             UIHelper.Row("Extra Fields", BuildExtraFields(torrent)),
                         }
-                    });
+                    }).SetColors(ColorScheme.Current.Normal);
 
                 ConsoleRenderer.RenderDocument(document);
                 return ExitCodes.Success;
@@ -89,11 +84,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     new Grid
                     {
                         Stroke = new LineThickness(LineWidth.None, LineWidth.None),
-                        Columns =
-                        {
-                            new Column {Width = GridLength.Star(1)},
-                            new Column {Width = GridLength.Auto},
-                        },
+                        Columns = { UIHelper.FieldsColumns },
                         Children =
                         {
                             new Cell("Path") {Stroke = HeaderStroke},
@@ -104,10 +95,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                                 new Cell(f.FileSize.ToString("N0")) { TextAlign = TextAlign.Right },
                             })
                         }
-                    })
-                {
-                    Margin = DataPadding,
-                };
+                    });
             }
 
             if (torrent.File != null)
@@ -115,12 +103,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 return new Grid
                 {
                     Stroke = new LineThickness(LineWidth.None, LineWidth.None),
-                    Margin = DataPadding,
-                    Columns =
-                    {
-                        new Column {Width = GridLength.Star(1)},
-                        new Column {Width = GridLength.Auto},
-                    },
+                    Columns = { UIHelper.FieldsColumns },
                     Children =
                     {
                         new Cell("Name") {Stroke = HeaderStroke},
@@ -136,7 +119,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
         private static Element BuildTrackerList(Torrent torrent)
         {
-            return new List(torrent.Trackers.Select(t => string.Join("\n", t))) { Margin = DataPadding };
+            return new List(torrent.Trackers.Select(t => string.Join("\n", t)));
         }
 
         private static Element BuildExtraFields(Torrent torrent)
@@ -145,7 +128,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                 return null;
 
             var grid = FormatBDictionary(torrent.ExtraFields);
-            grid.Margin = DataPadding;
             return grid;
 
             BlockElement FormatBDictionary(BDictionary dict)
@@ -153,12 +135,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 return new Grid()
                 {
                     Stroke = new LineThickness(LineWidth.None, LineWidth.None),
-                    Margin = DataPadding,
-                    Columns =
-                    {
-                        new Column { Width = GridLength.Auto },
-                        new Column { Width = GridLength.Star(1) }
-                    },
+                    Columns = { UIHelper.FieldsColumns },
                     Children =
                     {
                         new Cell("Key") {Stroke = HeaderStroke},

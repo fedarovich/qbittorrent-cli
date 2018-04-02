@@ -92,31 +92,19 @@ namespace QBittorrent.CommandLineInterface.Commands
                     client.GetMinApiVersionAsync(),
                     client.GetQBittorrentVersionAsync());
 
-                console
-                    .WriteLine($"QBittorrent version: {qVersion}")
-                    .WriteLine($"API version: {apiVersion}")
-                    .WriteLine($"API min version: {apiMinVersion}");
-
-                var doc = new Document
-                {
-                    Background = ColorScheme.Current.Normal.GetEffectiveBackground(),
-                    Color = ColorScheme.Current.Normal.GetEffectiveForeground(),
-                    Children =
+                var doc = new Document(
+                    new Grid
                     {
-                        new Grid
+                        Stroke = UIHelper.NoneStroke,
+                        Columns = { UIHelper.FieldsColumns },
+                        Children =
                         {
-                            Columns =
-                            {
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Star(1)}
-                            },
-                            Children =
-                            {
-
-                            }
+                            UIHelper.Row("QBittorrent version", qVersion),
+                            UIHelper.Row("API version", apiVersion),
+                            UIHelper.Row("API min version", apiMinVersion)
                         }
                     }
-                };
+                 ).SetColors(ColorScheme.Current.Normal);
 
                 ConsoleRenderer.RenderDocument(doc);
 

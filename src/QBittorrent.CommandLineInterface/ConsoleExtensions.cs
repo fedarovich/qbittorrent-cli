@@ -1,5 +1,6 @@
 ﻿using System;
 using McMaster.Extensions.CommandLineUtils;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface
 {

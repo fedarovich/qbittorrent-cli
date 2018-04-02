@@ -11,10 +11,27 @@ namespace QBittorrent.CommandLineInterface
     public static class UIHelper
     {
         public static readonly LineThickness NoneStroke = new LineThickness(LineWidth.None, LineWidth.None);
+        public static readonly LineThickness GridHeaderStroke = new LineThickness(LineWidth.Single, LineWidth.Double);
+
+        public static object[] FieldsColumns =>
+            // ReSharper disable once CoVariantArrayConversion
+            new[]
+            {
+                new Column {Width = GridLength.Auto},
+                new Column {Width = GridLength.Star(1)}
+            };
 
         public static Cell Label(string text) => new Cell(text + ":") { Color = ColorScheme.Current.Strong.Foreground, Stroke = NoneStroke };
 
         public static Cell Data<T>(T data) => new Cell(data.ToString()) { Stroke = NoneStroke, Padding = new Thickness(1, 0, 0, 0) };
+
+        public static Cell Header(string text, TextAlign? textAlign = null, int? minWidth = null)
+        {
+            var cell = new Cell(text) { Stroke = GridHeaderStroke };
+            cell.TextAlign = textAlign ?? cell.TextAlign;
+            cell.MinWidth = minWidth ?? cell.MinWidth;
+            return cell;
+        }
 
         public static object[] Row<T>(string label, T data)
         {
