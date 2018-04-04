@@ -16,8 +16,6 @@ namespace QBittorrent.CommandLineInterface
             ConsoleColor? foregroundColor = null,
             ConsoleColor? backgroundColor = null)
         {
-            ConsoleColor fg = console.ForegroundColor;
-            ConsoleColor bg = console.BackgroundColor;
             if (foregroundColor != null)
             {
                 console.ForegroundColor = foregroundColor.Value;
@@ -33,8 +31,10 @@ namespace QBittorrent.CommandLineInterface
             }
             finally
             {
-                console.BackgroundColor = bg;
-                console.ForegroundColor = fg;
+                if (foregroundColor != null || backgroundColor != null)
+                {
+                    console.ResetColor();
+                }
             }
 
             return console;
@@ -44,8 +44,6 @@ namespace QBittorrent.CommandLineInterface
             ConsoleColor? foregroundColor = null,
             ConsoleColor? backgroundColor = null)
         {
-            ConsoleColor fg = console.ForegroundColor;
-            ConsoleColor bg = console.BackgroundColor;
             if (foregroundColor != null)
             {
                 console.ForegroundColor = foregroundColor.Value;
@@ -61,8 +59,10 @@ namespace QBittorrent.CommandLineInterface
             }
             finally
             {
-                console.BackgroundColor = bg;
-                console.ForegroundColor = fg;
+                if (foregroundColor != null || backgroundColor != null)
+                {
+                    console.ResetColor();
+                }
             }
 
             return console;

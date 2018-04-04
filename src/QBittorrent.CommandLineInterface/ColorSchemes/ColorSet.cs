@@ -20,14 +20,27 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
 
         public ConsoleColor GetEffectiveBackground()
         {
-            return Background ?? Console.BackgroundColor;
+            return Background ?? GetSystemBackground();
         }
 
         public ConsoleColor GetEffectiveForeground()
         {
             ConsoleColor bg = GetEffectiveBackground();
-            ConsoleColor fg = Foreground ?? Console.ForegroundColor;
-            return fg != bg ? fg : (AltForeground ?? Console.ForegroundColor);
+            ConsoleColor systemFg = GetSystemForeground();
+            ConsoleColor fg = Foreground ?? systemFg;
+            return fg != bg ? fg : (AltForeground ?? systemFg);
+        }
+
+        private ConsoleColor GetSystemBackground()
+        {
+            var color = Console.BackgroundColor;
+            return EnumHelper.IsDefined(color) ? color : ConsoleColor.Black;
+        }
+
+        private ConsoleColor GetSystemForeground()
+        {
+            var color = Console.ForegroundColor;
+            return EnumHelper.IsDefined(color) ? color : ConsoleColor.White;
         }
     }
 }

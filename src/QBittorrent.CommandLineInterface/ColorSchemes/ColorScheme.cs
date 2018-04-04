@@ -36,6 +36,9 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
 
             bool IsLight()
             {
+                if (!EnumHelper.IsDefined(Console.BackgroundColor))
+                    return false;
+
                 return Console.BackgroundColor == ConsoleColor.White
                     || Console.BackgroundColor == ConsoleColor.Gray
                     || Console.BackgroundColor == ConsoleColor.Yellow

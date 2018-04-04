@@ -71,9 +71,9 @@ namespace QBittorrent.CommandLineInterface.ColorSchemes
                     // ReSharper disable once PossibleInvalidOperationException
                     return value._consoleColor.Value;
                 case ColorType.SystemBackground:
-                    return Console.BackgroundColor;
+                    return EnumHelper.IsDefined(Console.BackgroundColor) ? Console.BackgroundColor : System.ConsoleColor.Black;
                 case ColorType.SystemForeground:
-                    return Console.ForegroundColor;
+                    return EnumHelper.IsDefined(Console.ForegroundColor) ? Console.ForegroundColor : System.ConsoleColor.White;
                 default:
                     throw new ArgumentException();
             }
