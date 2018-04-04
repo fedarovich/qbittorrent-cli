@@ -23,7 +23,7 @@ namespace QBittorrent.CommandLineInterface
 
         public static Cell Label(string text) => new Cell(text + ":") { Color = ColorScheme.Current.Strong.Foreground, Stroke = NoneStroke };
 
-        public static Cell Data<T>(T data) => new Cell(data.ToString()) { Stroke = NoneStroke, Padding = new Thickness(1, 0, 0, 0) };
+        public static Cell Data<T>(T data) => new Cell(data?.ToString()) { Stroke = NoneStroke, Padding = new Thickness(1, 0, 0, 0) };
 
         public static Cell Header(string text, TextAlign? textAlign = null, int? minWidth = null)
         {
