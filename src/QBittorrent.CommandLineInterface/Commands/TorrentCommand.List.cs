@@ -54,7 +54,8 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 var fields =
                     from property in typeof(TorrentInfo).GetProperties()
-                    let json = property.GetCustomAttribute<JsonPropertyAttribute>().PropertyName
+                    let json = property.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName
+                    where json != null
                     select (property.Name, json);
 
                 SortColumns = fields.ToDictionary(x => x.Name, x => x.json, StringComparer.InvariantCultureIgnoreCase);
@@ -284,11 +285,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 return $"{speed / (1024 * 1024 * 1024)} GB/s";
             }
 
-            private static string FormatEta(int eta)
+            private static string FormatEta(TimeSpan? eta)
             {
-                var ts = TimeSpan.FromSeconds(eta);
-                if (ts < TimeSpan.FromHours(100))
+                if (eta < TimeSpan.FromHours(100))
                 {
+                    var ts = eta.Value;
                     return $" {ts.Hours:00}.{ts.Minutes:00}.{ts.Seconds:00}";
                 }
                 return string.Empty;

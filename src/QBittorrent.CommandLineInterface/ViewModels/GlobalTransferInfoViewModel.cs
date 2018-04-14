@@ -39,7 +39,7 @@ namespace QBittorrent.CommandLineInterface.ViewModels
 
         [Display(Name = "DHT nodes")]
         [DisplayFormat(NullDisplayText = "n/a")]
-        public int? DhtNodes => _wrappedObject.DhtNodes;
+        public long? DhtNodes => _wrappedObject.DhtNodes;
 
         [Display(Name = "Connection status")]
         public ConnectionStatus? ConnectionStatus => _wrappedObject.ConnectionStatus;
