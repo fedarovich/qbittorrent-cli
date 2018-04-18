@@ -46,7 +46,7 @@
     <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'netframework4.6'" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NJsonSchema" Version="9.10.42" />
-    <PackageReference Include="QBittorrent.Client" Version="0.9.18104.10-pre" />
+    <PackageReference Include="QBittorrent.Client" Version="0.9.18107.2-pre" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
   </ItemGroup>
 

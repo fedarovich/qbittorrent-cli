@@ -145,7 +145,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                                     UIHelper.Row("Ratio", $"{torrent.Ratio:F2}"),
                                     UIHelper.Row("ETA", FormatEta(torrent.EstimatedTime)),
                                     UIHelper.Row("Category", torrent.Category),
-                                    UIHelper.Row("Options", GetOptions(torrent)),
+                                    UIHelper.Row("Tags", $"{string.Join(", ", torrent.Tags ?? Enumerable.Empty<string>())}"),
+                                    UIHelper.Row("Save path", torrent.SavePath),
+                                    UIHelper.Row("Added", $"{torrent.AddedOn?.ToLocalTime():G}"),
+                                    UIHelper.Row("Completion", $"{torrent.CompletionOn?.ToLocalTime():G}"),
+                                    UIHelper.Row("Options", GetOptions(torrent))
                                 },
                             Margin = new Thickness(0, 0, 0, 2)
                         }
@@ -165,6 +169,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                         options.Add("Force start");
                     if (torrent.FirstLastPiecePrioritized)
                         options.Add("First & last pieces are prioritized");
+                    if (torrent.AutomaticTorrentManagement)
+                        options.Add("Automatic torrent management");
                     return string.Join(", ", options);
                 }
             }

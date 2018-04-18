@@ -17,7 +17,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Command(Description = "Sets torrent options.")]
         public class Options : TorrentSpecificCommandBase
         {
-            [Option("-a|--atm|--automatic-torrent-management <BOOL>", "Enable/disables automatic torrent management.", CommandOptionType.SingleValue)]
+            [Option("-a|--automatic-torrent-management <BOOL>", "Enable/disables automatic torrent management.", CommandOptionType.SingleValue)]
             public bool? AutomaticTorrentManagement { get; set; }
 
             [Option("-p|--first-last-prio <BOOL>", "Enables/disables prioritized download of the first and last pieces.", CommandOptionType.SingleValue)]
@@ -49,7 +49,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             Columns = { UIHelper.FieldsColumns },
                             Children =
                             {
-                                //UIHelper.Row("Automatic Torrent Management", ???),
+                                UIHelper.Row("Automatic Torrent Management", torrent.AutomaticTorrentManagement),
                                 UIHelper.Row("First/last piece prioritized", torrent.FirstLastPiecePrioritized),
                                 UIHelper.Row("Force start", torrent.ForceStart),
                                 UIHelper.Row("Sequential download", torrent.SequentialDownload),
