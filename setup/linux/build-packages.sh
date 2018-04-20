@@ -11,7 +11,7 @@ ITERATION="${BUILD_BUILDNUMBER##*.}"
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/x64"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
-tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/qbt-linux-x64-*.tag.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
+tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-x64-*.tag.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
 ln -sf "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
 
 #build packages
@@ -23,7 +23,7 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial" && fpm -s dir -t deb -f -C
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
-tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/qbt-linux-arm-*.tag.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
+tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-arm-*.tag.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
 ln -sf "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
 
 #build packages
@@ -33,5 +33,5 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial" && fpm -s dir -t deb -f -C
 # Clean up                                                     #
 ###############################################################################
 pushd "$BUILD_BINARIESDIRECTORY"
-rm -rf tgz/* tgz/.* build/* build/.*
+rm -rf tgz/* build/*
 popd
