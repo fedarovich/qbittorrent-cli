@@ -43,6 +43,8 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/artful" && fpm -s dir -t deb -f -C
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration -a armhf --description "$PkgDesc" -p "$_" -d libunwind8 -d libcurl3 -d libssl1.0.0 -d libicu60
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/25" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration -a armv7hl --description "$PkgDesc" -p "$_" -d libunwind -d libcurl -d openssl-libs -d libicu
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/26" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration -a armv7hl --description "$PkgDesc" -p "$_" -d libunwind -d libcurl -d openssl-libs -d libicu -d compat-openssl10
+
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration -a armv7hl --description "$PkgDesc" -p "$_" -d libunwind -d libcurl4 -d libssl43 -d libicu
 
 ###############################################################################
