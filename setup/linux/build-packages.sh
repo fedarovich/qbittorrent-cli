@@ -15,7 +15,7 @@ mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
 tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-x64-$BUILD_BUILDNUMBER.tar.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
 chmod +x "$PkgRoot/usr/lib/qbittorrent-cli/qbt"
-ln -sf "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
+ln -sfr "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
 
 #build packages
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/trusty" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration -a amd64 --description "$PkgDesc" -p "$_" -d libunwind8 -d libcurl3 -d libssl1.0.0 -d libicu52
@@ -34,7 +34,7 @@ mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
 tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-arm-$BUILD_BUILDNUMBER.tar.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
 chmod +x "$PkgRoot/usr/lib/qbittorrent-cli/qbt"
-ln -sf "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
+ln -sfr "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
 
 #build packages
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/trusty" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration -a armhf --description "$PkgDesc" -p "$_" -d libunwind8 -d libcurl3 -d libssl1.0.0 -d libicu52
