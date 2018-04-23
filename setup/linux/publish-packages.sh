@@ -27,21 +27,15 @@ curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/f
 ###############################################################################
 
 # x86_64
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-redhat/qbittorrent-cli/${PkgFullVersion}/centos/7/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-redhat/qbittorrent-cli/${PkgFullVersion}/fedora/25/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-redhat/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/25/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/42/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
 
 # armv7hl
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-redhat/qbittorrent-cli/${PkgFullVersion}/centos/7/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-redhat/qbittorrent-cli/${PkgFullVersion}/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-redhat/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
 
-###############################################################################
-# Upload openSUSE packages                                                    #
-###############################################################################
-
-# x86_64
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-suse/qbittorrent-cli/${PkgFullVersion}/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
-
-# armv7hl
-curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-suse/qbittorrent-cli/${PkgFullVersion}/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
+curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-rpm/fedora/25
+curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-rpm/fedora/26
+curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-rpm/opensuse/42
