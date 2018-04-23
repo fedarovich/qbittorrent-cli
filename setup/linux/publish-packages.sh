@@ -35,7 +35,3 @@ curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersi
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/25/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
-
-curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-rpm/fedora/25
-curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-rpm/fedora/26
-curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-rpm/opensuse/42
