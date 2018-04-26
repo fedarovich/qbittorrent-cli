@@ -11,6 +11,7 @@ echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+  echo "Deleting files..."
   rm -fv  /usr/local/bin/qbt
   rm -fvr /usr/local/qbittorrent-cli
   pkgutil --forget com.fedarovich.pkg.qbittorrent-cli
