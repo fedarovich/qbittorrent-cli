@@ -11,7 +11,7 @@ cp -f "$BUILD_SOURCESDIRECTORY/setup/mac/scripts/uninstall.sh" "$PkgRoot/usr/loc
 chmod +x "$PkgRoot/usr/local/qbittorrent-cli/uninstall"
 
 #build packages
-mkdir -p "$BUILD_BINARIESDIRECTORY/pkg" && pkgbuild --root "$PkgRoot" --identifier "com.fedarovich.pkg.qbittorrent-cli" --install-location / --version $BUILD_BUILDNUMBER "$_/qbittorrent-cli-${BUILD_BUILDNUMBER}.pkg"
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/osx" && pkgbuild --root "$PkgRoot" --identifier "com.fedarovich.pkg.qbittorrent-cli" --install-location / --version $BUILD_BUILDNUMBER "$_/qbittorrent-cli-${BUILD_BUILDNUMBER}.pkg"
 
 # Clean up
 pushd "$BUILD_BINARIESDIRECTORY"
