@@ -39,6 +39,8 @@
 	  <Condition Message="$(var.OtherBitnessInstalledErrorMessage)">NOT OTHER_BITNESS_INSTALLED</Condition>
 
 	  <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+	  <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+	  <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
 
     <Property Id="ApplicationFolderName" Value="qbittorrent-cli" />
 	  <Property Id="WixAppFolder" Value="WixPerMachineFolder" />

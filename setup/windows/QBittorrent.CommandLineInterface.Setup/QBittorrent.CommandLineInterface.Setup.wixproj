@@ -38,7 +38,9 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="banner.bmp" />
     <Content Include="BinariesTransform.xsl" />
+    <Content Include="dialog.bmp" />
     <Content Include="License.rtf" />
   </ItemGroup>
   <ItemGroup>
