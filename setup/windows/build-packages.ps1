@@ -1,5 +1,5 @@
-$Hash32 = "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish\qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi"
-$Hash64 = "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish\qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi"
+$Hash32 = Get-FileHash "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish\qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi"
+$Hash64 = Get-FileHash "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish\qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi"
 
 pushd "$env:BUILD_BINARIESDIRECTORY"
 
@@ -9,6 +9,7 @@ if (Test-Path "$RepoPath") {
 }
 
 choco new qbittorrent-cli `
+    --verbose `
     --version=$env:BUILD_BUILDNUMBER `
     --maintainer="Pavel Fedarovich" `
     maintainerrepo="https://github.com/fedarovich/qbittorrent-cli" `
@@ -28,7 +29,7 @@ cp -Path "$env:BUILD_SOURCESDIRECTORY\setup\windows\VERIFICATION.txt" -Destinati
 $f="$env:BUILD_BINARIESDIRECTORY\qbittorrent-cli\tools\chocolateyinstall.ps1"
 gc $f | ? {$_ -notmatch "^\s*#"} | % {$_ -replace '(^.*?)\s*?[^``]#.*','$1'} | Out-File $f+".~" -en utf8; mv -fo $f+".~" $f
 
-choco pack --outputdirectory "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish"
+choco pack --verbose --outputdirectory "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish"
 
 popd
 popd
