@@ -15,8 +15,8 @@ choco new qbittorrent-cli `
     installertype=msi `
     url="https://dl.bintray.com/fedarovich/qbittorrent-cli-windows/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi" `
     url64="https://dl.bintray.com/fedarovich/qbittorrent-cli-windows/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi" `
-    checksum="$Hash32.Hash" `
-    checksum64="$Hash64.Hash"
+    checksum="$($Hash32.Hash)" `
+    checksum64="$($Hash64.Hash)"
 
 pushd qbittorrent-cli
 
