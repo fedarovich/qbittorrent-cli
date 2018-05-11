@@ -28,48 +28,38 @@ namespace NuSpecGen
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("<package xmlns=\"\"http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd\"\">\r\n  " +
-                    "<metadata>\r\n    <id>qbittorrent-cli</id>\r\n    <version>");
+            this.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<package xmlns=\"http://schemas.microsoft." +
+                    "com/packaging/2015/06/nuspec.xsd\">\r\n  <metadata>\r\n    <id>qbittorrent-cli</id>\r\n" +
+                    "    <version>");
             
-            #line 9 "C:\Projects\My\qbittorrent-cli\setup\windows\NuSpecGen\NuSpecTemplate.tt"
+            #line 10 "C:\Projects\My\qbittorrent-cli\setup\windows\NuSpecGen\NuSpecTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(PackageVersion));
             
             #line default
             #line hidden
-            this.Write("</version>\r\n    <packageSourceUrl>https://github.com/fedarovich/qbittorrent-cli/t" +
-                    "ree/master/setup/windows</packageSourceUrl>\r\n    <owners>Pavel Fedarovich</owner" +
-                    "s>\r\n    <title>qBittorrent CLI (Install)</title>\r\n    <authors>Pavel Fedarovich<" +
-                    "/authors>\r\n    <projectUrl>https://github.com/fedarovich/qbittorrent-cli</projec" +
-                    "tUrl>\r\n    <iconUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/se" +
-                    "tup/windows/package-icon.png</iconUrl>\r\n    <copyright>2017-2018 Pavel Fedarovic" +
-                    "h</copyright>\r\n    <licenseUrl>https://cdn.rawgit.com/fedarovich/qbittorrent-cli" +
-                    "/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>\r\n    <requireLice" +
-                    "nseAcceptance>true</requireLicenseAcceptance>-->\r\n    <projectSourceUrl>https://" +
-                    "github.com/fedarovich/qbittorrent-cli</projectSourceUrl>\r\n    <docsUrl>https://g" +
-                    "ithub.com/fedarovich/qbittorrent-cli/wiki</docsUrl>\r\n    <bugTrackerUrl>https://" +
-                    "github.com/fedarovich/qbittorrent-cli/issues</bugTrackerUrl>\r\n    <tags>qbittorr" +
-                    "ent-cli qbittorrent</tags>\r\n    <summary>qBittorrent remote command line interfa" +
-                    "ce.</summary>\r\n    <description></description>\r\n    <!-- <releaseNotes>__REPLACE" +
-                    "_OR_REMOVE__MarkDown_Okay</releaseNotes> -->\r\n    <!-- =========================" +
-                    "====== -->      \r\n    <!-- Specifying dependencies and version ranges? https://d" +
-                    "ocs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->\r\n" +
-                    "    <!--<dependencies>\r\n      <dependency id=\"\"\"\" version=\"\"__MINIMUM_VERSION__\"" +
-                    "\" />\r\n      <dependency id=\"\"\"\" version=\"\"[__EXACT_VERSION__]\"\" />\r\n      <depen" +
-                    "dency id=\"\"\"\" version=\"\"[_MIN_VERSION_INCLUSIVE, MAX_VERSION_INCLUSIVE]\"\" />\r\n  " +
-                    "    <dependency id=\"\"\"\" version=\"\"[_MIN_VERSION_INCLUSIVE, MAX_VERSION_EXCLUSIVE" +
-                    ")\"\" />\r\n      <dependency id=\"\"\"\" />\r\n      <dependency id=\"\"chocolatey-core.ext" +
-                    "ension\"\" version=\"\"1.1.0\"\" />\r\n    </dependencies>-->\r\n    <!-- chocolatey-core." +
-                    "extension - https://chocolatey.org/packages/chocolatey-core.extension\r\n         " +
-                    "- You want to use Get-UninstallRegistryKey on less than 0.9.10 (in chocolateyUni" +
-                    "nstall.ps1)\r\n         - You want to use Get-PackageParameters and on less than 0" +
-                    ".11.0\r\n         - You want to take advantage of other functions in the core comm" +
-                    "unity maintainer\'s team extension package\r\n    -->\r\n    <!--<provides>NOT YET IM" +
-                    "PLEMENTED</provides>-->\r\n    <!--<conflicts>NOT YET IMPLEMENTED</conflicts>-->\r\n" +
-                    "    <!--<replaces>NOT YET IMPLEMENTED</replaces>-->\r\n  </metadata>\r\n  <files>\r\n " +
-                    "   <!-- this section controls what actually gets packaged into the Chocolatey pa" +
-                    "ckage -->\r\n    <file src=\"\"tools\\**\"\" target=\"\"tools\"\" />\r\n    <!--Building from" +
-                    " Linux? You may need this instead: <file src=\"\"tools/**\"\" target=\"\"tools\"\" />-->" +
-                    "\r\n  </files>\r\n</package>");
+            this.Write(@"</version>
+    <packageSourceUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows</packageSourceUrl>
+    <owners>Pavel Fedarovich</owners>
+    <title>qBittorrent CLI (Install)</title>
+    <authors>Pavel Fedarovich</authors>
+    <projectUrl>https://github.com/fedarovich/qbittorrent-cli</projectUrl>
+    <iconUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows/package-icon.png</iconUrl>
+    <copyright>2017-2018 Pavel Fedarovich</copyright>
+    <licenseUrl>https://cdn.rawgit.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/fedarovich/qbittorrent-cli</projectSourceUrl>
+    <docsUrl>https://github.com/fedarovich/qbittorrent-cli/wiki</docsUrl>
+    <bugTrackerUrl>https://github.com/fedarovich/qbittorrent-cli/issues</bugTrackerUrl>
+    <tags>qbittorrent-cli qbittorrent</tags>
+    <summary>qBittorrent remote command line interface.</summary>
+    <description></description>
+  </metadata>
+  <files>
+    <!-- this section controls what actually gets packaged into the Chocolatey package -->
+    <file src=""tools\**"" target=""tools"" />
+    <!--Building from Linux? You may need this instead: <file src=""tools/**"" target=""tools"" />-->
+  </files>
+</package>");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -28,9 +28,10 @@ namespace NuSpecGen
         public int OnExecute()
         {
             var template = new NuSpecTemplate(Version);
-            using (var writer = new StreamWriter(OutputPath, false, Encoding.UTF8))
+            var encoding = new UTF8Encoding(false);
+            using (var writer = new StreamWriter(OutputPath, false, encoding))
             {
-                writer.Write(template);
+                writer.Write(template.TransformText());
             }
             return 0;
         }

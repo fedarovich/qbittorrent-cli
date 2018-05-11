@@ -3,7 +3,8 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<package xmlns=""http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd"">
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>qbittorrent-cli</id>
     <version><#= PackageVersion #></version>
@@ -15,36 +16,17 @@
     <iconUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows/package-icon.png</iconUrl>
     <copyright>2017-2018 Pavel Fedarovich</copyright>
     <licenseUrl>https://cdn.rawgit.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>-->
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/fedarovich/qbittorrent-cli</projectSourceUrl>
     <docsUrl>https://github.com/fedarovich/qbittorrent-cli/wiki</docsUrl>
     <bugTrackerUrl>https://github.com/fedarovich/qbittorrent-cli/issues</bugTrackerUrl>
     <tags>qbittorrent-cli qbittorrent</tags>
     <summary>qBittorrent remote command line interface.</summary>
     <description></description>
-    <!-- <releaseNotes>__REPLACE_OR_REMOVE__MarkDown_Okay</releaseNotes> -->
-    <!-- =============================== -->      
-    <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
-    <!--<dependencies>
-      <dependency id="""" version=""__MINIMUM_VERSION__"" />
-      <dependency id="""" version=""[__EXACT_VERSION__]"" />
-      <dependency id="""" version=""[_MIN_VERSION_INCLUSIVE, MAX_VERSION_INCLUSIVE]"" />
-      <dependency id="""" version=""[_MIN_VERSION_INCLUSIVE, MAX_VERSION_EXCLUSIVE)"" />
-      <dependency id="""" />
-      <dependency id=""chocolatey-core.extension"" version=""1.1.0"" />
-    </dependencies>-->
-    <!-- chocolatey-core.extension - https://chocolatey.org/packages/chocolatey-core.extension
-         - You want to use Get-UninstallRegistryKey on less than 0.9.10 (in chocolateyUninstall.ps1)
-         - You want to use Get-PackageParameters and on less than 0.11.0
-         - You want to take advantage of other functions in the core community maintainer's team extension package
-    -->
-    <!--<provides>NOT YET IMPLEMENTED</provides>-->
-    <!--<conflicts>NOT YET IMPLEMENTED</conflicts>-->
-    <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->
-    <file src=""tools\**"" target=""tools"" />
-    <!--Building from Linux? You may need this instead: <file src=""tools/**"" target=""tools"" />-->
+    <file src="tools\**" target="tools" />
+    <!--Building from Linux? You may need this instead: <file src="tools/**" target="tools" />-->
   </files>
 </package>
