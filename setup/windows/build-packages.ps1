@@ -19,7 +19,7 @@ choco new qbittorrent-cli `
     checksum="$($Hash32.Hash)" `
     checksum64="$($Hash64.Hash)"
 
-.\NuSpecGen\bin\Release\NuSpecGen.exe -v $env:BUILD_BUILDNUMBER -o "$env:BUILD_BINARIESDIRECTORY\qbittorrent-cli\qbittorrent-cli.nuspec"
+& "$env:BUILD_SOURCESDIRECTORY\setup\windows\NuSpecGen\bin\Release\NuSpecGen.exe" -v $env:BUILD_BUILDNUMBER -o "$env:BUILD_BINARIESDIRECTORY\qbittorrent-cli\qbittorrent-cli.nuspec"
 
 pushd qbittorrent-cli
 
