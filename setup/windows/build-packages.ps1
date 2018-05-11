@@ -19,6 +19,8 @@ choco new qbittorrent-cli `
     checksum="$($Hash32.Hash)" `
     checksum64="$($Hash64.Hash)"
 
+.\NuSpecGen\bin\Release\NuSpecGen.exe -v $env:BUILD_BUILDNUMBER -o "$env:BUILD_BINARIESDIRECTORY\qbittorrent-cli\qbittorrent-cli.nuspec"
+
 pushd qbittorrent-cli
 
 Invoke-WebRequest https://rawgit.com/fedarovich/qbittorrent-cli/master/LICENSE -OutFile .\tools\LICENSE.txt
