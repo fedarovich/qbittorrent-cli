@@ -1,0 +1,4 @@
+﻿VERIFICATION
+I am Pavel Fedarovich, the author of qBittorrent CLI (https://github.com/fedarovich/qbittorrent-cli).
+The binary packages for windows are available on bintray: https://bintray.com/fedarovich/qbittorrent-cli-windows/qbittorrent-cli
+For each MSI file there is an ASC file containing GPG signature. GPG public key is available here: https://bintray.com/user/downloadSubjectPublicKey?username=fedarovich

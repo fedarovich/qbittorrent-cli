@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?define x86UpgradeCode = "860B7CC5-F242-4DF8-8918-485B1DB7136B" ?>
+<?define x64UpgradeCode = "640B7CD4-2A69-4D71-BD7B-50E27815BCC8" ?>
+
+<?if $(var.Platform) = x64 ?>
+  <?define UpgradeCode=$(var.x64UpgradeCode) ?>
+  <?define OtherBitnessUpgradeCode=$(var.x86UpgradeCode) ?>
+  <?define OtherBitnessInstalledErrorMessage="A 32-bit version of [ProductName] is already installed on this computer. Installation of 64-bit version cannot continue. You must uninstall the 32-bit version before installing 64-bit version." ?>
+  <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+  <?define UpgradeCode=$(var.x86UpgradeCode) ?>
+  <?define OtherBitnessUpgradeCode=$(var.x86UpgradeCode) ?>
+  <?define OtherBitnessInstalledErrorMessage="A 64-bit version of [ProductName] is already installed on this computer. Installation of 32-bit version cannot continue. You must uninstall the 32-bit version before installing 64-bit version." ?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
+<?ifndef Version?>
+  <?define Version="1.0.0.0"?>
+<?endif?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="qBittorrent Command Line Interface" Language="1033" 
+	         Version="$(var.Version)" 
+	         Manufacturer="Pavel Fedarovich" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+	  <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." 
+	                AllowSameVersionUpgrades="yes" />
+  
+	  <Upgrade Id="$(var.OtherBitnessUpgradeCode)">
+	    <UpgradeVersion OnlyDetect="yes" Property="OTHER_BITNESS_INSTALLED"
+	                    IncludeMinimum="yes" IncludeMaximum="yes"
+	                    Minimum="0.0.0.0" Maximum="99.99.99.99"/>
+	  </Upgrade>
+
+	  <Condition Message="$(var.OtherBitnessInstalledErrorMessage)">NOT OTHER_BITNESS_INSTALLED</Condition>
+
+	  <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+	  <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+	  <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
+
+    <Property Id="ApplicationFolderName" Value="qbittorrent-cli" />
+	  <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+	  <UIRef Id="WixUI_Advanced" />
+
+    <Feature Id="ProductFeature" Title="qBittorrent command line interface" Level="1"
+             Absent="disallow" AllowAdvertise="no">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+    <Feature Id="SetPath" Title="Add to PATH environment variable" Level="1"
+             AllowAdvertise="no">
+      <ComponentGroupRef Id="SetPath" />
+    </Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="$(var.PlatformProgramFilesFolder)">
+				<Directory Id="APPLICATIONFOLDER" Name="qbittorrent-cli" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
+      <Component Id="qbt.exe" Guid="*" >
+        <File Id="qbt.exe" Source="$(var.BinariesDir)\qbt.exe">
+        </File>
+      </Component>
+      <ComponentGroupRef Id="QBT.Binaries" />
+		</ComponentGroup>
+	</Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="SetPath" Directory="APPLICATIONFOLDER">
+      <Component Id="SetSystemPath" Guid="4CE95B00-5942-4879-83FE-30C9CDCD964F">
+        <Condition>ALLUSERS=1</Condition>
+        <CreateFolder Directory="APPLICATIONFOLDER" />
+        <Environment Id="SetSystemPath" Name="PATH" Action="set" Part="last" System="yes" Value="[APPLICATIONFOLDER]"/>
+      </Component>
+      <Component Id="SetUserPath" Guid="0459D990-F649-4454-B1DC-48F4D1B9291E">
+        <Condition><![CDATA[ ALLUSERS<>1 ]]></Condition>
+        <CreateFolder Directory="APPLICATIONFOLDER" />
+        <Environment Id="SetUserPath" Name="PATH" Action="set" Part="last" System="no" Value="[APPLICATIONFOLDER]"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

@@ -1,0 +1,32 @@
+<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>qbittorrent-cli</id>
+    <version><#= PackageVersion #></version>
+    <packageSourceUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows</packageSourceUrl>
+    <owners>Pavel Fedarovich</owners>
+    <title>qBittorrent CLI (Install)</title>
+    <authors>Pavel Fedarovich</authors>
+    <projectUrl>https://github.com/fedarovich/qbittorrent-cli</projectUrl>
+    <iconUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows/package-icon.png</iconUrl>
+    <copyright>2017-2018 Pavel Fedarovich</copyright>
+    <licenseUrl>https://cdn.rawgit.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/fedarovich/qbittorrent-cli</projectSourceUrl>
+    <docsUrl>https://github.com/fedarovich/qbittorrent-cli/wiki</docsUrl>
+    <bugTrackerUrl>https://github.com/fedarovich/qbittorrent-cli/issues</bugTrackerUrl>
+    <tags>qbittorrent-cli qbittorrent</tags>
+    <summary>qBittorrent remote command line interface.</summary>
+    <description>qBittorrent remote command line interface.</description>
+  </metadata>
+  <files>
+    <!-- this section controls what actually gets packaged into the Chocolatey package -->
+    <file src="tools\**" target="tools" />
+    <!--Building from Linux? You may need this instead: <file src="tools/**" target="tools" />-->
+  </files>
+</package>
