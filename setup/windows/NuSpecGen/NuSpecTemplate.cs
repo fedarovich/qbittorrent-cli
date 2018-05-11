@@ -52,7 +52,7 @@ namespace NuSpecGen
     <bugTrackerUrl>https://github.com/fedarovich/qbittorrent-cli/issues</bugTrackerUrl>
     <tags>qbittorrent-cli qbittorrent</tags>
     <summary>qBittorrent remote command line interface.</summary>
-    <description></description>
+    <description>qBittorrent remote command line interface.</description>
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->
