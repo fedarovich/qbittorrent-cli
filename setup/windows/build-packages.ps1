@@ -31,7 +31,10 @@ cp -Path "$env:BUILD_SOURCESDIRECTORY\setup\windows\VERIFICATION.txt" -Destinati
 $f="$env:BUILD_BINARIESDIRECTORY\qbittorrent-cli\tools\chocolateyinstall.ps1"
 gc $f | ? {$_ -notmatch "^\s*#"} | % {$_ -replace '(^.*?)\s*?[^``]#.*','$1'} | Out-File $f+".~" -en utf8; mv -fo $f+".~" $f
 
-choco pack --verbose --outputdirectory "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\publish"
+if (!Test-Path "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\pkg") {
+    New-Item "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\pkg\chocolatey" -ItemType Directory
+}
+choco pack --verbose --outputdirectory "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\pkg\chocolatey"
 
 popd
 popd
