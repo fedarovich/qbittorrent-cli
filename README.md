@@ -1,5 +1,8 @@
 # qbittorrent-cli
-![](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/2/badge)
+
+| Current | Nightly | Release |
+| ------- | ------- | ------- |
+| ![Current Build](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/8/badge) | ![Nightly Build](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/7/badge) | ![Release Build](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/6/badge) |
 
 qBittorrent CLI is a cross-platform command line interface for remote qBittorrent instances.
 
