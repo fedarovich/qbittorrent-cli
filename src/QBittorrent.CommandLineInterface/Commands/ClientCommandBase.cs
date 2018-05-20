@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -19,10 +23,42 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Option("--ask-for-password", "Ask the user to enter a password in a secure way.", CommandOptionType.NoValue)]
         public bool AskForPassword { get; set; }
 
+        protected Settings Settings { get; }
+
+        protected ClientCommandBase()
+        {
+            Settings = SettingsService.Instance.Get();
+        }
+
         protected QBittorrentClient CreateClient()
         {
-            var client = new QBittorrentClient(new Uri(Url, UriKind.Absolute));
-            return client;
+            if (Settings.Proxy == null)
+                return new QBittorrentClient(new Uri(Url, UriKind.Absolute));
+
+            var proxy = new WebProxy
+            {
+                Address = Settings.Proxy.Address,
+                BypassProxyOnLocal = Settings.Proxy.BypassLocal,
+            };
+
+            if (Settings.Proxy.Bypass?.Any() == true)
+            {
+                proxy.BypassList = Settings.Proxy.Bypass.ToArray();
+            }
+
+            if (string.IsNullOrEmpty(Settings.Proxy.Username))
+            {
+                proxy.Credentials = null;
+                proxy.UseDefaultCredentials = true;
+            }
+            else
+            {
+                proxy.UseDefaultCredentials = false;
+                proxy.Credentials = new NetworkCredential(Settings.Proxy.Username, Settings.Proxy.Password ?? "");
+            }
+
+            var handler = new HttpClientHandler {Proxy = proxy};
+            return new QBittorrentClient(new Uri(Url, UriKind.Absolute), handler, true);
         }
 
         protected async Task AuthenticateAsync(QBittorrentClient client)

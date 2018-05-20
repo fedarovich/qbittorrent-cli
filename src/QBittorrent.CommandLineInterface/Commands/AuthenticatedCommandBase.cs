@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
-using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -31,20 +29,19 @@ namespace QBittorrent.CommandLineInterface.Commands
 
         private void LoadSettings()
         {
-            var settings = new Lazy<Settings>(() => SettingsService.Instance.Get(), false);
             if (string.IsNullOrWhiteSpace(Url))
             {
-                Url = settings.Value.Url;
+                Url = Settings.Url;
             }
 
             if (string.IsNullOrWhiteSpace(UserName))
             {
-                UserName = settings.Value.Username;
+                UserName = Settings.Username;
             }
 
             if (Password == null && !AskForPassword)
             {
-                Password = settings.Value.Password;
+                Password = Settings.Password;
             }
         }
     }

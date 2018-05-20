@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.CommandLineInterface.ColorSchemes;
@@ -16,6 +18,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("url", typeof(Url))]
         [Subcommand("username", typeof(Username))]
         [Subcommand("password", typeof(Password))]
+        [Subcommand("proxy", typeof(Proxy))]
         public class Set
         {
             [Command(Description = "Sets the default server URL.")]
@@ -92,6 +95,49 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
+            [Command(Description = "Sets the proxy settings.")]
+            public class Proxy
+            {
+                [Option("-a|--address <URL>", "Proxy server address (URL)", CommandOptionType.SingleValue)]
+                [Required(AllowEmptyStrings = false)]
+                public string Address { get; set; }
+
+                [Option("-u|--username <USERNAME>", "Proxy server user name. Pass empty string to use default credentials.", CommandOptionType.SingleValue)]
+                [Required(AllowEmptyStrings = true)]
+                public string Username { get; set; }
+
+                [Option("-p|--password <PASSWORD>", "Proxy server password.", CommandOptionType.SingleValue)]
+                public string Password { get; set; }
+
+                [Option("-l|--bypass-local", "Bypass proxy for local addresses.", CommandOptionType.NoValue)]
+                public bool BypassLocal { get; set; }
+
+                [Option("-b|--bypass <expressions>", 
+                    "List of regular expressions that describe URIs that do not use the proxy server when accessed", 
+                    CommandOptionType.MultipleValue)]
+                public List<string> Bypass { get; set; }
+
+                public int OnExecute(CommandLineApplication app, IConsole console)
+                {
+                    if (!string.IsNullOrEmpty(Username))
+                    {
+                        Password = Password ?? string.Empty;
+                    }
+
+                    var settings = SettingsService.Instance.Get();
+                    settings.Proxy = new ProxySettings
+                    {
+                        Address = new Uri(Address),
+                        Username = Username,
+                        Password = Password,
+                        BypassLocal = BypassLocal,
+                        Bypass = Bypass
+                    };
+                    SettingsService.Instance.Save(settings);
+                    return ExitCodes.Success;
+                }
+            }
+
             public int OnExecute(CommandLineApplication app, IConsole console)
             {
                 app.ShowHelp();
@@ -103,6 +149,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("url", typeof(Url))]
         [Subcommand("username", typeof(Username))]
         [Subcommand("password", typeof(Password))]
+        [Subcommand("proxy", typeof(Proxy))]
         [Subcommand("all", typeof(All))]
         public class Reset
         {
@@ -137,6 +184,18 @@ namespace QBittorrent.CommandLineInterface.Commands
                 {
                     var settings = SettingsService.Instance.Get();
                     settings.Password = null;
+                    SettingsService.Instance.Save(settings);
+                    return ExitCodes.Success;
+                }
+            }
+
+            [Command(Description = "Resets the proxy settings")]
+            public class Proxy
+            {
+                public int OnExecute(CommandLineApplication app, IConsole console)
+                {
+                    var settings = SettingsService.Instance.Get();
+                    settings.Proxy = null;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
                 }
@@ -178,6 +237,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                         UIHelper.Row("Password",
                             settings.Password != null
                                 ? new Span("<encrypted>").SetColors(ColorScheme.Current.Active)
+                                : new Span("<not set>").SetColors(ColorScheme.Current.Inactive)),
+                        UIHelper.Row("Proxy",
+                            settings.Proxy != null
+                                ? FormatProxySettings(settings.Proxy)
                                 : new Span("<not set>").SetColors(ColorScheme.Current.Inactive))
                     }
                 }
@@ -185,6 +248,32 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             ConsoleRenderer.RenderDocument(doc);
             return ExitCodes.Success;
+
+            Element FormatProxySettings(ProxySettings proxy)
+            {
+                return new Grid
+                {
+                    Stroke = UIHelper.NoneStroke,
+                    Columns = {UIHelper.FieldsColumns},
+                    Children =
+                    {
+                        UIHelper.Row("Address", proxy.Address),
+                        UIHelper.Row("Username",
+                            !string.IsNullOrEmpty(proxy.Username)
+                                ? new Span(proxy.Username).SetColors(ColorScheme.Current.Normal)
+                                : new Span("<not set>").SetColors(ColorScheme.Current.Inactive)),
+                        UIHelper.Row("Password",
+                            proxy.Password != null
+                                ? new Span("<encrypted>").SetColors(ColorScheme.Current.Active)
+                                : new Span("<not set>").SetColors(ColorScheme.Current.Inactive)),
+                        UIHelper.Row("Bypass Local", proxy.BypassLocal),
+                        UIHelper.Row("Bypass", 
+                            proxy.Bypass?.Any() == true
+                                ? (Element)new List(proxy.Bypass.Select(x => new Span(x)))
+                                : new Span("<not set>").SetColors(ColorScheme.Current.Inactive))
+                    }
+                };
+            }
         }
     }
 }

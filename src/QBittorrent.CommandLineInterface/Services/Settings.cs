@@ -21,6 +21,8 @@ namespace QBittorrent.CommandLineInterface.Services
         [JsonConverter(typeof(EncryptConverter))]
         public string Password { get; set; }
 
+        public ProxySettings Proxy { get; set; }
+
         [JsonExtensionData]
         public IDictionary<string, JToken> Other { get; set; }
 
