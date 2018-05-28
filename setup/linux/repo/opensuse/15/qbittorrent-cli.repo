@@ -1,0 +1,8 @@
+#bintray-qbittorrent-cli-opensuse-15 - packages by  from Bintray
+[bintray-qbittorrent-cli-opensuse-15]
+name=bintray-qbittorrent-cli-opensuse-15
+baseurl=https://dl.bintray.com/fedarovich/qbittorrent-cli-rpm/opensuse/15
+gpgkey=https://bintray.com/user/downloadSubjectPublicKey?username=fedarovich
+gpgcheck=1
+repo_gpgcheck=1
+enabled=1

@@ -31,6 +31,7 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/25" && fpm -s dir -t rpm -f -C "$P
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/26" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d libunwind -d libcurl -d openssl-libs -d libicu -d compat-openssl10
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d libunwind -d libcurl4 -d libssl43 -d libicu
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d libunwind -d libcurl4 -d libssl45 -d libicu
 
 ###############################################################################
 # Create packages for ARM                                                     #
@@ -52,6 +53,7 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/25" && fpm -s dir -t rpm -f -C "$P
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/26" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libunwind -d libcurl -d openssl-libs -d libicu -d compat-openssl10
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libunwind -d libcurl4 -d libssl43 -d libicu
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libunwind -d libcurl4 -d libssl45 -d libicu
 
 ###############################################################################
 # Clean up                                                     #
