@@ -1,6 +1,6 @@
 [bintray-qbittorrent-cli-centos-7]
 name=bintray-qbittorrent-cli-centos-7
-baseurl=https://dl.bintray.com/fedarovich/qbittorrent-cli-rpm/fedora/25
+baseurl=https://dl.bintray.com/fedarovich/qbittorrent-cli-rpm/centos/7
 gpgkey=https://bintray.com/user/downloadSubjectPublicKey?username=fedarovich
 gpgcheck=0
 repo_gpgcheck=1

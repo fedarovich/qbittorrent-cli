@@ -27,11 +27,13 @@ curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/f
 ###############################################################################
 
 # x86_64
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/centos/7/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"  "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/centos/7/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/42/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/15/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm?publish=1"
 
 # armv7hl
+curl -T "$BUILD_BINARIESDIRECTORY/pkg/centos/7/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"  "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/centos/7/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/42/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/15/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm?publish=1"
