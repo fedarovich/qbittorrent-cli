@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;netframework4.6</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netframework4.6</TargetFrameworks>
     <AssemblyName>qbt</AssemblyName>
   </PropertyGroup>
 
@@ -40,15 +40,19 @@
   <ItemGroup>
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="BencodeNET" Version="2.2.24" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.3" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.4" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'netframework4.6'" />
     <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'netframework4.6'" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NJsonSchema" Version="9.10.46" />
-    <PackageReference Include="QBittorrent.Client" Version="0.10.18134.1-pre" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
+    <PackageReference Include="NJsonSchema" Version="9.10.50" />
+    <PackageReference Include="QBittorrent.Client" Version="0.10.18148.6-pre" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' != 'netframework4.6'">
+    <None Remove="App.config" />
+  </ItemGroup>
+  
   <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == '' AND '$(TargetFramework)' != 'netframework4.6'">
     <ItemGroup>
       <ResolvedFileToPublish Include="qbt.cmd" RelativePath="qbt.cmd" />

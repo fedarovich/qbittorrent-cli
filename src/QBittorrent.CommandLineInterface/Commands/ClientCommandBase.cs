@@ -57,7 +57,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 proxy.Credentials = new NetworkCredential(Settings.Proxy.Username, Settings.Proxy.Password ?? "");
             }
 
-            var handler = new HttpClientHandler {Proxy = proxy};
+#if NETFRAMEWORK || NETCOREAPP2_0
+            var handler = new HttpClientHandler { Proxy = proxy };
+#else           
+            var handler = new SocketsHttpHandler { Proxy = proxy };
+#endif
             return new QBittorrentClient(new Uri(Url, UriKind.Absolute), handler, true);
         }
 
