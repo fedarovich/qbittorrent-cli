@@ -32,8 +32,29 @@ namespace QBittorrent.CommandLineInterface.Commands
 
         protected QBittorrentClient CreateClient()
         {
+#if NETFRAMEWORK || NETCOREAPP2_0
+            var handler = new HttpClientHandler
+            {
+                Proxy = GetProxy(),
+                UseDefaultCredentials = Settings.NetworkSettings.UseDefaultCredentials,
+                Credentials = GetCredentials(),
+                PreAuthenticate = true
+            };
+#else           
+            var handler = new SocketsHttpHandler
+            {
+                Proxy = GetProxy(),
+                Credentials = GetCredentials(),
+                PreAuthenticate = true
+            };
+#endif
+            return new QBittorrentClient(new Uri(Url, UriKind.Absolute), handler, true);
+        }
+
+        private IWebProxy GetProxy()
+        {
             if (Settings.Proxy == null)
-                return new QBittorrentClient(new Uri(Url, UriKind.Absolute));
+                return null;
 
             var proxy = new WebProxy
             {
@@ -57,12 +78,24 @@ namespace QBittorrent.CommandLineInterface.Commands
                 proxy.Credentials = new NetworkCredential(Settings.Proxy.Username, Settings.Proxy.Password ?? "");
             }
 
-#if NETFRAMEWORK || NETCOREAPP2_0
-            var handler = new HttpClientHandler { Proxy = proxy };
-#else           
-            var handler = new SocketsHttpHandler { Proxy = proxy };
+            return proxy;
+        }
+
+        private ICredentials GetCredentials()
+        {
+            var cache = new CredentialCache();
+            foreach (var cred in Settings.NetworkSettings.Credentials)
+            {
+                cache.Add(cred.Url, cred.AuthType.ToString(), cred.ToCredential());
+            }
+
+#if !(NETFRAMEWORK || NETCOREAPP2_0)
+            if (Settings.NetworkSettings.UseDefaultCredentials)
+            {
+                return new CredentialCacheWithDefault(cache);
+            }
 #endif
-            return new QBittorrentClient(new Uri(Url, UriKind.Absolute), handler, true);
+            return cache;
         }
 
         protected async Task AuthenticateAsync(QBittorrentClient client)
@@ -75,6 +108,21 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
 
                 await client.LoginAsync(UserName, Password);
+            }
+        }
+
+        private class CredentialCacheWithDefault : ICredentials
+        {
+            private readonly CredentialCache _cache;
+
+            public CredentialCacheWithDefault(CredentialCache cache)
+            {
+                _cache = cache;
+            }
+
+            public NetworkCredential GetCredential(Uri uri, string authType)
+            {
+                return _cache.GetCredential(uri, authType) ?? CredentialCache.DefaultNetworkCredentials;
             }
         }
     }

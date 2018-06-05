@@ -12,7 +12,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Command(Description = "Gets or sets this application's settings.")]
     [Subcommand("set", typeof(Set))]
     [Subcommand("reset", typeof(Reset))]
-    public class SettingsCommand
+    public partial class SettingsCommand
     {
         [Command(Description = "Sets the new value for the specified setting.")]
         [Subcommand("url", typeof(Url))]

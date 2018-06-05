@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace QBittorrent.CommandLineInterface
 {
-    internal class EnumHelper
+    internal static class EnumHelper
     {
 #if NETCOREAPP2_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -28,5 +29,10 @@ namespace QBittorrent.CommandLineInterface
         }
 
         public static bool IsDefined<T>(T value) => Enum.IsDefined(typeof(T), value);
+
+        public static IEnumerable<T> GetValues<T>() where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
     }
 }
