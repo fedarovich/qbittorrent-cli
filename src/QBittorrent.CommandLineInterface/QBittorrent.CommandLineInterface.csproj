@@ -38,6 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Commands\NetworkCommand.Credential.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="BencodeNET" Version="2.2.24" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.4" />

@@ -12,6 +12,7 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand("global", typeof(GlobalCommand))]
     [Subcommand("server", typeof(ServerCommand))]
     [Subcommand("settings", typeof(SettingsCommand))]
+    [Subcommand("network", typeof(NetworkCommand))]
     [Subcommand("torrent", typeof(TorrentCommand))]
     [Subcommand("inspect", typeof(InspectCommand))]
     [HelpOption(Inherited = true)]
@@ -29,16 +30,12 @@ namespace QBittorrent.CommandLineInterface
             }
             catch (TargetInvocationException e) when (e.InnerException != null)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine(e.InnerException.Message);
-                Console.ResetColor();
+                PrintError(e.InnerException);
                 return ExitCodes.Failure;
             }
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine(e.Message);
-                Console.ResetColor();
+                PrintError(e);
                 return ExitCodes.Failure;
             }
             finally
@@ -51,6 +48,18 @@ namespace QBittorrent.CommandLineInterface
                 }
 #endif
             }
+        }
+
+        private static void PrintError(Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            var exception = ex;
+            do
+            {
+                Console.Error.WriteLine(exception.Message);
+            } while ((exception = exception.InnerException) != null);
+
+            Console.ResetColor();
         }
 
         private int OnExecute(CommandLineApplication app, IConsole console)

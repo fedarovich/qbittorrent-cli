@@ -13,6 +13,8 @@ namespace QBittorrent.CommandLineInterface.Services
     {
         public bool UseDefaultCredentials { get; set; }
 
+        public bool IgnoreCertificateErrors { get; set; }
+
         public IList<SiteCredentials> Credentials { get; set; } = new List<SiteCredentials>();
 
         [OnDeserialized]

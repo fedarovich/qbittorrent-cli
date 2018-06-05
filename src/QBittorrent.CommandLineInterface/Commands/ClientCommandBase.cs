@@ -40,6 +40,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                 Credentials = GetCredentials(),
                 PreAuthenticate = true
             };
+
+            if (Settings.NetworkSettings.IgnoreCertificateErrors)
+            {
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, error) => true;
+            }
+            
 #else           
             var handler = new SocketsHttpHandler
             {
@@ -47,6 +53,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 Credentials = GetCredentials(),
                 PreAuthenticate = true
             };
+
+            if (Settings.NetworkSettings.IgnoreCertificateErrors)
+            {
+                handler.SslOptions.RemoteCertificateValidationCallback = (message, cert, chain, error) => true;
+            }
 #endif
             return new QBittorrentClient(new Uri(Url, UriKind.Absolute), handler, true);
         }
