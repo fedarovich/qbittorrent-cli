@@ -12,7 +12,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Command(Description = "Manage qBittorrent server.")]
     [Subcommand("log", typeof(Log))]
     [Subcommand("info", typeof(Info))]
-    public class ServerCommand : ClientRootCommandBase
+    public partial class ServerCommand : ClientRootCommandBase
     {
         [Command(Description = "Gets the qBittorrent log.")]
         public class Log : AuthenticatedCommandBase
