@@ -31,17 +31,17 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             if (string.IsNullOrWhiteSpace(Url))
             {
-                Url = Settings.Url;
+                Url = GeneralSettings.Url;
             }
 
             if (string.IsNullOrWhiteSpace(UserName))
             {
-                UserName = Settings.Username;
+                UserName = GeneralSettings.Username;
             }
 
             if (Password == null && !AskForPassword)
             {
-                Password = Settings.Password;
+                Password = GeneralSettings.Password;
             }
         }
     }

@@ -48,8 +48,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                         Password = Password ?? GetPassword();
                     }
 
-                    var settings = SettingsService.Instance.Get();
-                    settings.Proxy = new ProxySettings
+                    var networkSettings = SettingsService.Instance.GetNetwork();
+                    networkSettings.Proxy = new ProxySettings
                     {
                         Address = Address,
                         Username = Username,
@@ -57,7 +57,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         BypassLocal = BypassLocal,
                         Bypass = Bypass
                     };
-                    SettingsService.Instance.Save(settings);
+                    SettingsService.Instance.Save(networkSettings);
                     return ExitCodes.Success;
 
                     string GetPassword()
@@ -74,17 +74,17 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
-                    settings.Proxy = null;
-                    SettingsService.Instance.Save(settings);
+                    var networkSettings = SettingsService.Instance.GetNetwork();
+                    networkSettings.Proxy = null;
+                    SettingsService.Instance.Save(networkSettings);
                     return ExitCodes.Success;
                 }
             }
 
             public int OnExecute(CommandLineApplication app, IConsole console)
             {
-                var settings = SettingsService.Instance.Get();
-                var proxy = settings.Proxy;
+                var networkSettings = SettingsService.Instance.GetNetwork();
+                var proxy = networkSettings.Proxy;
                 if (proxy == null)
                 {
                     console.WriteLineColored("<not set>", ColorScheme.Current.Inactive);

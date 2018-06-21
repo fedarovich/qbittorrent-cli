@@ -21,10 +21,6 @@ namespace QBittorrent.CommandLineInterface.Services
         [JsonConverter(typeof(EncryptConverter))]
         public string Password { get; set; }
 
-        public ProxySettings Proxy { get; set; }
-
-        public NetworkSettings NetworkSettings { get; set; }
-
         [JsonExtensionData]
         public IDictionary<string, JToken> Other { get; set; }
 
@@ -35,11 +31,6 @@ namespace QBittorrent.CommandLineInterface.Services
             {
                 Url = DefaultUrl;
             }
-
-            if (NetworkSettings == null)
-            {
-                NetworkSettings = new NetworkSettings();
-            }
         }
 
         [OnSerializing]
@@ -48,11 +39,6 @@ namespace QBittorrent.CommandLineInterface.Services
             if (string.IsNullOrWhiteSpace(Url))
             {
                 Url = DefaultUrl;
-            }
-
-            if (NetworkSettings == null)
-            {
-                NetworkSettings = new NetworkSettings();
             }
         }
     }

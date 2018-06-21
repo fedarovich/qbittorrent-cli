@@ -30,7 +30,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
+                    var settings = SettingsService.Instance.GetGeneral();
                     settings.Url = Value;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
@@ -46,7 +46,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
+                    var settings = SettingsService.Instance.GetGeneral();
                     settings.Username = Value;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
@@ -87,7 +87,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         }
                     }
 
-                    var settings = SettingsService.Instance.Get();
+                    var settings = SettingsService.Instance.GetGeneral();
                     settings.Password = value;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
@@ -113,7 +113,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
+                    var settings = SettingsService.Instance.GetGeneral();
                     settings.Url = Settings.DefaultUrl;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
@@ -125,7 +125,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
+                    var settings = SettingsService.Instance.GetGeneral();
                     settings.Username = null;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
@@ -137,7 +137,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
+                    var settings = SettingsService.Instance.GetGeneral();
                     settings.Password = null;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
@@ -163,7 +163,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
         public int OnExecute(CommandLineApplication app, IConsole console)
         {
-            var settings = SettingsService.Instance.Get();
+            var settings = SettingsService.Instance.GetGeneral();
 
             var doc = new Document(
                 new Grid

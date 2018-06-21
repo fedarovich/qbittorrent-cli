@@ -23,11 +23,14 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Option("--ask-for-password", "Ask the user to enter a password in a secure way.", CommandOptionType.NoValue)]
         public bool AskForPassword { get; set; }
 
-        protected Settings Settings { get; }
+        protected Settings GeneralSettings { get; }
+
+        protected NetworkSettings NetworkSettings { get; }
 
         protected ClientCommandBase()
         {
-            Settings = SettingsService.Instance.Get();
+            GeneralSettings = SettingsService.Instance.GetGeneral();
+            NetworkSettings = SettingsService.Instance.GetNetwork();
         }
 
         protected QBittorrentClient CreateClient()
@@ -36,12 +39,12 @@ namespace QBittorrent.CommandLineInterface.Commands
             var handler = new HttpClientHandler
             {
                 Proxy = GetProxy(),
-                UseDefaultCredentials = Settings.NetworkSettings.UseDefaultCredentials,
+                UseDefaultCredentials = NetworkSettings.UseDefaultCredentials,
                 Credentials = GetCredentials(),
                 PreAuthenticate = true
             };
 
-            if (Settings.NetworkSettings.IgnoreCertificateErrors)
+            if (NetworkSettings.IgnoreCertificateErrors)
             {
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, error) => true;
             }
@@ -54,7 +57,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 PreAuthenticate = true
             };
 
-            if (Settings.NetworkSettings.IgnoreCertificateErrors)
+            if (NetworkSettings.IgnoreCertificateErrors)
             {
                 handler.SslOptions.RemoteCertificateValidationCallback = (message, cert, chain, error) => true;
             }
@@ -64,21 +67,21 @@ namespace QBittorrent.CommandLineInterface.Commands
 
         private IWebProxy GetProxy()
         {
-            if (Settings.Proxy == null)
+            if (NetworkSettings.Proxy == null)
                 return null;
 
             var proxy = new WebProxy
             {
-                Address = Settings.Proxy.Address,
-                BypassProxyOnLocal = Settings.Proxy.BypassLocal,
+                Address = NetworkSettings.Proxy.Address,
+                BypassProxyOnLocal = NetworkSettings.Proxy.BypassLocal,
             };
 
-            if (Settings.Proxy.Bypass?.Any() == true)
+            if (NetworkSettings.Proxy.Bypass?.Any() == true)
             {
-                proxy.BypassList = Settings.Proxy.Bypass.ToArray();
+                proxy.BypassList = NetworkSettings.Proxy.Bypass.ToArray();
             }
 
-            if (string.IsNullOrEmpty(Settings.Proxy.Username))
+            if (string.IsNullOrEmpty(NetworkSettings.Proxy.Username))
             {
                 proxy.Credentials = null;
                 proxy.UseDefaultCredentials = true;
@@ -86,7 +89,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             else
             {
                 proxy.UseDefaultCredentials = false;
-                proxy.Credentials = new NetworkCredential(Settings.Proxy.Username, Settings.Proxy.Password ?? "");
+                proxy.Credentials = new NetworkCredential(NetworkSettings.Proxy.Username, NetworkSettings.Proxy.Password ?? "");
             }
 
             return proxy;
@@ -95,13 +98,13 @@ namespace QBittorrent.CommandLineInterface.Commands
         private ICredentials GetCredentials()
         {
             var cache = new CredentialCache();
-            foreach (var cred in Settings.NetworkSettings.Credentials)
+            foreach (var cred in NetworkSettings.Credentials)
             {
                 cache.Add(cred.Url, cred.AuthType.ToString(), cred.ToCredential());
             }
 
 #if !(NETFRAMEWORK || NETCOREAPP2_0)
-            if (Settings.NetworkSettings.UseDefaultCredentials)
+            if (NetworkSettings.UseDefaultCredentials)
             {
                 return new CredentialCacheWithDefault(cache);
             }

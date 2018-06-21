@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Alba.CsConsoleFormat;
+﻿using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.Services;
@@ -29,8 +26,8 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             public int OnExecute(CommandLineApplication app, IConsole console)
             {
-                var settings = SettingsService.Instance.Get();
-                var net = settings.NetworkSettings;
+                var settings = SettingsService.Instance.GetGeneral();
+                var net = SettingsService.Instance.GetNetwork();
 
                 bool hasChanges = false;
 

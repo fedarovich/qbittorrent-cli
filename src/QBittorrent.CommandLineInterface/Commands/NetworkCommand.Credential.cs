@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Alba.CsConsoleFormat;
@@ -20,8 +19,8 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             public int OnExecute(CommandLineApplication app, IConsole console)
             {
-                var settings = SettingsService.Instance.Get();
-                var credentials = settings.NetworkSettings.Credentials;
+                var networkSettings = SettingsService.Instance.GetNetwork();
+                var credentials = networkSettings.Credentials;
 
                 var doc = new Document(
                     new Grid
@@ -78,8 +77,8 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
-                    var cred = settings.NetworkSettings.Credentials.FirstOrDefault(
+                    var networkSettings = SettingsService.Instance.GetNetwork();
+                    var cred = networkSettings.Credentials.FirstOrDefault(
                         c => AuthType == c.AuthType && Url == c.Url);
                     if (cred == null)
                     {
@@ -88,14 +87,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                             Url = Url,
                             AuthType = AuthType.Value
                         };
-                        settings.NetworkSettings.Credentials.Add(cred);
+                        networkSettings.Credentials.Add(cred);
                     }
 
                     cred.Username = Username;
                     cred.Password = Password ?? GetPassword();
                     cred.Domain = Domain;
 
-                    SettingsService.Instance.Save(settings);
+                    SettingsService.Instance.Save(networkSettings);
                     return ExitCodes.Success;
 
                     string GetPassword()
@@ -120,15 +119,15 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
-                    var cred = settings.NetworkSettings.Credentials.FirstOrDefault(
+                    var networkSettings = SettingsService.Instance.GetNetwork();
+                    var cred = networkSettings.Credentials.FirstOrDefault(
                         c => AuthType == c.AuthType && Url == c.Url);
                     if (cred != null)
                     {
-                        settings.NetworkSettings.Credentials.Remove(cred);
+                        networkSettings.Credentials.Remove(cred);
                     }
 
-                    SettingsService.Instance.Save(settings);
+                    SettingsService.Instance.Save(networkSettings);
                     return ExitCodes.Success;
                 }
             }
@@ -138,9 +137,9 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    var settings = SettingsService.Instance.Get();
-                    settings.NetworkSettings.Credentials.Clear();
-                    SettingsService.Instance.Save(settings);
+                    var networkSettings = SettingsService.Instance.GetNetwork();
+                    networkSettings.Credentials.Clear();
+                    SettingsService.Instance.Save(networkSettings);
                     return ExitCodes.Success;
                 }
             }
