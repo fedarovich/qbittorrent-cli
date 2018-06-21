@@ -23,7 +23,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Option("--ask-for-password", "Ask the user to enter a password in a secure way.", CommandOptionType.NoValue)]
         public bool AskForPassword { get; set; }
 
-        protected Settings GeneralSettings { get; }
+        protected GeneralSettings GeneralSettings { get; }
 
         protected NetworkSettings NetworkSettings { get; }
 

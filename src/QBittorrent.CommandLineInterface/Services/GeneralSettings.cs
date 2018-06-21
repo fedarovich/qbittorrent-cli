@@ -9,7 +9,7 @@ using QBittorrent.CommandLineInterface.Converters;
 
 namespace QBittorrent.CommandLineInterface.Services
 {
-    public class Settings
+    public class GeneralSettings
     {
         public const string DefaultUrl = "http://127.0.0.1:8080";
 

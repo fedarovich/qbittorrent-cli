@@ -18,19 +18,19 @@ namespace QBittorrent.CommandLineInterface.Services
         {
         }
 
-        public Settings GetGeneral()
+        public GeneralSettings GetGeneral()
         {
             var file = new FileInfo(GetGeneralSettingsPath());
             if (!file.Exists)
             {
-                return new Settings();
+                return new GeneralSettings();
             }
 
             var serializer = new JsonSerializer();
             using (var textReader = file.OpenText())
             using (var jsonReader = new JsonTextReader(textReader))
             {
-                return serializer.Deserialize<Settings>(jsonReader);
+                return serializer.Deserialize<GeneralSettings>(jsonReader);
             }
         }
 
@@ -51,12 +51,12 @@ namespace QBittorrent.CommandLineInterface.Services
                 return serializer.Deserialize<NetworkSettings>(jsonReader);
             }
 
-            ProxySettings GetLegacyProxySettings(Settings settings)
+            ProxySettings GetLegacyProxySettings(GeneralSettings settings)
             {
                 return settings.Other.TryGetValue("Proxy", out var jtoken) ? jtoken.ToObject<ProxySettings>() : null;
             }
 
-            NetworkSettings GetLegacyNetworkSettings(Settings settings, ProxySettings proxy)
+            NetworkSettings GetLegacyNetworkSettings(GeneralSettings settings, ProxySettings proxy)
             {
                 if (!settings.Other.TryGetValue("NetworkSettings", out var jtoken))
                     return new NetworkSettings();
@@ -67,7 +67,7 @@ namespace QBittorrent.CommandLineInterface.Services
             }
         }
 
-        public void Save(Settings settings)
+        public void Save(GeneralSettings generalSettings)
         {
             EnsureUserDir();
             EncryptionService.Instance.ResetKey();
@@ -78,7 +78,7 @@ namespace QBittorrent.CommandLineInterface.Services
             using (var textWriter = new StreamWriter(stream, Encoding.UTF8))
             using (var jsonWriter = new JsonTextWriter(textWriter) {Formatting = Formatting.Indented} )
             {
-                serializer.Serialize(jsonWriter, settings);
+                serializer.Serialize(jsonWriter, generalSettings);
             }
         }
 

@@ -108,13 +108,13 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("all", typeof(All))]
         public class Reset
         {
-            [Command(Description = "Resets the server URL to " + Settings.DefaultUrl)]
+            [Command(Description = "Resets the server URL to " + GeneralSettings.DefaultUrl)]
             public class Url
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
                     var settings = SettingsService.Instance.GetGeneral();
-                    settings.Url = Settings.DefaultUrl;
+                    settings.Url = GeneralSettings.DefaultUrl;
                     SettingsService.Instance.Save(settings);
                     return ExitCodes.Success;
                 }
@@ -149,7 +149,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 public int OnExecute(CommandLineApplication app, IConsole console)
                 {
-                    SettingsService.Instance.Save(new Settings());
+                    SettingsService.Instance.Save(new GeneralSettings());
                     return ExitCodes.Success;
                 }
             }
