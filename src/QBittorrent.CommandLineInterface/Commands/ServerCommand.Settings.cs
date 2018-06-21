@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,7 +15,9 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class ServerCommand
     {
         [Subcommand("downloads", typeof(Downloads))]
+        [Subcommand("monitored-folder", typeof(MonitoredFolder))]
         [Subcommand("email", typeof(Email))]
+        [Subcommand("connection", typeof(Connection))]
         public class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -107,6 +110,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public bool? AutorunEnabled { get; set; }
             }
 
+            [Command(Description = "TODO:")]
+            public class MonitoredFolder
+            {
+                // TODO: Implement.
+            }
+
             [Command(Description = "Manages e-mail notifications.", ExtendedHelpText = ExtendedHelp)]
             public class Email : SettingsCommand<EmailViewModel>
             {
@@ -146,6 +155,38 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     return Task.CompletedTask;
                 }
+            }
+
+            public class Connection : SettingsCommand<ConnectionViewModel>
+            {
+                [Option("-b|--protocol <PROTOCOL>", "Bittorrent protocol: TCP, uTP, Both", CommandOptionType.SingleValue)]
+                public BittorrentProtocol? BittorrentProtocol { get; set; }
+
+                [Option("-p|--listen-port <PORT>", "Incoming connections port.", CommandOptionType.SingleValue)]
+                [Range(1, 65535)]
+                public int? ListenPort { get; set; }
+
+                [Option("-r|--random-port <BOOL>", "Use different port on each startup.", CommandOptionType.SingleValue)]
+                public bool? RandomPort { get; set; }
+
+                [Option("--upnp <BOOL>", "Use UPnP / NAT-PMP port forwarding.", CommandOptionType.SingleValue)]
+                public bool? UpnpEnabled { get; set; }
+
+                [Option("-C|--max-connections <INT>", "Maximal number of connections. Use -1 to disable the limit.", CommandOptionType.SingleValue)]
+                [Range(-1, int.MaxValue)]
+                public int? MaxConnections { get; set; }
+
+                [Option("-c|--max-connections-per-torrent <INT>", "Maximal number of connections per torrent. Use -1 to disable the limit.", CommandOptionType.SingleValue)]
+                [Range(-1, int.MaxValue)]
+                public int? MaxConnectionsPerTorrent { get; set; }
+
+                [Option("-U|--max-uploads <INT>", "Maximal number of upload slots. Use -1 to disable the limit.", CommandOptionType.SingleValue)]
+                [Range(-1, int.MaxValue)]
+                public int? MaxUploads { get; set; }
+
+                [Option("-u|--max-uploads-per-torrent <INT>", "Maximal number of upload slots per torrent. Use -1 to disable the limit.", CommandOptionType.SingleValue)]
+                [Range(-1, int.MaxValue)]
+                public int? MaxUploadsPerTorrent { get; set; }
             }
         }
     }
