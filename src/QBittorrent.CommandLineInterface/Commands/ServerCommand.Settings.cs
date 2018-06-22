@@ -18,6 +18,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("monitored-folder", typeof(MonitoredFolder))]
         [Subcommand("email", typeof(Email))]
         [Subcommand("connection", typeof(Connection))]
+        [Subcommand("proxy", typeof(Proxy))]
         public class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -75,8 +76,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                 protected virtual void PrintPreferences(QBittorrentClient client, Preferences preferences)
                 {
                     var vm = (T)Activator.CreateInstance(typeof(T), preferences);
-                    UIHelper.PrintObject(vm);
+                    UIHelper.PrintObject(vm, CustomPropertyFormat);
                 }
+
+                protected virtual Func<string, object, string> CustomPropertyFormat => null;
             }
 
             [Command(Description = "Manages folders and options for downloads.", ExtendedHelpText = ExtendedHelp)]
@@ -157,6 +160,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
+            [Command(Description = "Manages connection settings.", ExtendedHelpText = ExtendedHelp)]
             public class Connection : SettingsCommand<ConnectionViewModel>
             {
                 [Option("-b|--protocol <PROTOCOL>", "Bittorrent protocol: TCP, uTP, Both", CommandOptionType.SingleValue)]
@@ -187,6 +191,57 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-u|--max-uploads-per-torrent <INT>", "Maximal number of upload slots per torrent. Use -1 to disable the limit.", CommandOptionType.SingleValue)]
                 [Range(-1, int.MaxValue)]
                 public int? MaxUploadsPerTorrent { get; set; }
+            }
+
+            [Command(Description = "Manages proxy settings.", ExtendedHelpText = ExtendedHelp)]
+            public class Proxy : SettingsCommand<ProxyViewModel>
+            {
+                [Option("-t|--type <TYPE>", "Proxy type (None|Http|HttpAuth|Socks4|Socks5|Socks5Auth)", CommandOptionType.SingleValue)]
+                public ProxyType? ProxyType { get; set; }
+
+                [Option("-a|--address <ADDRESS>", "Address", CommandOptionType.SingleValue)]
+                public string ProxyAddress { get; set; }
+
+                [Option("--port <PORT>", "Port", CommandOptionType.SingleValue)]
+                [Range(1, 65535)]
+                public int? ProxyPort { get; set; }
+
+                [Option("-c|--proxy-peer-connections <BOOL>", "Use proxy for peer connections", CommandOptionType.SingleValue)]
+                public bool? ProxyPeerConnections { get; set; }
+
+                [Option("-f|--force-proxy <BOOL>", "Disable connections not supported by proxies", CommandOptionType.SingleValue)]
+                public bool? ForceProxy { get; set; }
+
+                [Option("-u|--proxy-username <USERNAME>", "Proxy username", CommandOptionType.SingleValue)]
+                public string ProxyUsername { get; set; }
+
+                [Option("-p|--proxy-password <PASSWORD>", "Proxy password", CommandOptionType.SingleValue)]
+                public string ProxyPassword { get; set; }
+
+                [Option("-P|--ask-proxy-password", "Ask user to enter SMTP server password.", CommandOptionType.NoValue)]
+                [Ignore]
+                public bool AskForProxyPassword { get; set; }
+
+                protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    if (AskForProxyPassword)
+                    {
+                        ProxyPassword = console.IsInputRedirected
+                            ? console.In.ReadLine()
+                            : Prompt.GetPassword("Please, enter your SMTP server password: ");
+                    }
+
+                    return Task.CompletedTask;
+                }
+
+                protected override Func<string, object, string> CustomPropertyFormat { get; } =
+                    (name, value) =>
+                    {
+                        if (name == nameof(ProxyViewModel.ProxyType) && value != null)
+                            return Enum.IsDefined(typeof(ProxyType), value) ? value.ToString() : "None";
+
+                        return null;
+                    };
             }
         }
     }

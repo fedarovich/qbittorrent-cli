@@ -42,6 +42,5 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         [Display(Name = "Maximal number of upload slots per torrent")]
         [DisplayFormat(DataFormatString = "{0:0;unlimited}")]
         public int? MaxUploadsPerTorrent => _wrappedObject.MaxUploadsPerTorrent;
-
     }
 }
