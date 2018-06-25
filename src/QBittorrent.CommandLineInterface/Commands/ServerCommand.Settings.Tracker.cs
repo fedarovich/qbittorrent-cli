@@ -1,68 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
-using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
-using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
     public partial class ServerCommand
     {
-        [Subcommand("ip-filter", typeof(IpFilter))]
+        [Subcommand("tracker", typeof(Tracker))]
         public partial class Settings
         {
-            [Command(Description = "Manages IP filter.")]
+            [Command(Description = "Manages additional trackers.", ExtendedHelpText = "\nAdditional trackers are automatically added to each new torrent.")]
             [Subcommand("add", typeof(Add))]
             [Subcommand("delete", typeof(Delete))]
             [Subcommand("clear", typeof(Clear))]
             [Subcommand("list", typeof(List))]
-            public class IpFilter : SettingsCommand<IpFilterViewModel>
+            public class Tracker : ClientRootCommandBase
             {
-                public IpFilter()
-                {
-                    CustomFormatters[nameof(IpFilterViewModel.BannedIpAddresses)] =
-                        value => value is IEnumerable<string> list ? string.Join(Environment.NewLine, list) : null;
-                }
-
-                [Option("-e|--enabled <BOOL>", "Enables/disables IP filter", CommandOptionType.SingleValue, Inherited = false)]
-                public bool? IpFilterEnabled { get; set; }
-
-                [Option("-f|--filter <PATH>", "Filter path (.dat, .p2p, .p2b)", CommandOptionType.SingleValue, Inherited = false)]
-                public string IpFilterPath { get; set; }
-
-                [Option("-t|--filter-trackers <BOOL>", "Apply filter to trackers", CommandOptionType.SingleValue, Inherited = false)]
-                public bool? IpFilterTrackers { get; set; }
-
-                [Command(Description = "Adds IP addresses to the ban-list.")]
+                [Command(Description = "Adds additional trackers.")]
                 public class Add : AuthenticatedCommandBase
                 {
-                    [Argument(0, "IP_1 IP_2 ... IP_N", "IP addresses to add.")]
+                    [Argument(0, "URL_1 URL_2 ... URL_N", "The URLs of the trackers to be added.")]
                     [Required]
-                    [IpAddressValidation]
-                    public List<string> Addresses { get; set; }
+                    [Url]
+                    public List<string> Trackers { get; set; } 
 
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        var banList = prefs.BannedIpAddresses;
+                        var currentTrackers = prefs.AdditinalTrackers;
                         bool modified = false;
-                        foreach (var address in Addresses)
+                        foreach (var tracker in Trackers)
                         {
-                            if (!banList.Contains(address))
+                            if (!currentTrackers.Contains(tracker))
                             {
-                                banList.Add(address);
+                                currentTrackers.Add(tracker);
                                 modified = true;
                             }
                         }
 
                         if (modified)
                         {
-                            prefs = new Preferences {BannedIpAddresses = banList};
+                            prefs = new Preferences {AdditinalTrackers = currentTrackers};
                             await client.SetPreferencesAsync(prefs);
                         }
 
@@ -70,28 +53,27 @@ namespace QBittorrent.CommandLineInterface.Commands
                     }
                 }
 
-                [Command(Description = "Deletes IP addresses from the ban-list.")]
+                [Command(Description = "Deletes additional trackers.")]
                 public class Delete : AuthenticatedCommandBase
                 {
-                    [Argument(0, "IP_1 IP_2 ... IP_N", "IP addresses to add.")]
+                    [Argument(0, "URL_1 URL_2 ... URL_N", "The URLs of the trackers to be removed.")]
                     [Required]
-                    [IpAddressValidation]
-                    public List<string> Addresses { get; set; }
+                    [Url]
+                    public List<string> Trackers { get; set; }
 
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        var banList = prefs.BannedIpAddresses;
-
+                        var currentTrackers = prefs.AdditinalTrackers;
                         bool modified = false;
-                        foreach (var address in Addresses)
+                        foreach (var tracker in Trackers)
                         {
-                            modified |= banList.Remove(address);
+                            modified |= currentTrackers.Remove(tracker);
                         }
 
                         if (modified)
                         {
-                            prefs = new Preferences { BannedIpAddresses = banList };
+                            prefs = new Preferences { AdditinalTrackers = currentTrackers };
                             await client.SetPreferencesAsync(prefs);
                         }
 
@@ -99,27 +81,28 @@ namespace QBittorrent.CommandLineInterface.Commands
                     }
                 }
 
-                [Command(Description = "Deletes all IP addresses from the ban-list.")]
+                [Command(Description = "Deletes all additional trackers.")]
                 public class Clear : AuthenticatedCommandBase
                 {
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
-                        var prefs = new Preferences { BannedIpAddresses = new string[0] };
+                        var prefs = new Preferences { AdditinalTrackers = new string[0] };
                         await client.SetPreferencesAsync(prefs);
                         return ExitCodes.Success;
                     }
                 }
 
-                [Command(Description = "Lists all manually banned IP addresses.")]
+                [Command(Description = "Shows the list of additional trackers.")]
                 public class List : AuthenticatedCommandBase
                 {
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        foreach (var address in prefs.BannedIpAddresses ?? Enumerable.Empty<string>())
+                        foreach (var tracker in prefs.AdditinalTrackers)
                         {
-                            console.WriteLineColored(address, ColorScheme.Current.Normal);
+                            console.WriteLineColored(tracker, ColorScheme.Current.Normal);
                         }
+
                         return ExitCodes.Success;
                     }
                 }
