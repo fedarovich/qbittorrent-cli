@@ -21,6 +21,9 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("connection", typeof(Connection))]
         [Subcommand("proxy", typeof(Proxy))]
         [Subcommand("speed", typeof(Speed))]
+        [Subcommand("privacy", typeof(Privacy))]
+        [Subcommand("queue", typeof(Queue))]
+        [Subcommand("seeding", typeof(Seeding))]
         public partial class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -312,6 +315,70 @@ namespace QBittorrent.CommandLineInterface.Commands
                         throw new InvalidOperationException($"Invalid time format: \"{input}\". Please, specify time either in your local format or as HH:mm.");
                     }
                 }
+            }
+
+            [Command(Description = "Manages BitTorrent privacy settings.", ExtendedHelpText = ExtendedHelp)]
+            public class Privacy : SettingsCommand<PrivacyViewModel>
+            {
+                [Option("-d|--dht <BOOL>", "Enable/disable DHT", CommandOptionType.SingleValue)]
+                public bool? DHT { get; set; }
+
+                //public bool? DHTSameAsBT { get; set; }
+
+                //public int? DHTPort { get; set; }
+
+                [Option("-p|--pex <BOOL>", "Enable/disable Peer Exchange", CommandOptionType.SingleValue)]
+                public bool? PeerExchange { get; set; }
+
+                [Option("-l|--lpd <BOOL>", "Enable/disable Local Peer Discovery", CommandOptionType.SingleValue)]
+                public bool? LocalPeerDiscovery { get; set; }
+
+                [Option("-e|--encryption <MODE>", "Encryption mode (ForceOff|Prefer|ForceOn)", CommandOptionType.SingleValue)]
+                public Encryption? Encryption { get; set; }
+
+                [Option("-a|--anonymous <BOOL>", "Enable/disable anonymous mode", CommandOptionType.SingleValue)]
+                public bool? AnonymousMode { get; set; }
+            }
+
+            [Command(Description = "Manages BitTorrent queueing settings.", ExtendedHelpText = ExtendedHelp)]
+            public class Queue : SettingsCommand<QueueViewModel>
+            {
+                [Option("-q|--queueing <BOOL>", "Enable/disable torrent queueing", CommandOptionType.SingleValue)]
+                public bool? QueueingEnabled { get; set; }
+
+                [Option("-d|--max-downloads <COUNT>", "Maximum active downloads", CommandOptionType.SingleValue)]
+                public int? MaxActiveDownloads { get; set; }
+
+                [Option("-t|--max-torrents <COUNT>", "Maximum active torrents", CommandOptionType.SingleValue)]
+                public int? MaxActiveTorrents { get; set; }
+
+                [Option("-u|--max-uploads <COUNT>", "Maximum active uploads", CommandOptionType.SingleValue)]
+                public int? MaxActiveUploads { get; set; }
+
+                [Option("-n|--no-slow <BOOL>", "Do not count slow torrents in these limits", CommandOptionType.SingleValue)]
+                public bool? DoNotCountSlowTorrents { get; set; }
+            }
+
+            [Command(Description = "Manages BitTorrent seeding settings.", ExtendedHelpText = ExtendedHelp)]
+            public class Seeding : SettingsCommand<SeedingViewModel>
+            {
+                [Option("-R|--max-ratio-enabled <BOOL>", "Enable/disable maximal ratio limit", CommandOptionType.SingleValue)]
+                public bool? MaxRatioEnabled { get; set; }
+
+                [Option("-r|--max-ratio <VALUE>", "Maximal ratio", CommandOptionType.SingleValue)]
+                [Range(-1d, Double.MaxValue)]
+                public double? MaxRatio { get; set; }
+
+                [Option("-S|--max-seeding-time-enabled <BOOL>", "Enable/disable maximal seeding time limit", CommandOptionType.SingleValue)]
+                public bool? MaxSeedingTimeEnabled { get; set; }
+
+                [Option("-s|--max-seeding-time <MINUTES>", "Maximal seeding time in minutes", CommandOptionType.SingleValue)]
+                [Range(-1, int.MaxValue)]
+                public int? MaxSeedingTime { get; set; }
+
+                [Option("-a|--action <ACTION>", "Action to perform when maximal ratio or seeding time limit is reached (Pause|Remove)", 
+                    CommandOptionType.SingleValue)]
+                public MaxRatioAction? MaxRatioAction { get; set; }
             }
         }
     }
