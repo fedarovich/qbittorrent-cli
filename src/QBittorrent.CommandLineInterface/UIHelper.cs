@@ -52,8 +52,8 @@ namespace QBittorrent.CommandLineInterface
             return new object[] { Label(label), dataCell };
         }
 
-        public static void PrintObject<T>(T obj, 
-            Func<string, object, string> customFormat = null)
+        public static void PrintObject<T>(T obj,
+            IReadOnlyDictionary<string, Func<object, string>> customFormatters = null)
         {
             const string DefaultFormat = "{0}";
 
@@ -94,10 +94,19 @@ namespace QBittorrent.CommandLineInterface
                 foreach (var property in properties)
                 {
                     var label = property.name;
-                    var value = customFormat?.Invoke(property.propName, property.value)
-                        ?? ((property.value == null && property.nullString != null)
-                                ? property.nullString
-                                : string.Format(property.format, property.value));
+                    if (customFormatters != null && customFormatters.TryGetValue(property.propName, out var formatter))
+                    {
+                        var customValue = formatter(property.value);
+                        if (customValue != null)
+                        {
+                            yield return (label, customValue);
+                            continue;
+                        }
+                    }
+
+                    var value = (property.value == null && property.nullString != null)
+                        ? property.nullString
+                        : string.Format(property.format, property.value);
                     yield return (label, value);
                 }
             }

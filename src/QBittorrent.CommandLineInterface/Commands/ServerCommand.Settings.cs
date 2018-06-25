@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,6 +21,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("email", typeof(Email))]
         [Subcommand("connection", typeof(Connection))]
         [Subcommand("proxy", typeof(Proxy))]
+        [Subcommand("speed", typeof(Speed))]
         public class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -30,6 +33,8 @@ namespace QBittorrent.CommandLineInterface.Commands
             {
                 protected const string ExtendedHelp =
                     "\nRun this command without options too see the current settings.";
+
+                protected Dictionary<string, Func<object, string>> CustomFormatters { get; } = new Dictionary<string, Func<object, string>>();
 
                 protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
@@ -76,10 +81,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                 protected virtual void PrintPreferences(QBittorrentClient client, Preferences preferences)
                 {
                     var vm = (T)Activator.CreateInstance(typeof(T), preferences);
-                    UIHelper.PrintObject(vm, CustomPropertyFormat);
+                    UIHelper.PrintObject(vm, CustomFormatters);
                 }
-
-                protected virtual Func<string, object, string> CustomPropertyFormat => null;
             }
 
             [Command(Description = "Manages folders and options for downloads.", ExtendedHelpText = ExtendedHelp)]
@@ -163,6 +166,12 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Command(Description = "Manages connection settings.", ExtendedHelpText = ExtendedHelp)]
             public class Connection : SettingsCommand<ConnectionViewModel>
             {
+                public Connection()
+                {
+                    CustomFormatters[nameof(ConnectionViewModel.BittorrentProtocol)] =
+                        value => Client.BittorrentProtocol.Both.Equals(value) ? "TCP and uTP" : null;
+                }
+
                 [Option("-b|--protocol <PROTOCOL>", "Bittorrent protocol: TCP, uTP, Both", CommandOptionType.SingleValue)]
                 public BittorrentProtocol? BittorrentProtocol { get; set; }
 
@@ -196,6 +205,12 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Command(Description = "Manages proxy settings.", ExtendedHelpText = ExtendedHelp)]
             public class Proxy : SettingsCommand<ProxyViewModel>
             {
+                public Proxy()
+                {
+                    CustomFormatters[nameof(ProxyViewModel.ProxyType)] =
+                        value => value != null ? (Enum.IsDefined(typeof(ProxyType), value) ? value.ToString() : "None") : null;
+                }
+
                 [Option("-t|--type <TYPE>", "Proxy type (None|Http|HttpAuth|Socks4|Socks5|Socks5Auth)", CommandOptionType.SingleValue)]
                 public ProxyType? ProxyType { get; set; }
 
@@ -233,15 +248,77 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     return Task.CompletedTask;
                 }
+            }
 
-                protected override Func<string, object, string> CustomPropertyFormat { get; } =
-                    (name, value) =>
+            [Command(Description = "Manages speed limits.", ExtendedHelpText = ExtendedHelp)]
+            public class Speed : SettingsCommand<SpeedViewModel>
+            {
+                private (int? hour, int? minute) _from;
+                private (int? hour, int? minute) _to;
+
+                [Option("-d|--download <SPEED>", "Download limit (bytes/s)", CommandOptionType.SingleValue)]
+                public int? DownloadLimit { get; set; }
+
+                [Option("-u|--upload <SPEED>", "Upload limit (bytes/s)", CommandOptionType.SingleValue)]
+                public int? UploadLimit { get; set; }
+
+                [Option("-D|--alt-download <SPEED>", "Alternative download limit (bytes/s)", CommandOptionType.SingleValue)]
+                public int? AlternativeDownloadLimit { get; set; }
+
+                [Option("-U|--alt-upload <SPEED>", "Alternative upload limit (bytes/s)", CommandOptionType.SingleValue)]
+                public int? AlternativeUploadLimit { get; set; }
+
+                [Option("-s|--enable-scheduler <BOOL>", "Apply alternative limits with scheduler", CommandOptionType.SingleValue)]
+                public bool? SchedulerEnabled { get; set; }
+
+                [Option("-f|--from <TIME>", "Apply alternative limits from time. Use either your local format or HH:mm", CommandOptionType.SingleValue)]
+                [Ignore]
+                public string ScheduleFrom { get; set; }
+
+                [Option("-t|--to <TIME>", "Apply alternative limits to time. Use either your local format or HH:mm", CommandOptionType.SingleValue)]
+                [Ignore]
+                public string ScheduleTo { get; set; }
+
+                [Option("-S|--day <DAY>", "Apply alternative limits on day (Every|Weekday|Weekend|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)", CommandOptionType.SingleValue)]
+                public SchedulerDay? SchedulerDays { get; set; }
+
+                [Option("-m|--limit-utp <BOOL>", "Apply rate limit to uTP protocol", CommandOptionType.SingleValue)]
+                [SuppressMessage("ReSharper", "InconsistentNaming")]
+                public bool? LimitUTPRate { get; set; }
+
+                [Option("-o|--limit-tcp <BOOL>", "Apply rate limit to TCP overhead", CommandOptionType.SingleValue)]
+                public bool? LimitTcpOverhead { get; set; }
+
+                protected override void CustomFillPrefences(Preferences preferences)
+                {
+                    base.CustomFillPrefences(preferences);
+                    (preferences.ScheduleFromHour, preferences.ScheduleFromMinute) = _from;
+                    (preferences.ScheduleToHour, preferences.ScheduleToMinute) = _to;
+                }
+
+                protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    _from = TryParseTime(ScheduleFrom);
+                    _to = TryParseTime(ScheduleTo);
+
+                    return base.Prepare(client, app, console);
+
+                    (int? hour, int? minute) TryParseTime(string input)
                     {
-                        if (name == nameof(ProxyViewModel.ProxyType) && value != null)
-                            return Enum.IsDefined(typeof(ProxyType), value) ? value.ToString() : "None";
+                        const DateTimeStyles styles = 
+                            DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite | DateTimeStyles.NoCurrentDateDefault;
 
-                        return null;
-                    };
+                        if (input == null)
+                            return (null, null);
+
+                        DateTime dt;
+                        if (DateTime.TryParseExact(input, "t", CultureInfo.CurrentCulture, styles, out dt))
+                            return (dt.TimeOfDay.Hours, dt.TimeOfDay.Minutes);
+                        if (DateTime.TryParseExact(input, "t", CultureInfo.InvariantCulture, styles, out dt))
+                            return (dt.TimeOfDay.Hours, dt.TimeOfDay.Minutes);
+                        throw new InvalidOperationException($"Invalid time format: \"{input}\". Please, specify time either in your local format or as HH:mm.");
+                    }
+                }
             }
         }
     }
