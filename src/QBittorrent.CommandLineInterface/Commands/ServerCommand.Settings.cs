@@ -17,12 +17,11 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class ServerCommand
     {
         [Subcommand("downloads", typeof(Downloads))]
-        [Subcommand("monitored-folder", typeof(MonitoredFolder))]
         [Subcommand("email", typeof(Email))]
         [Subcommand("connection", typeof(Connection))]
         [Subcommand("proxy", typeof(Proxy))]
         [Subcommand("speed", typeof(Speed))]
-        public class Settings
+        public partial class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
             private class IgnoreAttribute : Attribute
@@ -114,12 +113,6 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 [Option("-A|--autorun-enabled <BOOL>", "Enable/disables running external program for the complete torrent.", CommandOptionType.SingleValue)]
                 public bool? AutorunEnabled { get; set; }
-            }
-
-            [Command(Description = "TODO:")]
-            public class MonitoredFolder
-            {
-                // TODO: Implement.
             }
 
             [Command(Description = "Manages e-mail notifications.", ExtendedHelpText = ExtendedHelp)]
@@ -256,16 +249,16 @@ namespace QBittorrent.CommandLineInterface.Commands
                 private (int? hour, int? minute) _from;
                 private (int? hour, int? minute) _to;
 
-                [Option("-d|--download <SPEED>", "Download limit (bytes/s)", CommandOptionType.SingleValue)]
+                [Option("-d|--download <SPEED>", "Download speed limit (bytes/s). Pass 0 to disable the limit.", CommandOptionType.SingleValue)]
                 public int? DownloadLimit { get; set; }
 
-                [Option("-u|--upload <SPEED>", "Upload limit (bytes/s)", CommandOptionType.SingleValue)]
+                [Option("-u|--upload <SPEED>", "Upload speed limit (bytes/s). Pass 0 to disable the limit.", CommandOptionType.SingleValue)]
                 public int? UploadLimit { get; set; }
 
-                [Option("-D|--alt-download <SPEED>", "Alternative download limit (bytes/s)", CommandOptionType.SingleValue)]
+                [Option("-D|--alt-download <SPEED>", "Alternative download speed limit (bytes/s). Pass 0 to disable the limit.", CommandOptionType.SingleValue)]
                 public int? AlternativeDownloadLimit { get; set; }
 
-                [Option("-U|--alt-upload <SPEED>", "Alternative upload limit (bytes/s)", CommandOptionType.SingleValue)]
+                [Option("-U|--alt-upload <SPEED>", "Alternative upload speed limit (bytes/s). Pass 0 to disable the limit.", CommandOptionType.SingleValue)]
                 public int? AlternativeUploadLimit { get; set; }
 
                 [Option("-s|--enable-scheduler <BOOL>", "Apply alternative limits with scheduler", CommandOptionType.SingleValue)]
