@@ -5,8 +5,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
@@ -24,6 +26,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("privacy", typeof(Privacy))]
         [Subcommand("queue", typeof(Queue))]
         [Subcommand("seeding", typeof(Seeding))]
+        [Subcommand("web", typeof(WebInterface))]
         public partial class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -379,6 +382,74 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-a|--action <ACTION>", "Action to perform when maximal ratio or seeding time limit is reached (Pause|Remove)", 
                     CommandOptionType.SingleValue)]
                 public MaxRatioAction? MaxRatioAction { get; set; }
+            }
+
+            [Command(Description = "Manages web UI and API settings.")]
+            public class WebInterface : SettingsCommand<WebInterfaceViewModel>
+            {
+                public WebInterface()
+                {
+                    CustomFormatters[nameof(WebInterfaceViewModel.Locale)] = FormatLanguage;
+                    //CustomFormatters[nameof(WebInterfaceViewModel.WebUISslCertificate)] = FormatCertificate;
+
+                    string FormatLanguage(object arg)
+                    {
+                        if (!(arg is string name))
+                            return null;
+
+                        try
+                        {
+                            var englishName = CultureInfo.GetCultureInfo(name.Replace('_', '-')).EnglishName;
+                            return $"{name} ({englishName})";
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                    }
+                }
+
+                [Option("-l|--lang <LANGUAGE>", "Web UI language", CommandOptionType.SingleValue)]
+                [MinLength(2)]
+                public string Locale { get; set; }
+
+                [Option("-a|--address <ADDRESS>", "Web interface address. Pass empty string to listen on any address.", CommandOptionType.SingleValue)]
+                public string WebUIAddress { get; set; }
+
+                [Option("-p|--port <PORT>", "Web interface port", CommandOptionType.SingleValue)]
+                [Range(1, 65535)]
+                public int? WebUIPort { get; set; }
+
+                [Option("-d|--domain <DOMAIN>", "Web interface domain. Pass empty string to listen on any domain.", CommandOptionType.SingleValue)]
+                public string WebUIDomain { get; set; }
+
+                [Option("-u|--upnp <BOOL>", "Use UPnP/NAT-PMP", CommandOptionType.SingleValue)]
+                public bool? WebUIUpnp { get; set; }
+
+                [Option("-s|--https <BOOL>", "Use HTTPS", CommandOptionType.SingleValue)]
+                public bool? WebUIHttps { get; set; }
+
+                //[Display(Name = "SSL Certificate")]
+                //public string WebUISslCertificat { get; set; }
+
+                //[Display(Name = "SSL Key")]
+                //[DisplayFormat(DataFormatString = "**********")]
+                //public string WebUISslKey { get; set; }
+
+                protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    if (WebUIAddress?.Trim() == string.Empty)
+                    {
+                        WebUIAddress = "*";
+                    }
+
+                    if (WebUIDomain?.Trim() == string.Empty)
+                    {
+                        WebUIDomain = "*";
+                    }
+
+                    return Task.CompletedTask;
+                }
             }
         }
     }
