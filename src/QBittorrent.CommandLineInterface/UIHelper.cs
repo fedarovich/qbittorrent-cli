@@ -53,7 +53,7 @@ namespace QBittorrent.CommandLineInterface
         }
 
         public static void PrintObject<T>(T obj,
-            IReadOnlyDictionary<string, Func<object, string>> customFormatters = null)
+            IReadOnlyDictionary<string, Func<object, object>> customFormatters = null)
         {
             const string DefaultFormat = "{0}";
 
@@ -89,7 +89,7 @@ namespace QBittorrent.CommandLineInterface
             };
             ConsoleRenderer.RenderDocument(document);
 
-            IEnumerable<(string label, string value)> GetPairs()
+            IEnumerable<(string label, object value)> GetPairs()
             {
                 foreach (var property in properties)
                 {
