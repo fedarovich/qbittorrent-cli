@@ -29,6 +29,11 @@ namespace QBittorrent.CommandLineInterface.Commands
         public partial class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
+            private class NoAutoSetAttribute : Attribute
+            {
+            }
+
+            [AttributeUsage(AttributeTargets.Property)]
             private class IgnoreAttribute : Attribute
             {
             }
@@ -46,10 +51,12 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     var props =
                         (from prop in GetType().GetTypeInfo().DeclaredProperties
-                         where prop.GetCustomAttribute<OptionAttribute>() != null
+                         let option = prop.GetCustomAttribute<OptionAttribute>()
+                         where option != null
+                         where prop.GetCustomAttribute<IgnoreAttribute>() == null
                          let value = prop.GetValue(this)
-                         where value != null
-                         let autoSet = prop.GetCustomAttribute<IgnoreAttribute>() == null
+                         where value != null && (option.OptionType != CommandOptionType.NoValue || !false.Equals(value))
+                         let autoSet = prop.GetCustomAttribute<NoAutoSetAttribute>() == null
                          select (prop.Name, value, autoSet))
                         .ToList();
 
@@ -145,7 +152,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public string MailNotificationPassword { get; set; }
 
                 [Option("-P|--ask-smtp-password", "Ask user to enter SMTP server password.", CommandOptionType.NoValue)]
-                [Ignore]
+                [NoAutoSet]
                 public bool AskForSmtpPassword { get; set; }
 
                 protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
@@ -232,7 +239,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public string ProxyPassword { get; set; }
 
                 [Option("-P|--ask-proxy-password", "Ask user to enter SMTP server password.", CommandOptionType.NoValue)]
-                [Ignore]
+                [NoAutoSet]
                 public bool AskForProxyPassword { get; set; }
 
                 protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
@@ -241,7 +248,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     {
                         ProxyPassword = console.IsInputRedirected
                             ? console.In.ReadLine()
-                            : Prompt.GetPassword("Please, enter your SMTP server password: ");
+                            : Prompt.GetPassword("Please, enter your proxy server password: ");
                     }
 
                     return Task.CompletedTask;
@@ -270,11 +277,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public bool? SchedulerEnabled { get; set; }
 
                 [Option("-f|--from <TIME>", "Apply alternative limits from time. Use either your local format or HH:mm", CommandOptionType.SingleValue)]
-                [Ignore]
+                [NoAutoSet]
                 public string ScheduleFrom { get; set; }
 
                 [Option("-t|--to <TIME>", "Apply alternative limits to time. Use either your local format or HH:mm", CommandOptionType.SingleValue)]
-                [Ignore]
+                [NoAutoSet]
                 public string ScheduleTo { get; set; }
 
                 [Option("-S|--day <DAY>", "Apply alternative limits on day (Every|Weekday|Weekend|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)", CommandOptionType.SingleValue)]

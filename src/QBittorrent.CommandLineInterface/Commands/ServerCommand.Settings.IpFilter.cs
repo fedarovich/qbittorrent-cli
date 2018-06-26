@@ -16,7 +16,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("ip-filter", typeof(IpFilter))]
         public partial class Settings
         {
-            [Command(Description = "Manages IP filter.")]
+            [Command(Description = "Manages IP filter.", ExtendedHelpText = ExtendedHelp)]
             [Subcommand("add", typeof(Add))]
             [Subcommand("delete", typeof(Delete))]
             [Subcommand("clear", typeof(Clear))]

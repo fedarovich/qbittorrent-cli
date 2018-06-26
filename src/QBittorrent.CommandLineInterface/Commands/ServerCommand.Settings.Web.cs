@@ -23,7 +23,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("web", typeof(WebInterface))]
         public partial class Settings
         {
-            [Command(Description = "Manages web UI and API settings.")]
+            [Command(Description = "Manages web UI and API settings.", ExtendedHelpText = ExtendedHelp)]
             public class WebInterface : SettingsCommand<WebInterfaceViewModel>
             {
                 private string _certificate;
