@@ -26,6 +26,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("privacy", typeof(Privacy))]
         [Subcommand("queue", typeof(Queue))]
         [Subcommand("seeding", typeof(Seeding))]
+        [Subcommand("dns", typeof(Dns))]
         public partial class Settings
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -388,6 +389,43 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-a|--action <ACTION>", "Action to perform when maximal ratio or seeding time limit is reached (Pause|Remove)", 
                     CommandOptionType.SingleValue)]
                 public MaxRatioAction? MaxRatioAction { get; set; }
+            }
+
+            [Command(Description = "Manages dynamic DNS settings.", ExtendedHelpText = ExtendedHelp)]
+            public class Dns : SettingsCommand<DnsViewModel>
+            {
+                [Option("-e|--enabled <BOOL>", "Enable/disable dynamic DNS", CommandOptionType.SingleValue)]
+                public bool? DynamicDnsEnabled { get; set; }
+
+                [Option("-s|--service <SERVICE>", "Dynamic DNS service (DynDNS|NoIP)", CommandOptionType.SingleValue)]
+                public DynamicDnsService? DynamicDnsService { get; set; }
+
+                [Option("-d|--domain <NAME>", "Domain name", CommandOptionType.SingleValue)]
+                [MinLength(1)]
+                public string DynamicDnsDomain { get; set; }
+
+                [Option("-u|--dns-username <USERNAME>", "Dynamic DNS username", CommandOptionType.SingleValue)]
+                [MinLength(1)]
+                public string DynamicDnsUsername { get; set; }
+
+                [Option("-p|--dns-password <PASSWORD>", "Dynamic DNS password", CommandOptionType.SingleValue)]
+                public string DynamicDnsPassword { get; set; }
+
+                [Option("-P|--ask-dns-password", "Ask user to enter dynamic DNS password", CommandOptionType.NoValue)]
+                [NoAutoSet]
+                public bool AskForDynamicDnsPassword { get; set; }
+
+                protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    if (AskForDynamicDnsPassword)
+                    {
+                        DynamicDnsPassword = console.IsInputRedirected
+                            ? console.In.ReadLine()
+                            : Prompt.GetPassword("Please, enter your dynamic DNS password: ");
+                    }
+
+                    return Task.CompletedTask;
+                }
             }
         }
     }
