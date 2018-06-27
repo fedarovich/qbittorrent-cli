@@ -5,10 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
-using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
@@ -27,7 +24,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand("queue", typeof(Queue))]
         [Subcommand("seeding", typeof(Seeding))]
         [Subcommand("dns", typeof(Dns))]
-        public partial class Settings
+        public partial class Settings : ClientRootCommandBase
         {
             [AttributeUsage(AttributeTargets.Property)]
             private class NoAutoSetAttribute : Attribute
