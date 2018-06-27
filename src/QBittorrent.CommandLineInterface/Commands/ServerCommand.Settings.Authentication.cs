@@ -157,7 +157,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             var prefs = await client.GetPreferencesAsync();
                             if (prefs.BypassAuthenticationSubnetWhitelist != null)
                             {
-                                foreach (var network in prefs.BypassAuthenticationSubnetWhitelist)
+                                foreach (var network in prefs.BypassAuthenticationSubnetWhitelist ?? Enumerable.Empty<string>())
                                 {
                                     console.WriteLine(network);
                                 }

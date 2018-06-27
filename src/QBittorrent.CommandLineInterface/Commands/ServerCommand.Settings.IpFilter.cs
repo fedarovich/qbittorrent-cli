@@ -49,7 +49,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        var banList = prefs.BannedIpAddresses;
+                        var banList = prefs.BannedIpAddresses ?? new List<string>();
                         bool modified = false;
                         foreach (var address in Addresses)
                         {
@@ -81,7 +81,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        var banList = prefs.BannedIpAddresses;
+                        var banList = prefs.BannedIpAddresses ?? new List<string>();
 
                         bool modified = false;
                         foreach (var address in Addresses)

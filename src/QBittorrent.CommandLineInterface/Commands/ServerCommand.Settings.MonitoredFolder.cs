@@ -105,7 +105,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var preferences = await client.GetPreferencesAsync();
-                        var folders = preferences.ScanDirectories;
+                        var folders = preferences.ScanDirectories ?? new Dictionary<string, SaveLocation>();
 
                         var doc = new Document(
                             new Grid

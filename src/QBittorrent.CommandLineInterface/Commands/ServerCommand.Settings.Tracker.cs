@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
@@ -32,7 +33,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        var currentTrackers = prefs.AdditinalTrackers;
+                        var currentTrackers = prefs.AdditinalTrackers ?? new List<string>();
                         bool modified = false;
                         foreach (var tracker in Trackers)
                         {
@@ -64,7 +65,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        var currentTrackers = prefs.AdditinalTrackers;
+                        var currentTrackers = prefs.AdditinalTrackers ?? new List<string>();
                         bool modified = false;
                         foreach (var tracker in Trackers)
                         {
@@ -98,7 +99,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var prefs = await client.GetPreferencesAsync();
-                        foreach (var tracker in prefs.AdditinalTrackers)
+                        foreach (var tracker in prefs.AdditinalTrackers ?? Enumerable.Empty<string>())
                         {
                             console.WriteLineColored(tracker, ColorScheme.Current.Normal);
                         }
