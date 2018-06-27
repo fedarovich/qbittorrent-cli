@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,8 +22,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Subcommand("whitelist", typeof(Whitelist))]
             public class Authentication : SettingsCommand<AuthenticationViewModel>
             {
-                private Encoding _encoding;
-
                 public Authentication()
                 {
                     CustomFormatters[nameof(AuthenticationViewModel.BypassAuthenticationSubnetWhitelist)] =
@@ -32,20 +31,16 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
 
                 [Option("-u|--server-username <USERNAME>", "qBittorrent web interface username.", CommandOptionType.SingleValue, Inherited = false)]
-                [MinLength(1)]
+                [MinLength(3)]
                 public string WebUIUsername { get; set; }
 
                 [Option("-p|--server-password <PASSWORD>", "qBittorrent web interface password.", CommandOptionType.SingleValue, Inherited = false)]
-                [NoAutoSet]
+                [MinLength(6)]
                 public string WebUIPassword { get; set; }
 
                 [Option("-P|--ask-server-password", "Ask for qBittorrent web interface password.", CommandOptionType.NoValue, Inherited = false)]
                 [NoAutoSet]
                 public bool AskForServerPassword { get; set; }
-
-                [Option("-e|--password-encoding <ENCODING>", "Encoding used on server to calculate password hash. (ASCII by default)", CommandOptionType.SingleValue, Inherited = false)]
-                [Ignore]
-                public string PasswordEncoding { get; set; }
                 
                 [Option("-l|--bypass-local <BOOL>", "Bypass authentication on localhost", CommandOptionType.SingleValue, Inherited = false)]
                 public bool? BypassLocalAuthentication { get; set; }
@@ -62,24 +57,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             : Prompt.GetPassword("Please, enter your web interface password: ");
                     }
 
-                    _encoding = PasswordEncoding != null
-                        ? Encoding.GetEncoding(PasswordEncoding)
-                        : Encoding.ASCII;
-
                     return Task.CompletedTask;
-                }
-
-                protected override void CustomFillPrefences(Preferences preferences)
-                {
-                    if (WebUIPassword != null)
-                    {
-                        using (var md5 = MD5.Create())
-                        {
-                            var bytes = _encoding.GetBytes(WebUIPassword);
-                            var hash = string.Concat(md5.ComputeHash(bytes).Select(b => b.ToString("X2")));
-                            preferences.WebUIPasswordHash = hash;
-                        }
-                    }
                 }
 
                 [Command(Description = "Manages authentication bypass whitelist.")]
@@ -100,20 +78,25 @@ namespace QBittorrent.CommandLineInterface.Commands
                         protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                         {
                             var prefs = await client.GetPreferencesAsync();
-                            var currentNetworks = prefs.BypassAuthenticationSubnetWhitelist;
+                            var currentNetworks = (prefs.BypassAuthenticationSubnetWhitelist ?? Enumerable.Empty<string>())
+                                .Select(IPNetwork.Parse)
+                                .ToHashSet();
                             bool modified = false;
-                            foreach (var networl in Networks)
+                            foreach (var network in Networks.Select(IPNetwork.Parse))
                             {
-                                if (!currentNetworks.Contains(networl))
+                                if (!currentNetworks.Contains(network))
                                 {
-                                    currentNetworks.Add(networl);
+                                    currentNetworks.Add(network);
                                     modified = true;
                                 }
                             }
 
                             if (modified)
                             {
-                                prefs = new Preferences { BypassAuthenticationSubnetWhitelist = currentNetworks };
+                                prefs = new Preferences
+                                {
+                                    BypassAuthenticationSubnetWhitelist = currentNetworks.Select(n => n.ToString()).ToList()
+                                };
                                 await client.SetPreferencesAsync(prefs);
                             }
 
@@ -132,17 +115,22 @@ namespace QBittorrent.CommandLineInterface.Commands
                         protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                         {
                             var prefs = await client.GetPreferencesAsync();
-                            var currentNetwoks = prefs.BypassAuthenticationSubnetWhitelist;
+                            var currentNetworks = (prefs.BypassAuthenticationSubnetWhitelist ?? Enumerable.Empty<string>())
+                                .Select(IPNetwork.Parse)
+                                .ToHashSet();
 
                             bool modified = false;
-                            foreach (var network in Networks)
+                            foreach (var network in Networks.Select(IPNetwork.Parse))
                             {
-                                modified |= currentNetwoks.Remove(network);
+                                modified |= currentNetworks.Remove(network);
                             }
 
                             if (modified)
                             {
-                                prefs = new Preferences { BypassAuthenticationSubnetWhitelist = currentNetwoks };
+                                prefs = new Preferences
+                                {
+                                    BypassAuthenticationSubnetWhitelist = currentNetworks.Select(n => n.ToString()).ToList()
+                                };
                                 await client.SetPreferencesAsync(prefs);
                             }
 

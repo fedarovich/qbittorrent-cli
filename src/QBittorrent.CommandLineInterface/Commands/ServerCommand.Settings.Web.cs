@@ -101,18 +101,18 @@ namespace QBittorrent.CommandLineInterface.Commands
                     "X509 certificate path. The certificate can be in PEM (.pem, .crt, .cer) format.",
                     CommandOptionType.SingleValue)]
                 [FileExists]
-                [Ignore]
+                [NoAutoSet]
                 public string CertificatePath { get; set; }
 
                 [Option("-k|--key <PATH>",
                     "X509 certificate key path. The key must be in PEM (.key) format without encryption.",
                     CommandOptionType.SingleValue)]
                 [FileExists]
-                [Ignore]
+                [NoAutoSet]
                 public string CertificateKeyPath { get; set; }
 
                 [Option("-P|--key-password <PASSWORD>", "X509 certificate key password.", CommandOptionType.SingleValue)]
-                [Ignore]
+                [NoAutoSet]
                 public string CertificateKeyPassword { get; set; }
 
                 protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)

@@ -11,5 +11,11 @@ namespace QBittorrent.CommandLineInterface
             key = pair.Key;
             value = pair.Value;
         }
+
+#if NET46
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> enumerable) => new HashSet<T>(enumerable);
+
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> enumerable, IEqualityComparer<T> comparer) => new HashSet<T>(enumerable, comparer);
+#endif
     }
 }
