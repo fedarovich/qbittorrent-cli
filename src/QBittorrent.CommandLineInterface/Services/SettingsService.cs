@@ -53,12 +53,14 @@ namespace QBittorrent.CommandLineInterface.Services
 
             ProxySettings GetLegacyProxySettings(GeneralSettings settings)
             {
-                return settings.Other.TryGetValue("Proxy", out var jtoken) ? jtoken.ToObject<ProxySettings>() : null;
+                return settings.Other != null && settings.Other.TryGetValue("Proxy", out var jtoken)
+                    ? jtoken.ToObject<ProxySettings>() 
+                    : null;
             }
 
             NetworkSettings GetLegacyNetworkSettings(GeneralSettings settings, ProxySettings proxy)
             {
-                if (!settings.Other.TryGetValue("NetworkSettings", out var jtoken))
+                if (settings.Other == null || !settings.Other.TryGetValue("NetworkSettings", out var jtoken))
                     return new NetworkSettings();
 
                 var networkSettings = jtoken.ToObject<NetworkSettings>();
