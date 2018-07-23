@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.CommandLineInterface.Commands;
 
@@ -21,9 +20,9 @@ namespace QBittorrent.CommandLineInterface
     {
         static int Main(string[] args)
         {
+            var app = new CommandLineApplication<Program>();
             try
             {
-                var app = new CommandLineApplication<Program>();
                 app.Conventions.UseDefaultConventions();
                 int code = app.Execute(args);
                 return code;
@@ -48,18 +47,31 @@ namespace QBittorrent.CommandLineInterface
                 }
 #endif
             }
-        }
 
-        private static void PrintError(Exception ex)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            var exception = ex;
-            do
+            void PrintError(Exception ex)
             {
-                Console.Error.WriteLine(exception.Message);
-            } while ((exception = exception.InnerException) != null);
+                Console.ForegroundColor = ConsoleColor.Red;
 
-            Console.ResetColor();
+                if (app.Model.PrintStackTrace)
+                {
+                    Console.WriteLine(ex);
+                }
+                else
+                {
+                    var exception = ex;
+                    string prevMessage = null;
+                    do
+                    {
+                        if (exception.Message != prevMessage)
+                        {
+                            Console.Error.WriteLine(exception.Message);
+                            prevMessage = exception.Message;
+                        }
+                    } while ((exception = exception.InnerException) != null);
+                }
+                
+                Console.ResetColor();
+            }
         }
 
         private int OnExecute(CommandLineApplication app, IConsole console)
@@ -73,5 +85,8 @@ namespace QBittorrent.CommandLineInterface
             var attr = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
             return attr.InformationalVersion;
         }
+
+        [Option("--print-stacktrace", "Prints exception stacktrace", CommandOptionType.NoValue, ShowInHelpText = false, Inherited = true)]
+        public bool PrintStackTrace { get; set; }
     }
 }
