@@ -30,9 +30,6 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         [Display(Name = "Disable connections not supported by proxies")]
         public bool? ForceProxy => _wrappedObject.ForceProxy;
 
-        [Display(Name = "Proxy requires authentication")]
-        public bool? ProxyAuthenticationEnabled => _wrappedObject.ProxyAuthenticationEnabled;
-
         [Display(Name = "Proxy username")]
         public string ProxyUsername => _wrappedObject.ProxyUsername;
 
