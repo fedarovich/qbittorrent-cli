@@ -14,6 +14,8 @@ It can be useful for torrent management automation or if you just prefer using c
 
 qBittorrent CLI can be used on Windows, Linux and Mac OS X running on various devices like PCs, laptops and even single-board computers like Raspberry Pi or Orange Pi.
 
+qBittorrent CLI is fully compatible with qBittorrent 4.0 or later. It is also *partially* compatible with qBittorrent 3.x.
+
 ## Documentation
 [![documentation](https://img.shields.io/badge/documentation-wiki-blue.svg)](https://github.com/fedarovich/qbittorrent-cli/wiki)
 
