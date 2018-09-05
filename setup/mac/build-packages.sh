@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 #prepare file system
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/root"
 mkdir -p "$PkgRoot/usr/local/bin"
@@ -17,3 +19,5 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/osx" && pkgbuild --root "$PkgRoot" --iden
 pushd "$BUILD_BINARIESDIRECTORY"
 rm -rf tgz/* build/*
 popd
+
+set +x

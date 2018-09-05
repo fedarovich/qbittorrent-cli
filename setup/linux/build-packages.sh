@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 PkgName="qbittorrent-cli"
 PkgDesc="qBittorrent remote command line client."
 PkgVersion="${BUILD_BUILDNUMBER%.*}"
@@ -12,6 +14,12 @@ PkgHomepage="https://github.com/fedarovich/qbittorrent-cli"
 ###############################################################################
 # Create packages for x64                                                     #
 ###############################################################################
+
+set +x
+echo '--------------------------------------------------------------------------'
+echo '|                    Creating packages for x64                           |'
+echo '--------------------------------------------------------------------------'
+set -x
 
 #prepare file system
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/x64"
@@ -36,6 +44,14 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "
 ###############################################################################
 # Create packages for ARM                                                     #
 ###############################################################################
+
+set +x
+echo '--------------------------------------------------------------------------'
+echo '|                    Creating packages for ARM                           |'
+echo '--------------------------------------------------------------------------'
+set -x
+
+#prepare file system
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
@@ -49,7 +65,7 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial" && fpm -s dir -t deb -f -C
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/artful" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armhf --description "$PkgDesc" -p "$_" -d "libssl1.0.0 | libssl1.0.2" -d libicu57
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armhf --description "$PkgDesc" -p "$_" -d libssl1.0.0 -d libicu60
 
-mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/centos/7"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu -d
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/centos/7"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/26" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu -d compat-openssl10
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libssl43 -d libicu
@@ -58,6 +74,14 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "
 ###############################################################################
 # Create packages for ARM 64                                                  #
 ###############################################################################
+
+set +x
+echo '--------------------------------------------------------------------------'
+echo '|                    Creating packages for ARM64                         |'
+echo '--------------------------------------------------------------------------'
+set -x
+
+#prepare file system
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm64"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
@@ -71,7 +95,7 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial" && fpm -s dir -t deb -f -C
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/artful" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a arm64 --description "$PkgDesc" -p "$_" -d "libssl1.0.0 | libssl1.0.2" -d libicu57
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic" && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a arm64 --description "$PkgDesc" -p "$_" -d libssl1.0.0 -d libicu60
 
-mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/centos/7"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu -d
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/centos/7"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/26" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu -d compat-openssl10
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d libssl43 -d libicu
@@ -83,3 +107,5 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "
 pushd "$BUILD_BINARIESDIRECTORY"
 rm -rf tgz/* build/*
 popd
+
+set +x

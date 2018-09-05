@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 PkgVersion="${BUILD_BUILDNUMBER%.*}"
 PkgIteration="${BUILD_BUILDNUMBER##*.}"
 PkgFullVersion="$PkgVersion-$PkgIteration"
@@ -49,3 +51,5 @@ curl -T "$BUILD_BINARIESDIRECTORY/pkg/centos/7/qbittorrent-cli-${PkgFullVersion}
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/fedora/26/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/fedora/26/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/42/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/42/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-rpm/qbittorrent-cli/${PkgFullVersion}/opensuse/15/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm?publish=1"
+
+set +x
