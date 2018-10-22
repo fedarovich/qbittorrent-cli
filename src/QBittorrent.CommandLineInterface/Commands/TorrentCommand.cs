@@ -71,7 +71,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await (IsAll ? client.PauseAllAsync() : client.PauseAsync(Hash));
+                await (IsAll ? client.PauseAsync() : client.PauseAsync(Hash));
                 return ExitCodes.Success;
             }
         }
@@ -86,7 +86,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await (IsAll ? client.ResumeAllAsync() : client.ResumeAsync(Hash));
+                await (IsAll ? client.ResumeAsync() : client.ResumeAsync(Hash));
                 return ExitCodes.Success;
             }
         }
