@@ -23,7 +23,7 @@ choco new qbittorrent-cli `
 
 pushd qbittorrent-cli
 
-Invoke-WebRequest https://rawgit.com/fedarovich/qbittorrent-cli/master/LICENSE -OutFile .\tools\LICENSE.txt
+Invoke-WebRequest https://rawcdn.githack.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE -OutFile .\tools\LICENSE.txt
 
 cp -Path "$env:BUILD_SOURCESDIRECTORY\setup\windows\VERIFICATION.txt" -Destination .\tools\VERIFICATION.txt -Force
 

@@ -45,7 +45,7 @@ namespace NuSpecGen
     <projectUrl>https://github.com/fedarovich/qbittorrent-cli</projectUrl>
     <iconUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows/package-icon.png</iconUrl>
     <copyright>2017-2018 Pavel Fedarovich</copyright>
-    <licenseUrl>https://cdn.rawgit.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>
+    <licenseUrl>https://rawcdn.githack.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/fedarovich/qbittorrent-cli</projectSourceUrl>
     <docsUrl>https://github.com/fedarovich/qbittorrent-cli/wiki</docsUrl>
