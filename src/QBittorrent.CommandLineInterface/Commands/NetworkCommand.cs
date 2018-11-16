@@ -26,7 +26,6 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             public int OnExecute(CommandLineApplication app, IConsole console)
             {
-                var settings = SettingsService.Instance.GetGeneral();
                 var net = SettingsService.Instance.GetNetwork();
 
                 bool hasChanges = false;
@@ -45,7 +44,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 if (hasChanges)
                 {
-                    SettingsService.Instance.Save(settings);
+                    SettingsService.Instance.Save(net);
                     return ExitCodes.Success;
                 }
 
