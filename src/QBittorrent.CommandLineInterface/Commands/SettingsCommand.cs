@@ -10,14 +10,14 @@ using QBittorrent.CommandLineInterface.Services;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Gets or sets this application's settings.")]
-    [Subcommand("set", typeof(Set))]
-    [Subcommand("reset", typeof(Reset))]
+    [Subcommand(typeof(Set))]
+    [Subcommand(typeof(Reset))]
     public class SettingsCommand
     {
         [Command(Description = "Sets the new value for the specified setting.")]
-        [Subcommand("url", typeof(Url))]
-        [Subcommand("username", typeof(Username))]
-        [Subcommand("password", typeof(Password))]
+        [Subcommand(typeof(Url))]
+        [Subcommand(typeof(Username))]
+        [Subcommand(typeof(Password))]
         public class Set
         {
             [Command(Description = "Sets the default server URL.")]
@@ -102,10 +102,10 @@ namespace QBittorrent.CommandLineInterface.Commands
         }
 
         [Command(Description = "Resets the specified settings to their default values.")]
-        [Subcommand("url", typeof(Url))]
-        [Subcommand("username", typeof(Username))]
-        [Subcommand("password", typeof(Password))]
-        [Subcommand("all", typeof(All))]
+        [Subcommand(typeof(Url))]
+        [Subcommand(typeof(Username))]
+        [Subcommand(typeof(Password))]
+        [Subcommand(typeof(All))]
         public class Reset
         {
             [Command(Description = "Resets the server URL to " + GeneralSettings.DefaultUrl)]

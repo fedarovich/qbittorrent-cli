@@ -11,7 +11,7 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("peers", typeof(Peers))]
+    [Subcommand(typeof(Peers))]
     public partial class TorrentCommand
     {
         [Command(Description = "Show the list of torrent peers.")]

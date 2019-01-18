@@ -12,18 +12,19 @@ using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("settings", typeof(Settings))]
+    [Subcommand(typeof(Settings))]
     public partial class ServerCommand
     {
-        [Subcommand("downloads", typeof(Downloads))]
-        [Subcommand("email", typeof(Email))]
-        [Subcommand("connection", typeof(Connection))]
-        [Subcommand("proxy", typeof(Proxy))]
-        [Subcommand("speed", typeof(Speed))]
-        [Subcommand("privacy", typeof(Privacy))]
-        [Subcommand("queue", typeof(Queue))]
-        [Subcommand("seeding", typeof(Seeding))]
-        [Subcommand("dns", typeof(Dns))]
+        [Subcommand(typeof(Downloads))]
+        [Subcommand(typeof(Email))]
+        [Subcommand(typeof(Connection))]
+        [Subcommand(typeof(Proxy))]
+        [Subcommand(typeof(Speed))]
+        [Subcommand(typeof(Privacy))]
+        [Subcommand(typeof(Queue))]
+        [Subcommand(typeof(Seeding))]
+        [Subcommand(typeof(Dns))]
+        [Command(Description = "Manage qBittorrent server settings.")]
         public partial class Settings : ClientRootCommandBase
         {
             [AttributeUsage(AttributeTargets.Property)]
@@ -66,7 +67,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             typeof(Preferences).GetProperty(prop.Name).SetValue(prefs, prop.value);
                         }
 
-                        CustomFillPrefences(prefs);
+                        CustomFillPreferences(prefs);
                         await client.SetPreferencesAsync(prefs);
                     }
                     else
@@ -83,7 +84,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return Task.CompletedTask;
                 }
 
-                protected virtual void CustomFillPrefences(Preferences preferences)
+                protected virtual void CustomFillPreferences(Preferences preferences)
                 {
                 }
 
@@ -125,7 +126,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public bool? AutorunEnabled { get; set; }
             }
 
-            [Command(Description = "Manages e-mail notifications.", ExtendedHelpText = ExtendedHelp)]
+            [Command("email", "e-mail", Description = "Manages e-mail notifications.", ExtendedHelpText = ExtendedHelp)]
             public class Email : SettingsCommand<EmailViewModel>
             {
                 [Option("-e|--enabled <BOOL>", "Enables/disables e-mail notifications.", CommandOptionType.SingleValue)]
@@ -292,9 +293,9 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-o|--limit-tcp <BOOL>", "Apply rate limit to TCP overhead", CommandOptionType.SingleValue)]
                 public bool? LimitTcpOverhead { get; set; }
 
-                protected override void CustomFillPrefences(Preferences preferences)
+                protected override void CustomFillPreferences(Preferences preferences)
                 {
-                    base.CustomFillPrefences(preferences);
+                    base.CustomFillPreferences(preferences);
                     (preferences.ScheduleFromHour, preferences.ScheduleFromMinute) = _from;
                     (preferences.ScheduleToHour, preferences.ScheduleToMinute) = _to;
                 }

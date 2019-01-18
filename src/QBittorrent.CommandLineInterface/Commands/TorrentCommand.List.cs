@@ -16,7 +16,7 @@ using Color = System.Drawing.Color;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("list", typeof(List))]
+    [Subcommand(typeof(List))]
     public partial class TorrentCommand
     {
         [Command(Description = "Shows the torrent list.", ExtendedHelpText = ExtendedHelpText)]

@@ -43,4 +43,5 @@ public $TYPE$ $PROP$ { get; set; }</s:String>
 /// &#xD;
 /// &lt;/summary&gt;&#xD;
 [JsonProperty("$JSON_NAME$")]&#xD;
-public $TYPE$ $PROP$ { get; set; }</s:String></wpf:ResourceDictionary>
+public $TYPE$ $PROP$ { get; set; }</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Bittorrent/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

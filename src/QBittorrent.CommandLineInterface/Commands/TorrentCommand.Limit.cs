@@ -6,11 +6,11 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("limit", typeof(Limit))]
+    [Subcommand(typeof(Limit))]
     public partial class TorrentCommand
     {
-        [Subcommand("download", typeof(Download))]
-        [Subcommand("upload", typeof(Upload))]
+        [Subcommand(typeof(Download))]
+        [Subcommand(typeof(Upload))]
         [Command(Description = "Gets or sets download and upload speed limits.")]
         public class Limit : ClientRootCommandBase
         {

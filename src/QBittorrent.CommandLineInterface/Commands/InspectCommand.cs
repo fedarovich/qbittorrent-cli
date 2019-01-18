@@ -10,7 +10,7 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Inspects the torrent.")]
-    [Subcommand("file", typeof(File))]
+    [Subcommand(typeof(File))]
     public class InspectCommand
     {
         [Command(Description = "Inspects the torrent file.")]

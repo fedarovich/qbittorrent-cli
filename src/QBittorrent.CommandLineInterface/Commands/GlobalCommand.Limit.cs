@@ -9,13 +9,13 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("limit", typeof(Limit))]
+    [Subcommand(typeof(Limit))]
     public partial class GlobalCommand
     {
         [Command(Description = "Gets or sets global download and upload speed limits.")]
-        [Subcommand("download", typeof(Download))]
-        [Subcommand("upload", typeof(Upload))]
-        [Subcommand("alternative", typeof(Alternative))]
+        [Subcommand(typeof(Download))]
+        [Subcommand(typeof(Upload))]
+        [Subcommand(typeof(Alternative))]
         public class Limit : ClientRootCommandBase
         {
             protected static void PrintLimit(IConsole console, long? limit)

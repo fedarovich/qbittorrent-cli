@@ -7,13 +7,13 @@ using QBittorrent.CommandLineInterface.Commands;
 namespace QBittorrent.CommandLineInterface
 {
     [Command]
-    [Subcommand("category", typeof(CategoryCommand))]
-    [Subcommand("global", typeof(GlobalCommand))]
-    [Subcommand("server", typeof(ServerCommand))]
-    [Subcommand("settings", typeof(SettingsCommand))]
-    [Subcommand("network", typeof(NetworkCommand))]
-    [Subcommand("torrent", typeof(TorrentCommand))]
-    [Subcommand("inspect", typeof(InspectCommand))]
+    [Subcommand(typeof(CategoryCommand))]
+    [Subcommand(typeof(GlobalCommand))]
+    [Subcommand(typeof(ServerCommand))]
+    [Subcommand(typeof(SettingsCommand))]
+    [Subcommand(typeof(NetworkCommand))]
+    [Subcommand(typeof(TorrentCommand))]
+    [Subcommand(typeof(InspectCommand))]
     [HelpOption(Inherited = true)]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     class Program

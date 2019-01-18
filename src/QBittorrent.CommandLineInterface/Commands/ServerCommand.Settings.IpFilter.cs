@@ -13,14 +13,14 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     public partial class ServerCommand
     {
-        [Subcommand("ip-filter", typeof(IpFilter))]
+        [Subcommand(typeof(IpFilter))]
         public partial class Settings
         {
-            [Command(Description = "Manages IP filter.", ExtendedHelpText = ExtendedHelp)]
-            [Subcommand("add", typeof(Add))]
-            [Subcommand("delete", typeof(Delete))]
-            [Subcommand("clear", typeof(Clear))]
-            [Subcommand("list", typeof(List))]
+            [Command("ip-filter", "ipfilter", Description = "Manages IP filter.", ExtendedHelpText = ExtendedHelp)]
+            [Subcommand(typeof(Add))]
+            [Subcommand(typeof(Delete))]
+            [Subcommand(typeof(Clear))]
+            [Subcommand(typeof(List))]
             public class IpFilter : SettingsCommand<IpFilterViewModel>
             {
                 public IpFilter()

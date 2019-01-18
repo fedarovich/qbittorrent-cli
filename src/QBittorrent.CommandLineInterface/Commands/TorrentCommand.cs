@@ -9,16 +9,16 @@ using QBittorrent.CommandLineInterface.ViewModels;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command("torrent", Description = "Manage torrents.")]
-    [Subcommand("properties", typeof(Properties))]
-    [Subcommand("content", typeof(Content))]
-    [Subcommand("web-seeds", typeof(WebSeeds))]
-    [Subcommand("pause", typeof(Pause))]
-    [Subcommand("resume", typeof(Resume))]
-    [Subcommand("delete", typeof(Delete))]
-    [Subcommand("move", typeof(Move))]
-    [Subcommand("rename", typeof(Rename))]
-    [Subcommand("category", typeof(Category))]
-    [Subcommand("check", typeof(Check))]
+    [Subcommand(typeof(Properties))]
+    [Subcommand(typeof(Content))]
+    [Subcommand(typeof(WebSeeds))]
+    [Subcommand(typeof(Pause))]
+    [Subcommand(typeof(Resume))]
+    [Subcommand(typeof(Delete))]
+    [Subcommand(typeof(Move))]
+    [Subcommand(typeof(Rename))]
+    [Subcommand(typeof(Category))]
+    [Subcommand(typeof(Check))]
     public partial class TorrentCommand : ClientRootCommandBase
     {
         [Command(Description = "Shows the torrent properties.")]
@@ -47,7 +47,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
         }
 
-        [Command(Description = "Shows the torrent web seeds.")]
+        [Command("web-seeds", "webseeds", "ws", Description = "Shows the torrent web seeds.")]
         public class WebSeeds : TorrentSpecificCommandBase
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

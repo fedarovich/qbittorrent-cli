@@ -11,7 +11,7 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("options", typeof(Options))]
+    [Subcommand(typeof(Options))]
     public partial class TorrentCommand
     {
         [Command(Description = "Sets torrent options.")]

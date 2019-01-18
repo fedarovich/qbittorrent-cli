@@ -13,11 +13,11 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     public partial class ServerCommand
     {
-        [Subcommand("authentication", typeof(Authentication))]
+        [Subcommand(typeof(Authentication))]
         public partial class Settings
         {
-            [Command(Description = "Manages authentication settings.")]
-            [Subcommand("whitelist", typeof(Whitelist))]
+            [Command("authentication", "auth", Description = "Manages authentication settings.")]
+            [Subcommand(typeof(Whitelist))]
             public class Authentication : SettingsCommand<AuthenticationViewModel>
             {
                 public Authentication()
@@ -59,13 +59,13 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
 
                 [Command(Description = "Manages authentication bypass whitelist.")]
-                [Subcommand("list", typeof(List))]
-                [Subcommand("add", typeof(Add))]
-                [Subcommand("delete", typeof(Delete))]
-                [Subcommand("clear", typeof(Clear))]
+                [Subcommand(typeof(List))]
+                [Subcommand(typeof(Add))]
+                [Subcommand(typeof(Delete))]
+                [Subcommand(typeof(Clear))]
                 public class Whitelist : ClientRootCommandBase
                 {
-                    [Command(Description = "Adds IP subnets to authentication bypass whitelist.")]
+                    [Command("whitelist", "white-list", "wl", Description = "Adds IP subnets to authentication bypass whitelist.")]
                     public class Add : AuthenticatedCommandBase
                     {
                         [Argument(0, "NET_1 NET2 ... NET_N", "IP subnets to add.")]

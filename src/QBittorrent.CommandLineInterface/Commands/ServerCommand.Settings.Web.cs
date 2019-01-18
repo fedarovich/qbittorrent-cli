@@ -20,10 +20,10 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     public partial class ServerCommand
     {
-        [Subcommand("web", typeof(WebInterface))]
+        [Subcommand(typeof(WebInterface))]
         public partial class Settings
         {
-            [Command(Description = "Manages web UI and API settings.", ExtendedHelpText = ExtendedHelp)]
+            [Command("web", Description = "Manages web UI and API settings.", ExtendedHelpText = ExtendedHelp)]
             public class WebInterface : SettingsCommand<WebInterfaceViewModel>
             {
                 private string _certificate;
@@ -149,7 +149,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         : (IPasswordFinder)new ConsolePasswordFinder(console);
                 }
 
-                protected override void CustomFillPrefences(Preferences preferences)
+                protected override void CustomFillPreferences(Preferences preferences)
                 {
                     if (_certificate != null)
                     {

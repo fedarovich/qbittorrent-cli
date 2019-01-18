@@ -10,14 +10,14 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     public partial class ServerCommand
     {
-        [Subcommand("tracker", typeof(Tracker))]
+        [Subcommand(typeof(Tracker))]
         public partial class Settings
         {
             [Command(Description = "Manages additional trackers.", ExtendedHelpText = "\nAdditional trackers are automatically added to each new torrent.")]
-            [Subcommand("add", typeof(Add))]
-            [Subcommand("delete", typeof(Delete))]
-            [Subcommand("clear", typeof(Clear))]
-            [Subcommand("list", typeof(List))]
+            [Subcommand(typeof(Add))]
+            [Subcommand(typeof(Delete))]
+            [Subcommand(typeof(Clear))]
+            [Subcommand(typeof(List))]
             public class Tracker : ClientRootCommandBase
             {
                 [Command(Description = "Adds additional trackers.")]

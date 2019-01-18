@@ -8,13 +8,13 @@ using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("credentials", typeof(Credentials))]
+    [Subcommand(typeof(Credentials))]
     public partial class NetworkCommand
     {
         [Command(Description = "Change network credentials.")]
-        [Subcommand("add", typeof(Add))]
-        [Subcommand("delete", typeof(Delete))]
-        [Subcommand("clear", typeof(Clear))]
+        [Subcommand(typeof(Add))]
+        [Subcommand(typeof(Delete))]
+        [Subcommand(typeof(Clear))]
         public class Credentials
         {
             public int OnExecute(CommandLineApplication app, IConsole console)

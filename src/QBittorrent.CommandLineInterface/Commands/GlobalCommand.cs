@@ -7,8 +7,8 @@ using QBittorrent.CommandLineInterface.ViewModels;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Gets or sets global qBittorrent settings.")]
-    [Subcommand("info", typeof(Info))]
-    [Subcommand("save-path", typeof(SavePath))]
+    [Subcommand(typeof(Info))]
+    [Subcommand(typeof(SavePath))]
     public partial class GlobalCommand : ClientRootCommandBase
     {
         [Command(Description = "Gets the global transfer info.")]

@@ -4,14 +4,14 @@ using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("priority", typeof(Priority))]
+    [Subcommand(typeof(Priority))]
     public partial class TorrentCommand
     {
         [Command(Description = "Changes torrent priority.")]
-        [Subcommand("min", typeof(Min))]
-        [Subcommand("max", typeof(Max))]
-        [Subcommand("up", typeof(Up))]
-        [Subcommand("down", typeof(Down))]
+        [Subcommand(typeof(Min))]
+        [Subcommand(typeof(Max))]
+        [Subcommand(typeof(Up))]
+        [Subcommand(typeof(Down))]
         public class Priority : ClientRootCommandBase
         {
             [Command(Description = "Sets minimal torrent priority.")]

@@ -10,12 +10,12 @@ using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("file", typeof(File))]
+    [Subcommand(typeof(File))]
     public partial class TorrentCommand
     {
         [Command(Description = "Gets and manipulates torrent contents.")]
-        [Subcommand("list", typeof(List))]
-        [Subcommand("priority", typeof(Priority))]
+        [Subcommand(typeof(List))]
+        [Subcommand(typeof(Priority))]
         public class File : ClientRootCommandBase
         {
             [Command(Description = "Gets the torrent contents.")]

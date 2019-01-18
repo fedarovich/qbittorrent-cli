@@ -9,12 +9,12 @@ using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("tracker", typeof(Tracker))]
+    [Subcommand(typeof(Tracker))]
     public partial class TorrentCommand
     {
         [Command(Description = "Gets or adds torrent trackers.")]
-        [Subcommand("list", typeof(List))]
-        [Subcommand("add", typeof(Add))]
+        [Subcommand(typeof(List))]
+        [Subcommand(typeof(Add))]
         public class Tracker : ClientRootCommandBase
         {
             [Command(Description = "Shows the torrent trackers.")]

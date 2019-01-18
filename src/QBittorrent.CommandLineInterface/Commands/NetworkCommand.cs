@@ -6,7 +6,7 @@ using QBittorrent.CommandLineInterface.Services;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Configure network settings, credentials, etc.")]
-    [Subcommand("settings", typeof(Settings))]
+    [Subcommand(typeof(Settings))]
     public partial class NetworkCommand
     {
         [Command(Description = "Configure network settings.")]

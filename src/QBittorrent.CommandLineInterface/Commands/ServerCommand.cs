@@ -10,8 +10,8 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Manage qBittorrent server.")]
-    [Subcommand("log", typeof(Log))]
-    [Subcommand("info", typeof(Info))]
+    [Subcommand(typeof(Log))]
+    [Subcommand(typeof(Info))]
     public partial class ServerCommand : ClientRootCommandBase
     {
         [Command(Description = "Gets the qBittorrent log.")]

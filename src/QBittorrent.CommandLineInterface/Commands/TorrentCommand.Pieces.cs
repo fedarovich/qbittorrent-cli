@@ -8,7 +8,7 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("pieces", typeof(Pieces))]
+    [Subcommand(typeof(Pieces))]
     public partial class TorrentCommand
     {
         [Command(Description = "Shows the torrent pieces' hashes and states.")]

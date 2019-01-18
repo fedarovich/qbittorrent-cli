@@ -12,14 +12,14 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     public partial class ServerCommand
     {
-        [Subcommand("monitored-folder", typeof(MonitoredFolder))]
+        [Subcommand(typeof(MonitoredFolder))]
         public partial class Settings
         {
-            [Command(Description = "Manages monitored folders.")]
-            [Subcommand("list", typeof(List))]
-            [Subcommand("add", typeof(Add))]
-            [Subcommand("delete", typeof(Delete))]
-            [Subcommand("clear", typeof(Clear))]
+            [Command("monitored-folder", "monitoredfolder", "mf", Description = "Manages monitored folders.")]
+            [Subcommand(typeof(List))]
+            [Subcommand(typeof(Add))]
+            [Subcommand(typeof(Delete))]
+            [Subcommand(typeof(Clear))]
             public class MonitoredFolder : ClientRootCommandBase
             {
                 [Command(Description = "Adds or updates a monitored folder.")]

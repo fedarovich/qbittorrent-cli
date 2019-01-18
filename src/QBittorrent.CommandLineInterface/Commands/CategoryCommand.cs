@@ -12,10 +12,10 @@ using QBittorrent.CommandLineInterface.ColorSchemes;
 namespace QBittorrent.CommandLineInterface.Commands
 {
     [Command(Description = "Manage categories.")]
-    [Subcommand("add", typeof(Add))]
-    [Subcommand("set", typeof(Set))]
-    [Subcommand("delete", typeof(Delete))]
-    [Subcommand("list", typeof(List))]
+    [Subcommand(typeof(Add))]
+    [Subcommand(typeof(Set))]
+    [Subcommand(typeof(Delete))]
+    [Subcommand(typeof(List))]
     public class CategoryCommand : ClientRootCommandBase
     {
         [Command(Description = "Adds a new category.")]

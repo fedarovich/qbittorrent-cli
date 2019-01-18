@@ -9,12 +9,12 @@ using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("add", typeof(Add))]
+    [Subcommand(typeof(Add))]
     public partial class TorrentCommand
     {
         [Command(Description = "Adds new torrents.")]
-        [Subcommand("file", typeof(AddFile))]
-        [Subcommand("url", typeof(AddUrl))]
+        [Subcommand(typeof(AddFile))]
+        [Subcommand(typeof(AddUrl))]
         public class Add : ClientRootCommandBase
         {
             public abstract class Base : AuthenticatedCommandBase
@@ -53,7 +53,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public bool FirstLastPiecePrioritized { get; set; }
             }
 
-            [Command(Description = "Adds new torrents from torrent files.")]
+            [Command("file", Description = "Adds new torrents from torrent files.")]
             public class AddFile : Base
             {
                 [Argument(0, "<file1 file2 ... fileN>", "The list of files.")]
@@ -81,7 +81,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
-            [Command(Description = "Adds new torrents by URLS.")]
+            [Command("url", Description = "Adds new torrents by URLS.")]
             public class AddUrl : Base
             {
                 [Argument(0, "<URL_1 URL_2 ... URL_N>", "The list of URLS.")]

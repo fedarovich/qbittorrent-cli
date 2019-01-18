@@ -9,12 +9,12 @@ using QBittorrent.CommandLineInterface.Services;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    [Subcommand("proxy", typeof(Proxy))]
+    [Subcommand(typeof(Proxy))]
     public partial class NetworkCommand
     {
         [Command(Description = "Manages proxy connection.")]
-        [Subcommand("set", typeof(Set))]
-        [Subcommand("reset", typeof(Reset))]
+        [Subcommand(typeof(Set))]
+        [Subcommand(typeof(Reset))]
         public class Proxy
         {
             [Command(Description = "Configures proxy to use.")]
