@@ -44,14 +44,14 @@
   <ItemGroup>
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="BencodeNET" Version="2.2.24" />
-    <PackageReference Include="IPNetwork2" Version="2.1.2" />
+    <PackageReference Include="IPNetwork2" Version="2.2.0.78" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'netframework4.6'" />
     <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'netframework4.6'" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NJsonSchema" Version="9.11.1" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.3.37" />
-    <PackageReference Include="QBittorrent.Client" Version="1.1.18360.1-pre" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="NJsonSchema" Version="9.13.15" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.4" />
+    <PackageReference Include="QBittorrent.Client" Version="1.2.19017.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0" />
   </ItemGroup>
 
