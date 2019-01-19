@@ -16,7 +16,7 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand(typeof(InspectCommand))]
     [HelpOption(Inherited = true)]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
-    class Program
+    public class Program
     {
         static int Main(string[] args)
         {
