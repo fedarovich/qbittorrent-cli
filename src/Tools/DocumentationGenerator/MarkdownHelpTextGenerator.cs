@@ -164,8 +164,8 @@ namespace DocumentationGenerator
                 output.WriteLine("### Arguments");
                 output.WriteLine();
 
-                output.WriteLine("| Option | Description |");
-                output.WriteLine("| ------ | ----------- |");
+                output.WriteLine("| Argument | Description |");
+                output.WriteLine("| -------- | ----------- |");
 
                 foreach (var arg in visibleArguments)
                 {
@@ -193,8 +193,8 @@ namespace DocumentationGenerator
                 output.WriteLine();
                 output.WriteLine("### Options");
                 output.WriteLine();
-                output.WriteLine("| Long form | Short form | Symbol form | Description |");
-                output.WriteLine("| --------- | ---------- | ----------- | ----------- |");
+                output.WriteLine("| Option | Description |");
+                output.WriteLine("| ------ | ----------- |");
 
                 foreach (var opt in visibleOptions)
                 {
@@ -284,7 +284,7 @@ namespace DocumentationGenerator
                 GetOptionName("-", option.SymbolName)
             };
 
-            return string.Join(" | ", parts.Select(p => $"{p}"));
+            return string.Join("<br/>", parts.Where(p => !string.IsNullOrEmpty(p)));
 
             string GetOptionName(string prefix, string name)
             {
@@ -298,11 +298,11 @@ namespace DocumentationGenerator
 
                 if (option.OptionType == CommandOptionType.SingleOrNoValue)
                 {
-                    return $"[:<`*`{option.ValueName}`*`>]";
+                    return $"[`*`:<{option.ValueName}>`*`]";
                 }
                 else
                 {
-                    return $" <`*`{option.ValueName}`*`>";
+                    return $" `*`<{option.ValueName}>`*` ";
                 }
             }
         }
