@@ -14,6 +14,7 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand(typeof(NetworkCommand))]
     [Subcommand(typeof(TorrentCommand))]
     [Subcommand(typeof(InspectCommand))]
+    [Subcommand(typeof(RssCommand))]
     [HelpOption(Inherited = true)]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     public class Program
