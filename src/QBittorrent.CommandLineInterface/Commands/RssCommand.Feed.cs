@@ -26,7 +26,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 {
                     var root = await client.GetRssItemsAsync(false);
 
-                    var doc = new Document(RenderItem(root, true)).SetColors(ColorScheme.Current.Normal);
+                    var doc = new Document(RenderItem(root, true, true)).SetColors(ColorScheme.Current.Normal);
                     ConsoleRenderer.RenderDocument(doc);
                     return ExitCodes.Success;
 
@@ -36,21 +36,23 @@ namespace QBittorrent.CommandLineInterface.Commands
                             (item, index) => RenderItem(item, index == folder.Items.Count - 1)));
                     }
 
-                    Grid RenderItem(RssItem item, bool last)
+                    Grid RenderItem(RssItem item, bool last, bool isRoot = false)
                     {
                         return new Grid
                         {
                             Columns =
                             {
-                                new Column { Width = GridLength.Char(1) },
+                                new Column { Width = GridLength.Char(2) },
                                 new Column { Width = GridLength.Star(1) }
                             },
                             Children =
                             {
                                 new object[]
                                 {
-                                    new Cell(last ? "\u2517" : "\u2523") { Stroke = LineThickness.None },
-                                    new Cell(item.Name) { Stroke = LineThickness.None }
+                                    new Cell(isRoot
+                                        ? "<R"
+                                        : last ? "\u2514\u2500" : "\u251c\u2500") { Stroke = LineThickness.None },
+                                    new Cell(isRoot ? "oot>" : item.Name) { Stroke = LineThickness.None }
                                 },
                                 new object[] 
                                 {
