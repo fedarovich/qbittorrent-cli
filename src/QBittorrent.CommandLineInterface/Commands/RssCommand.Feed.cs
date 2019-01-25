@@ -36,8 +36,17 @@ namespace QBittorrent.CommandLineInterface.Commands
                             (item, index) => RenderItem(item, index == folder.Items.Count - 1)));
                     }
 
+                    object RenderFeed(RssFeed feed)
+                    {
+                        return new Div(
+                            feed.Name,
+                            " ",
+                            new Span($"[{feed.Url}]").SetColors(ColorScheme.Current.Inactive));
+                    }
+
                     Grid RenderItem(RssItem item, bool last, bool isRoot = false)
                     {
+                        var folder = item as RssFolder;
                         return new Grid
                         {
                             Columns =
@@ -52,14 +61,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                                     new Cell(isRoot
                                         ? "<R"
                                         : last ? "\u2514\u2500" : "\u251c\u2500") { Stroke = LineThickness.None },
-                                    new Cell(isRoot ? "oot>" : item.Name) { Stroke = LineThickness.None }
+                                    new Cell(isRoot 
+                                        ? "oot>" 
+                                        : item is RssFeed feed ? RenderFeed(feed) : item.Name) { Stroke = LineThickness.None }
                                 },
                                 new object[] 
                                 {
-                                    new Cell(last ? null : new Separator() { Orientation = Orientation.Vertical }) { Stroke = LineThickness.None },
-                                    new Cell(item is RssFolder folder
-                                        ? (Element)RenderFolderContent(folder)
-                                        : new Cell($"URL: {((RssFeed)item).Url}")) { Stroke = LineThickness.None }
+                                    new Cell(folder == null || last ? null : new Separator { Orientation = Orientation.Vertical }) { Stroke = LineThickness.None },
+                                    new Cell(folder == null ? null : RenderFolderContent(folder)) { Stroke = LineThickness.None }
                                 }
                             },
                             Stroke = LineThickness.None
