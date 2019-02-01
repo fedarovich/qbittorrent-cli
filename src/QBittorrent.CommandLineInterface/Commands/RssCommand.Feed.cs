@@ -17,6 +17,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand(typeof(List))]
         [Subcommand(typeof(Add))]
         [Subcommand(typeof(Delete))]
+        [Subcommand(typeof(Move))]
         public class Feed : ClientRootCommandBase
         {
             [Command(Description = "Shows the RSS feed list.", ExtendedHelpText = ExperimentalHelpText)]
@@ -118,13 +119,29 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Command(Description = "Deletes the RSS feed or folder.", ExtendedHelpText = ExperimentalHelpText)]
             public class Delete : AuthenticatedCommandBase
             {
-                [Argument(0, "<PATH>", "Virtual path for the folder. Use backslash \\ as a separator.")]
+                [Argument(0, "<PATH>", "Virtual path of the folder. Use backslash \\ as a separator.")]
                 [Required]
                 public string Path { get; set; }
 
                 protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
                     await client.DeleteRssItemAsync(Path);
+                    return ExitCodes.Success;
+                }
+            }
+
+            [Command("move", "mv", "rename", Description = "Moves or renames the RSS feed of folder.", ExtendedHelpText = ExperimentalHelpText)]
+            public class Move : AuthenticatedCommandBase
+            {
+                [Argument(0, "<SOURCE>", "Current virtual path of the feed or folder. Use backslash \\ as a separator.")]
+                public string Source { get; set; }
+
+                [Argument(1, "<DESTINATION>", "New path of the feed or folder. Use backslash \\ as a separator.")]
+                public string Destination { get; set; }
+
+                protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    await client.MoveRssItemAsync(Source, Destination);
                     return ExitCodes.Success;
                 }
             }
