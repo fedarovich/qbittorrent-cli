@@ -33,7 +33,7 @@ namespace QBittorrent.CommandLineInterface.ViewModels
         [DisplayFormat(DataFormatString = "{0:N0} bytes", NullDisplayText = "n/a")]
         public long? TotalWasted => _wrappedObject.TotalWasted;
 
-        [Display(Name = "Total Uploaded")]
+        [Display(Name = "Total uploaded")]
         [DisplayFormat(DataFormatString = "{0:N0} bytes", NullDisplayText = "n/a")]
         public long? TotalUploaded => _wrappedObject.TotalUploaded;
 
