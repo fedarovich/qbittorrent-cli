@@ -2,7 +2,7 @@
 
 | Current | Nightly | Release |
 | ------- | ------- | ------- |
-| ![Current Build](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/8/badge) | ![Nightly Build](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/7/badge) | ![Release Build](https://pavelfedarovich.visualstudio.com/_apis/public/build/definitions/cb73eb85-784d-4254-bc6f-acc589650c49/6/badge) |
+| [![Current Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-ci)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=8) | [![Nightly Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-nightly)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=7) | [![Release Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-release)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=6) |
 
 ***
 
