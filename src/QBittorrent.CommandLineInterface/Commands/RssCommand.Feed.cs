@@ -7,6 +7,7 @@ using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -18,6 +19,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand(typeof(Add))]
         [Subcommand(typeof(Delete))]
         [Subcommand(typeof(Move))]
+        [Subcommand(typeof(Info))]
         public class Feed : ClientRootCommandBase
         {
             [Command(Description = "Shows the RSS feed list.", ExtendedHelpText = ExperimentalHelpText)]
@@ -119,7 +121,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Command(Description = "Deletes the RSS feed or folder.", ExtendedHelpText = ExperimentalHelpText)]
             public class Delete : AuthenticatedCommandBase
             {
-                [Argument(0, "<PATH>", "Virtual path of the folder. Use backslash \\ as a separator.")]
+                [Argument(0, "<PATH>", "Virtual path of the feed or folder. Use backslash \\ as a separator.")]
                 [Required]
                 public string Path { get; set; }
 
@@ -143,6 +145,69 @@ namespace QBittorrent.CommandLineInterface.Commands
                 {
                     await client.MoveRssItemAsync(Source, Destination);
                     return ExitCodes.Success;
+                }
+            }
+
+            [Command(Description = "Shows RSS feed information.", ExtendedHelpText = ExperimentalHelpText)]
+            public class Info : AuthenticatedCommandBase
+            {
+                [Argument(0, "<PATH>", "Virtual path of the feed. Use backslash \\ as a separator.")]
+                [Required]
+                public string Path { get; set; }
+
+                [Option("-a|--with-articles", "Include article data to the output.", CommandOptionType.NoValue)]
+                public bool IncludeArticles { get; set; }
+
+                protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    var root = await client.GetRssItemsAsync(IncludeArticles);
+                    var feed = GetFeedByPath(root, Path);
+                    if (feed == null)
+                        throw new Exception($"Cannot find feed with the path \"{Path}\"");
+
+                    var vm = new RssFeedViewModel(Path, feed);
+                    UIHelper.PrintObject(vm,
+                        new Dictionary<string, Func<object, object>>
+                        {
+                            [nameof(vm.Articles)] = FormatArticles
+                        });
+                    return ExitCodes.Success;
+                }
+
+                private RssFeed GetFeedByPath(RssFolder folder, string path)
+                {
+                    var segments = new Queue<string>(Path.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries));
+
+                    while (segments.Count > 1)
+                    {
+                        var name = segments.Dequeue();
+                        folder = folder.Folders.SingleOrDefault(f => f.Name == name);
+                        if (folder == null)
+                            return null;
+                    }
+
+                    if (folder != null && segments.Count == 1)
+                    {
+                        var name = segments.Dequeue();
+                        return folder.Feeds.SingleOrDefault(f => f.Name == name);
+                    }
+
+                    return null;
+                }
+
+                private object FormatArticles(object obj)
+                {
+                    if (!(obj is IEnumerable<RssArticleViewModel> articles))
+                        return null;
+
+                    return new Alba.CsConsoleFormat.List(articles.Select(ToDocument));
+
+                    Document ToDocument(RssArticleViewModel article)
+                    {
+                        var document = UIHelper.ToDocument(article);
+                        document.Margin = new Thickness(0, 0, 0, 1);
+                        return document;
+                    }
                 }
             }
         }
