@@ -14,7 +14,7 @@
     <LangVersion>latest</LangVersion>
     <Authors>Pavel Fedarovich</Authors>
     <Company>Pavel Fedarovich</Company>
-    <Copyright>© Pavel Fedarovich, 2018</Copyright>
+    <Copyright>© Pavel Fedarovich, 2018-2019</Copyright>
     <PackageProjectUrl>https://github.com/fedarovich/qbittorrent-cli</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fedarovich/qbittorrent-cli</RepositoryUrl>
     <PackageTags>torrent qbittorrent</PackageTags>
