@@ -14,6 +14,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -114,6 +115,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-P|--key-password <PASSWORD>", "X509 certificate key password.", CommandOptionType.SingleValue)]
                 [NoAutoSet]
                 public string CertificateKeyPassword { get; set; }
+
+                [Option("-A|--alt-ui <BOOL>", "Enables/Disables alternative web UI. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "Alternative Web UI requires qBittorrent 4.1.5 or later.")]
+                public bool? AlternativeWebUIEnabled { get; set; }
+
+                [Option("-U|--alt-ui-path <PATH>", "Alternative web UI path. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "Alternative Web UI requires qBittorrent 4.1.5 or later.")]
+                public string AlternativeWebUIPath { get; set; }
 
                 protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {

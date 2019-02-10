@@ -48,6 +48,10 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
 
         [Display(Name = "Apply rate limit to TCP overhead")]
         public bool? LimitTcpOverhead => _wrappedObject.LimitTcpOverhead;
+
+        [Display(Name = "Apply rate limit to peers on LAN")]
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        public bool? LimitLAN => _wrappedObject.LimitLAN;
         
         private DateTime? ToDateTime(in int? hours, in int? minutes)
         {

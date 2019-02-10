@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -24,6 +25,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand(typeof(Queue))]
         [Subcommand(typeof(Seeding))]
         [Subcommand(typeof(Dns))]
+        [Subcommand(typeof(AutoTorrentManagement))]
         [Command(Description = "Manage qBittorrent server settings.")]
         public partial class Settings : ClientRootCommandBase
         {
@@ -35,6 +37,20 @@ namespace QBittorrent.CommandLineInterface.Commands
             [AttributeUsage(AttributeTargets.Property)]
             private class IgnoreAttribute : Attribute
             {
+            }
+
+            [AttributeUsage(AttributeTargets.Property)]
+            private class MinApiVersionAttribute : Attribute
+            {
+                public MinApiVersionAttribute(string minVersion, string message)
+                {
+                    MinVersion = ApiVersion.Parse(minVersion);
+                    Message = message ?? throw new ArgumentNullException(nameof(message));
+                }
+
+                public ApiVersion MinVersion { get; }
+
+                public string Message { get; }
             }
 
             public abstract class SettingsCommand<T> : AuthenticatedCommandBase
@@ -56,8 +72,21 @@ namespace QBittorrent.CommandLineInterface.Commands
                          let value = prop.GetValue(this)
                          where value != null && (option.OptionType != CommandOptionType.NoValue || !false.Equals(value))
                          let autoSet = prop.GetCustomAttribute<NoAutoSetAttribute>() == null
-                         select (prop.Name, value, autoSet))
+                         let minApiVersion = prop.GetCustomAttribute<MinApiVersionAttribute>()
+                         select (prop.Name, value, autoSet, minApiVersion))
                         .ToList();
+
+                    var versionSpecificProps = props
+                        .Where(p => p.minApiVersion != null)
+                        .ToLookup(
+                            p => (p.minApiVersion.MinVersion, p.minApiVersion.Message),
+                            p => p.value);
+                    foreach (var pair in versionSpecificProps)
+                    {
+                        var (minVersion, message) = pair.Key;
+                        var values = pair.ToArray();
+                        await WarnIfNotSupported(client, console, minVersion, message, values);
+                    }
 
                     if (props.Any())
                     {
@@ -77,6 +106,20 @@ namespace QBittorrent.CommandLineInterface.Commands
                     }
 
                     return ExitCodes.Success;
+                }
+
+                protected async Task WarnIfNotSupported(QBittorrentClient client, IConsole console,
+                    ApiVersion minVersion,
+                    string message,
+                    params object[] properties)
+                {
+                    if (properties == null || properties.All(p => p == null))
+                        return;
+
+                    if (await client.GetApiVersionAsync() < minVersion)
+                    {
+                        console.WriteLineColored(message, ColorScheme.Current.Warning);
+                    }
                 }
 
                 protected virtual Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
@@ -124,9 +167,21 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 [Option("-A|--autorun-enabled <BOOL>", "Enable/disables running external program for the complete torrent.", CommandOptionType.SingleValue)]
                 public bool? AutorunEnabled { get; set; }
+
+                [Option("-S|--create-subfolder <BOOL>", "Create subfolder for multi-file torrents", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"create-subfolder\" option requires qBittorrent 4.1.5 or later.")]
+                public bool? CreateTorrentSubfolder { get; set; }
+
+                [Option("-P|--add-paused <BOOL>", "Add new torrents in paused state", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"add-paused\" option requires qBittorrent 4.1.5 or later.")]
+                public bool? AddTorrentPaused { get; set; }
+
+                [Option("-d|--delete-torrent-file <VALUE>", "Delete .torrent files after added (Never|IfAdded|Always)", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"delete-torrent-file\" option requires qBittorrent 4.1.5 or later.")]
+                public TorrentFileAutoDeleteMode? TorrentFileAutoDeleteMode { get; set; }
             }
 
-            [Command("email", "e-mail", Description = "Manages e-mail notifications.", ExtendedHelpText = ExtendedHelp)]
+            [Command("email", "e-mail", "mail", Description = "Manages e-mail notifications.", ExtendedHelpText = ExtendedHelp)]
             public class Email : SettingsCommand<EmailViewModel>
             {
                 [Option("-e|--enabled <BOOL>", "Enables/disables e-mail notifications.", CommandOptionType.SingleValue)]
@@ -135,6 +190,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-a|--address <ADDRESS>", "E-mail address.", CommandOptionType.SingleValue)]
                 public string MailNotificationEmailAddress { get; set; }
 
+                [Option("-f|--from <ADDRESS>", "From e-mail address. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"from\" option requires qBittorrent 4.1.5 or later.")]
+                public string MailNotificationSender { get; set; }
+                
                 [Option("-s|--smtp <SERVER>", "SMTP server URL.", CommandOptionType.SingleValue)]
                 public string MailNotificationSmtpServer { get; set; }
 
@@ -293,6 +352,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-o|--limit-tcp <BOOL>", "Apply rate limit to TCP overhead", CommandOptionType.SingleValue)]
                 public bool? LimitTcpOverhead { get; set; }
 
+                [Option("-l|--limit-lan <BOOL>", "Apply rate limit to peers on LAN", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"Apply rate limit to peers on LAN\" option requires qBittorrent 4.1.5 or later.")]
+                [SuppressMessage("ReSharper", "InconsistentNaming")]
+                public bool? LimitLAN { get; set; }
+
                 protected override void CustomFillPreferences(Preferences preferences)
                 {
                     base.CustomFillPreferences(preferences);
@@ -365,6 +429,18 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 [Option("-n|--no-slow <BOOL>", "Do not count slow torrents in these limits", CommandOptionType.SingleValue)]
                 public bool? DoNotCountSlowTorrents { get; set; }
+
+                [Option("-D|--slow-download-rate <VALUE>", "Slow download rate threshold (KiB/S)", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"slow-download-rate\" option requires qBittorrent 4.1.5 or later.")]
+                public int? SlowTorrentDownloadRateThreshold { get; set; }
+
+                [Option("-U|--slow-upload-rate <VALUE>", "Slow upload rate threshold (KiB/S)", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"slow-upload-rate\" option requires qBittorrent 4.1.5 or later.")]
+                public int? SlowTorrentUploadRateThreshold { get; set; }
+
+                [Option("-I|--slow-inactivity-time <VALUE>", "Torrent inactivity timeout (seconds)", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"slow-inactivity-time\" option requires qBittorrent 4.1.5 or later.")]
+                public int? SlowTorrentInactiveTime { get; set; }
             }
 
             [Command(Description = "Manages BitTorrent seeding settings.", ExtendedHelpText = ExtendedHelp)]
@@ -424,6 +500,30 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     return Task.CompletedTask;
                 }
+            }
+
+            [Command("auto-tmm", "autotmm", Description = "Manages automatic torrent management mode (Auto TMM).")]
+            public class AutoTorrentManagement : SettingsCommand<AutoTorrentManagementViewModel>
+            {
+                [Option("-e|--enabled <BOOL>", "Enable/disable automatic torrent management by default", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"enabled\" option requires qBittorrent 4.1.5 or later.")]
+                [SuppressMessage("ReSharper", "InconsistentNaming")]
+                public bool? AutoTMMEnabledByDefault { get; set; }
+
+                [Option("-c|--retain-on-category-change <BOOL>", "Retain auto TMM when category changes", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"retain-on-category-change\" option requires qBittorrent 4.1.5 or later.")]
+                [SuppressMessage("ReSharper", "InconsistentNaming")]
+                public bool? AutoTMMRetainedWhenCategoryChanges { get; set; }
+
+                [Option("-d|--retain-on-default-save-path-change <BOOL>", "Retain auto TMM when default save path changes", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"retain-on-default-save-path-change\" option requires qBittorrent 4.1.5 or later.")]
+                [SuppressMessage("ReSharper", "InconsistentNaming")]
+                public bool? AutoTMMRetainedWhenDefaultSavePathChanges { get; set; }
+
+                [Option("-s|--retain-on-category-save-path-change <BOOL>", "Retain auto TMM when category save path changes", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.2.0", "\"retain-on-category-save-path-change\" option requires qBittorrent 4.1.5 or later.")]
+                [SuppressMessage("ReSharper", "InconsistentNaming")]
+                public bool? AutoTMMRetainedWhenCategorySavePathChanges { get; set; }
             }
         }
     }

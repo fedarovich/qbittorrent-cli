@@ -95,8 +95,11 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                var data = await client.GetPartialDataAsync();
-                var categories = data.CategoriesChanged;
+                var apiVersion = await client.GetApiVersionAsync();
+                var categories = apiVersion >= new ApiVersion(2, 1, 1)
+                    ? await client.GetCategoriesAsync()
+                    : (await client.GetPartialDataAsync()).CategoriesChanged;
+
                 if (categories?.Any() == true)
                 {
                     var doc = new Document(

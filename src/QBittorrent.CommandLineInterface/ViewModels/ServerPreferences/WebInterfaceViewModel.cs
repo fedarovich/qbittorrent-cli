@@ -39,5 +39,12 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         [Display(Name = "SSL Key")]
         [DisplayFormat(DataFormatString = "**********")]
         public string WebUISslKey => _wrappedObject.WebUISslKey;
+
+        [Display(Name = "Alt. Web UI")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public bool? AlternativeWebUI => _wrappedObject.AlternativeWebUIEnabled;
+
+        [Display(Name = "Alt. Web UI Path")]
+        public string AlternativeWebUIPath => _wrappedObject.AlternativeWebUIPath;
     }
 }

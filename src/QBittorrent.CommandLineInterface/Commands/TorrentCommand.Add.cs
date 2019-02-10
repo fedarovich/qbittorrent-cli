@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -51,6 +52,20 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 [Option("--first-last-prio", "Prioritize download of the first and the last pieces.", CommandOptionType.SingleValue)]
                 public bool FirstLastPiecePrioritized { get; set; }
+
+                [Option("-a|--automatic-torrent-management <BOOL>", "Enable/disables automatic torrent management. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
+                public bool? AutomaticTorrentManagement { get; set; }
+
+                protected async Task WarnAutomaticTorrentManagement(IQBittorrentClient client, IConsole console)
+                {
+                    if (AutomaticTorrentManagement != null &&
+                        await client.GetApiVersionAsync() < new ApiVersion(2, 2))
+                    {
+                        console.WriteLineColored(
+                            "automatic-torrent-management option is ignored by qBittorrent versions earlier than 4.1.5.",
+                            ColorScheme.Current.Warning);
+                    }
+                }
             }
 
             [Command("file", Description = "Adds new torrents from torrent files.")]
@@ -74,9 +89,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                         Rename = Rename,
                         SequentialDownload = SequentialDownload,
                         SkipHashChecking = SkipChecking,
-                        UploadLimit = UploadLimit
+                        UploadLimit = UploadLimit,
+                        AutomaticTorrentManagement = AutomaticTorrentManagement
                     };
                     await client.AddTorrentsAsync(request);
+                    await WarnAutomaticTorrentManagement(client, console);
                     return ExitCodes.Success;
                 }
             }
@@ -103,9 +120,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                         Rename = Rename,
                         SequentialDownload = SequentialDownload,
                         SkipHashChecking = SkipChecking,
-                        UploadLimit = UploadLimit
+                        UploadLimit = UploadLimit,
+                        AutomaticTorrentManagement = AutomaticTorrentManagement
                     };
                     await client.AddTorrentsAsync(request);
+                    await WarnAutomaticTorrentManagement(client, console);
                     return ExitCodes.Success;
                 }
             }

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
 {
@@ -39,5 +41,17 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
 
         [Display(Name = "External program command line")]
         public string AutorunProgram => _wrappedObject.AutorunProgram;
+
+        [Display(Name = "Create subfolder for multi-file torrents")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public bool? CreateTorrentSubfolder => _wrappedObject.CreateTorrentSubfolder;
+
+        [Display(Name = "Add new torrents in paused state")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public bool? AddTorrentPaused => _wrappedObject.AddTorrentPaused;
+
+        [Display(Name = "Delete .torrent files after added")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public TorrentFileAutoDeleteMode? TorrentFileAutoDeleteMode => _wrappedObject.TorrentFileAutoDeleteMode;
     }
 }

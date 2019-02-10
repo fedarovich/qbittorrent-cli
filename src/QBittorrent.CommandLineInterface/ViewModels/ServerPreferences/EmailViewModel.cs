@@ -18,6 +18,10 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         [Display(Name = "E-mail notifications enabled")]
         public bool? MailNotificationEnabled => _wrappedObject.MailNotificationEnabled;
 
+        [Display(Name = "Send e-mail from")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public string MailNotificationSender => _wrappedObject.MailNotificationSender;
+
         [Display(Name = "Send e-mail to")]
         public string MailNotificationEmailAddress => _wrappedObject.MailNotificationEmailAddress;
 

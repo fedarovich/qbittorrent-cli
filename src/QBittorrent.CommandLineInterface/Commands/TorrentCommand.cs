@@ -19,6 +19,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Rename))]
     [Subcommand(typeof(Category))]
     [Subcommand(typeof(Check))]
+    [Subcommand(typeof(Reannounce))]
     public partial class TorrentCommand : ClientRootCommandBase
     {
         [Command(Description = "Shows the torrent properties.")]
@@ -152,6 +153,21 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 await client.RecheckAsync(Hash);
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Reannounces the torrent.", ExtendedHelpText = "Requires qBittorrent v4.1.2 or later.")]
+        public class Reannounce : TorrentSpecificCommandBase
+        {
+            protected override bool AllowAll => true;
+
+            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to resume all torrents.")]
+            public override string Hash { get; set; }
+
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                await (IsAll ? client.ReannounceAsync() : client.ReannounceAsync(Hash));
                 return ExitCodes.Success;
             }
         }

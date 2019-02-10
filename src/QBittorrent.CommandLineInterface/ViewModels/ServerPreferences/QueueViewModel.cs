@@ -29,5 +29,17 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
 
         [Display(Name = "Do not count slow torrents in these limits")]
         public bool? DoNotCountSlowTorrents => _wrappedObject.DoNotCountSlowTorrents;
+
+        [Display(Name = "Slow download rate threshold")]
+        [DisplayFormat(DataFormatString = "{0:N} KiB/s", NullDisplayText = "n/a")]
+        public int? SlowTorrentDownloadRateThreshold => _wrappedObject.SlowTorrentDownloadRateThreshold;
+
+        [Display(Name = "Slow upload rate threshold")]
+        [DisplayFormat(DataFormatString = "{0:N} KiB/s", NullDisplayText = "n/a")]
+        public int? SlowTorrentUploadRateThreshold => _wrappedObject.SlowTorrentUploadRateThreshold;
+
+        [Display(Name = "Torrent inactivity timeout")]
+        [DisplayFormat(DataFormatString = "{0:N} s", NullDisplayText = "n/a")]
+        public int? SlowTorrentInactiveTime => _wrappedObject.SlowTorrentInactiveTime;
     }
 }
