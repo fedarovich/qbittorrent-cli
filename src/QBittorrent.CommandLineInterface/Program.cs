@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
+using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Commands;
 
 namespace QBittorrent.CommandLineInterface
@@ -27,6 +28,16 @@ namespace QBittorrent.CommandLineInterface
                 app.Conventions.UseDefaultConventions();
                 int code = app.Execute(args);
                 return code;
+            }
+            catch (ApiNotSupportedException e)
+            {
+                PrintApiNotSupported(e);
+                return ExitCodes.Failure;
+            }
+            catch (TargetInvocationException e) when (e.InnerException is ApiNotSupportedException ex)
+            {
+                PrintApiNotSupported(ex);
+                return ExitCodes.Failure;
             }
             catch (TargetInvocationException e) when (e.InnerException != null)
             {
@@ -72,6 +83,36 @@ namespace QBittorrent.CommandLineInterface
                 }
                 
                 Console.ResetColor();
+            }
+
+            void PrintApiNotSupported(ApiNotSupportedException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                var apiVersion = ApiVersion.Parse(ex.RequiredApiVersion.ToString(3));
+                var qBittorrentVersion = GetQBittorrentVersion();
+                Console.WriteLine(qBittorrentVersion != null
+                    ? $"qBittorrent v{qBittorrentVersion} or later is required for this command."
+                    : $"A newer version of qBittorrent is required for this command.{Environment.NewLine}API {apiVersion} must be supported.");
+                Console.ResetColor();
+
+                string GetQBittorrentVersion()
+                {
+                    if (apiVersion == new ApiVersion(2, 0 , 0))
+                        return "4.1";
+                    if (apiVersion == new ApiVersion(2, 0, 1))
+                        return "4.1.1";
+                    if (apiVersion == new ApiVersion(2, 0, 2))
+                        return "4.1.2";
+                    if (apiVersion == new ApiVersion(2, 1))
+                        return "4.1.3";
+                    if (apiVersion == new ApiVersion(2, 1, 1))
+                        return "4.1.4";
+                    if (apiVersion == new ApiVersion(2, 2))
+                        return "4.1.5";
+                    if (apiVersion == new ApiVersion(2, 3))
+                        return "4.2";
+                    return null;
+                }
             }
         }
 
