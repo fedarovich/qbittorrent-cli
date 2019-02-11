@@ -23,7 +23,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-f|--folder <PATH>", "Download folder.", CommandOptionType.SingleValue)]
                 public string Folder { get; set; }
 
-                [Option("--cookie <COOKIE>", "Cookie sent to download the .torrent file.", CommandOptionType.SingleValue)]
+                [Option("-C|--cookie <COOKIE>", "Cookie sent to download the .torrent file.", CommandOptionType.SingleValue)]
                 public string Cookie { get; set; }
 
                 [Option("-c|--category <CATEGORY>", "Category for the torrent.", CommandOptionType.SingleValue)]
@@ -32,10 +32,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-p|--paused", "Add torrents in the paused state.", CommandOptionType.NoValue)]
                 public bool Paused { get; set; }
 
-                [Option("--no-check", "Skip hash checking.", CommandOptionType.NoValue)]
+                [Option("-n|--no-check", "Skip hash checking.", CommandOptionType.NoValue)]
                 public bool SkipChecking { get; set; }
 
-                [Option("--create-root-folder <BOOL>", "Create root folder (true/false).", CommandOptionType.SingleValue)]
+                [Option("-R|--create-root-folder <BOOL>", "Create root folder (true/false).", CommandOptionType.SingleValue)]
                 public bool? CreateRootFolder { get; set; }
 
                 [Option("-r|--rename <NEW_NAME>", "Rename torrent", CommandOptionType.SingleValue)]
@@ -50,7 +50,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-s|--sequential", "Enable sequential download.", CommandOptionType.NoValue)]
                 public bool SequentialDownload { get; set; }
 
-                [Option("--first-last-prio", "Prioritize download of the first and the last pieces.", CommandOptionType.SingleValue)]
+                [Option("-F|--first-last-prio", "Prioritize download of the first and the last pieces.", CommandOptionType.SingleValue)]
                 public bool FirstLastPiecePrioritized { get; set; }
 
                 [Option("-a|--automatic-torrent-management <BOOL>", "Enable/disables automatic torrent management. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
