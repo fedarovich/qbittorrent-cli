@@ -35,7 +35,7 @@ namespace DocumentationGenerator
                 output.WriteLine($"{prefix}* [{cmd.Name}]({link})");
 
                 prefix += "  ";
-                foreach (var subCommand in cmd.Commands)
+                foreach (var subCommand in cmd.Commands.OrderBy(c => c.Name))
                 {
                     RenderCommand(subCommand, prefix);
                 }
