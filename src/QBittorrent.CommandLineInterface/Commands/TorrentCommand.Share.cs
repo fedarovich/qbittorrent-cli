@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using NJsonSchema.Infrastructure;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -38,9 +37,47 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return ExitCodes.Success;
                 }
 
-                // TODO: Print current state.
+                var (properties, global) = await TaskHelper.WhenAll(
+                    client.GetTorrentPropertiesAsync(Hash),
+                    client.GetPreferencesAsync());
+                var viewModel = new TorrentShareViewModel(properties, info);
+
+                UIHelper.PrintObject(viewModel,
+                    new Dictionary<string, Func<object, object>>
+                    {
+                        [nameof(viewModel.RatioLimit)] = FormatRatioLimit,
+                        [nameof(viewModel.SeedingTimeLimit)] = FormatSeedingTimeLimit
+                    });
 
                 return ExitCodes.Success;
+
+                object FormatRatioLimit(object arg)
+                {
+                    switch (arg)
+                    {
+                        case double value when Math.Abs(value - ShareLimits.Ratio.Global) < 0.0001:
+                            var globalValue = global.MaxRatio >= 0 ? global.MaxRatio.Value.ToString("F3") : "Unlimited";
+                            return $"Global ({globalValue})";
+                        case double value when Math.Abs(value - ShareLimits.Ratio.Unlimited) < 0.0001:
+                            return "Unlimited";
+                        case double value:
+                            return value.ToString("F3");
+                        default:
+                            return null;
+                    }
+                }
+
+                object FormatSeedingTimeLimit(object arg)
+                {
+                    var time = arg as TimeSpan?;
+                    if (time == ShareLimits.SeedingTime.Global)
+                    {
+                        var globalValue = global.MaxSeedingTime >= 0 ? global.MaxSeedingTime.Value.ToString() : "Unlimited";
+                        return $"Global ({globalValue})";
+                    }
+
+                    return time == ShareLimits.SeedingTime.Unlimited ? "Unlimited" : time?.ToString();
+                }
             }
         }
     }
