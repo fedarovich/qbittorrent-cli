@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.ViewModels;
 
@@ -11,14 +14,16 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Share))]
     public partial class TorrentCommand
     {
-        [Command("share", "sharing", Description = "Manages torrent sharing limits.")]
+        [Command("share", "sharing", "seeding", Description = "Manages torrent sharing limits.")]
         public class Share : TorrentSpecificCommandBase
         {
-            [Option("-r|--ratio <VALUE>", "Set the ratio limit (number|GLOBAL|NONE)", CommandOptionType.SingleValue)]
-            public double? RatioLimit { get; set; }
+            [Option("-r|--ratio-limit <VALUE>", "Set the ratio limit (number|GLOBAL|NONE)", CommandOptionType.SingleValue)]
+            [ShareRatioLimitValidation]
+            public string RatioLimit { get; set; }
 
-            [Option("-s|--seeding-time <VALUE>", "Set the share limit ([d.]HH:mm[:ss]|GLOBAL|NONE)", CommandOptionType.SingleValue)]
-            public TimeSpan? SeedingTimeLimit { get; set; }
+            [Option("-t|--time-limit <VALUE>", "Set the seeding time limit ([d.]HH:mm[:ss]|GLOBAL|NONE)", CommandOptionType.SingleValue)]
+            [ShareSeedingTimeLimitValidation]
+            public string SeedingTimeLimit { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
@@ -29,11 +34,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return ExitCodes.NotFound;
                 }
 
-                if (RatioLimit != null || SeedingTimeLimit != null)
+                var ratioLimit = GetRatioLimit();
+                var seedingTimeLimit = GetSeedingTimeLimit();
+
+                if (ratioLimit != null || seedingTimeLimit != null)
                 {
                     await client.SetShareLimitsAsync(Hash,
-                        RatioLimit ?? info.RatioLimit ?? ShareLimits.Ratio.Global,
-                        SeedingTimeLimit ?? info.SeedingTimeLimit ?? ShareLimits.SeedingTime.Global);
+                        ratioLimit ?? info.RatioLimit ?? ShareLimits.Ratio.Global,
+                        seedingTimeLimit ?? info.SeedingTimeLimit ?? ShareLimits.SeedingTime.Global);
                     return ExitCodes.Success;
                 }
 
@@ -56,10 +64,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                     switch (arg)
                     {
                         case double value when Math.Abs(value - ShareLimits.Ratio.Global) < 0.0001:
-                            var globalValue = global.MaxRatio >= 0 ? global.MaxRatio.Value.ToString("F3") : "Unlimited";
+                            var globalValue = global.MaxRatio >= 0 ? global.MaxRatio.Value.ToString("F3") : "None";
                             return $"Global ({globalValue})";
                         case double value when Math.Abs(value - ShareLimits.Ratio.Unlimited) < 0.0001:
-                            return "Unlimited";
+                            return "None";
                         case double value:
                             return value.ToString("F3");
                         default:
@@ -72,12 +80,37 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var time = arg as TimeSpan?;
                     if (time == ShareLimits.SeedingTime.Global)
                     {
-                        var globalValue = global.MaxSeedingTime >= 0 ? global.MaxSeedingTime.Value.ToString() : "Unlimited";
+                        var globalValue = global.MaxSeedingTime >= 0 ? global.MaxSeedingTime.Value.ToString() : "None";
                         return $"Global ({globalValue})";
                     }
 
-                    return time == ShareLimits.SeedingTime.Unlimited ? "Unlimited" : time?.ToString();
+                    return time == ShareLimits.SeedingTime.Unlimited ? "None" : time?.ToString();
                 }
+            }
+
+            private double? GetRatioLimit()
+            {
+                if ("GLOBAL".Equals(RatioLimit, StringComparison.OrdinalIgnoreCase))
+                    return ShareLimits.Ratio.Global;
+
+                if ("NONE".Equals(RatioLimit, StringComparison.OrdinalIgnoreCase))
+                    return ShareLimits.Ratio.Unlimited;
+
+                if (double.TryParse(RatioLimit, NumberStyles.Float, CultureInfo.InvariantCulture, out var ratioLimit))
+                    return ratioLimit;
+
+                return double.TryParse(RatioLimit, out ratioLimit) ? ratioLimit : (double?) null;
+            }
+
+            private TimeSpan? GetSeedingTimeLimit()
+            {
+                if ("GLOBAL".Equals(SeedingTimeLimit, StringComparison.OrdinalIgnoreCase))
+                    return ShareLimits.SeedingTime.Global;
+
+                if ("NONE".Equals(SeedingTimeLimit, StringComparison.OrdinalIgnoreCase))
+                    return ShareLimits.SeedingTime.Unlimited;
+
+                return TimeSpan.TryParse(SeedingTimeLimit, out var seedingTimeLimit) ? seedingTimeLimit : (TimeSpan?)null;
             }
         }
     }
