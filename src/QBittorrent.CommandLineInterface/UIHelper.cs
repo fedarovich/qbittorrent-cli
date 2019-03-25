@@ -126,5 +126,12 @@ namespace QBittorrent.CommandLineInterface
             element.Color = colors.GetEffectiveForeground();
             return element;
         }
+
+        public static T With<T>(this T element, Action<T> action)
+            where T : Element
+        {
+            action(element);
+            return element;
+        }
     }
 }

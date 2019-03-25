@@ -43,135 +43,110 @@ namespace QBittorrent.CommandLineInterface.Commands
             public int Offset { get; set; }
 
             [Option("-l|--limit <INT>", "The number of results to show.", CommandOptionType.SingleValue)]
-            public int Limit { get; set; }
-
-            [Option("-v|--verbose", "Displays verbose information.", CommandOptionType.NoValue)]
-            public bool Verbose { get; set; }
+            [Range(1, int.MaxValue)]
+            public int? Limit { get; set; }
 
             [Option("-P|--pager", "Use pager to display the results.", CommandOptionType.NoValue)]
             public bool UsePager { get; set; }
 
+            [Option("-V|--verbose", "Show verbose results.", CommandOptionType.NoValue)]
+            public bool Verbose { get; set; }
 
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
+                const int resultsPerRequest = 100;
                 var id = await client.StartSearchAsync(Pattern,
                     Plugins ?? new[] {"enabled"},
                     Category ?? "all");
 
-                Console.CancelKeyPress += HandleCancellationRequest;
+                Console.CancelKeyPress += OnCancel;
 
-                await WaitForResultsAsync();
-                var results = await client.GetSearchResultsAsync(id, Offset, Limit);
+                int offset = Offset;
+                int remaining = Limit ?? int.MaxValue;
+                int limit = Math.Min(remaining, resultsPerRequest);
+
+                var pager = UsePager ? new Pager() : null;
+                var target = (pager != null && pager.Enabled) ? new TextRenderTarget(pager.Writer) : null;
                 
-                string total = $"Total: {results.Total:N}";
-                if (results.Status == SearchJobStatus.Running)
-                {
-                    total += " (search is in progress)";
-                }
+                int index = offset + 1;
+                int total = 0;
 
-                var doc = Verbose ? PrintVerbose() : PrintTable();
-
-                if (UsePager)
+                try
                 {
-                    using (var pager = new Pager(console))
+                    SearchResults results;
+                    do
                     {
-                        using (var target = new TextRenderTarget(pager.Writer))
+                        results = await client.GetSearchResultsAsync(id, offset, limit);
+                        total = results.Total;
+
+                        foreach (var result in results.Results)
                         {
-                            ConsoleRenderer.RenderDocument(doc, target);
-                            pager.WaitForExit();
+                            Print(result);
+                            index += 1;
                         }
-                    }
+
+                        offset += results.Results.Count;
+                        remaining -= results.Results.Count;
+                        limit = Math.Min(remaining, resultsPerRequest);
+                    } while (results.Status == SearchJobStatus.Running && remaining > 0);
+
+                    (pager?.Writer ?? console.Out).WriteLine($"Total results: {total:N0}");
                 }
-                else
+                finally
                 {
-                    ConsoleRenderer.RenderDocument(doc);
+                    target?.Dispose();
+                    pager?.Dispose();
+                    
+                    Console.CancelKeyPress -= OnCancel;
+                    await client.StopSearchAsync(id);
                 }
 
                 return ExitCodes.Success;
 
-                async Task WaitForResultsAsync()
+                void Print(SearchResult result)
                 {
-                    Quiet |= console.IsOutputRedirected;
-                    if (!Quiet)
-                    {
-                        console.WriteLine("Search is started. Press Ctrl+C to stop.");
-                    }
-
-                    string message = string.Empty;
-                    int index = 0;
-                    var symbols = new[] { @"[\]", "[|]", "[/]", "[-]" };
-
-                    SearchStatus status;
-                    do
-                    {
-                        await Task.Delay(500);
-                        status = await client.GetSearchStatusAsync(id);
-                        if (!Quiet)
-                        {
-                            console.Write(new string('\b', message.Length));
-                            message = $"{symbols[index]} Found {status.Total} results";
-                            index = (index + 1) % symbols.Length;
-                            console.Write(message);
-                        }
-
-                    } while (status.Status != SearchJobStatus.Stopped);
-
-                    if (!Quiet)
-                    {
-                        console.Write(new string('\b', message.Length));
-                    }
-                }
-
-                async void HandleCancellationRequest(object sender, ConsoleCancelEventArgs e)
-                {
-                    Console.CancelKeyPress -= HandleCancellationRequest;
-                    e.Cancel = false;
-                    await client.StopSearchAsync(id);
-                }
-
-                Document PrintTable()
-                {
-                    return new Document(
+                    var doc = new Document(
                         new Grid
                         {
-                            Columns =
-                            {
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Star(1)},
-                                new Column {Width = GridLength.Auto},
-                            },
+                            Stroke = new LineThickness(LineWidth.None),
+                            Columns = { UIHelper.FieldsColumns },
                             Children =
                             {
-                                UIHelper.Header("File Name"),
-                                UIHelper.Header("URL"),
-                                UIHelper.Header("Seeds"),
-                                results.Results.Select(p => new[]
-                                {
-                                    new Cell(p.FileName),
-                                    new Cell(p.FileUrl),
-                                    new Cell(p.Seeds)
-                                }),
-                                new Cell(total) {[Grid.ColumnSpanProperty] = 3}
+                                UIHelper.Row("#", index),
+                                UIHelper.Row("Name", result.FileName),
+                                UIHelper.Row("Size", result.FileSize != null ? $"{result.FileSize:N0} bytes" : "n/a"),
+                                GetVerboseData(),
+                                UIHelper.Label("URL"),
+                                UIHelper.Data(string.Empty),
+                                UIHelper.Data(result.FileUrl)
+                                    .With(c => c[Grid.ColumnSpanProperty] = 2)
+                                    .With(c => c.Padding = default)
                             },
-                            Stroke = LineThickness.Single
-                        }
-                    ).SetColors(ColorScheme.Current.Normal);
+                            Margin = new Thickness(0, 0, 0, 1)
+                        }).SetColors(ColorScheme.Current.Normal);
+
+                    ConsoleRenderer.RenderDocument(doc, target);
+
+                    IEnumerable<object> GetVerboseData()
+                    {
+                        if (!Verbose)
+                            yield break;
+
+                        yield return UIHelper.Row("Site", result.SiteUrl);
+                        yield return UIHelper.Row("Description", result.DescriptionUrl);
+                        yield return UIHelper.Row("Seeds", result.Seeds);
+                        yield return UIHelper.Row("Leechers", result.Leechers);
+                    }
                 }
 
-                Document PrintVerbose()
+                async void OnCancel(object sender, ConsoleCancelEventArgs e)
                 {
-                    return new Document(
-                        new Div(total) { Margin = new Thickness(0, 0, 0, 1) },
-                        new List(results.Results.Select(r =>
-                            {
-                                var props = UIHelper.ToDocument(r);
-                                props.Margin = new Thickness(0, 0, 0, 1);
-                                return props;
-                            })
-                        )
-                    ).SetColors(ColorScheme.Current.Normal);
+                    await client.StopSearchAsync(id);
+                    Console.CancelKeyPress -= OnCancel;
                 }
             }
+
+            
         }
     }
 }
