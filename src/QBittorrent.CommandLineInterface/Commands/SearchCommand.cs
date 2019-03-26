@@ -92,6 +92,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     
                     Console.CancelKeyPress -= OnCancel;
                     await client.StopSearchAsync(id);
+                    await client.DeleteSearchAsync(id);
                 }
 
                 return ExitCodes.Success;
