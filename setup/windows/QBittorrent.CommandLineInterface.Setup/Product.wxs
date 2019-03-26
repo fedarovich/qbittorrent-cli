@@ -50,6 +50,10 @@
              Absent="disallow" AllowAdvertise="no">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
+    <Feature Id="Utils" Title="GNU Utilities" Level="1" AllowAdvertise="no"
+             Description="Additional utilities, e.g. 'less', licensed under the terms of GPL.">
+      <ComponentGroupRef Id="Utils" />
+    </Feature>
     <Feature Id="SetPath" Title="Add to PATH environment variable" Level="1"
              AllowAdvertise="no">
       <ComponentGroupRef Id="SetPath" />
@@ -59,7 +63,9 @@
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="$(var.PlatformProgramFilesFolder)">
-				<Directory Id="APPLICATIONFOLDER" Name="qbittorrent-cli" />
+        <Directory Id="APPLICATIONFOLDER" Name="qbittorrent-cli">
+          <Directory Id="Utils" Name="utils" />
+        </Directory>
 			</Directory>
 		</Directory>
 	</Fragment>
@@ -73,6 +79,12 @@
       <ComponentGroupRef Id="QBT.Binaries" />
 		</ComponentGroup>
 	</Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="Utils" Directory="Utils">
+      <ComponentGroupRef Id="Utils.Binaries" />
+    </ComponentGroup>
+  </Fragment>
 
   <Fragment>
     <ComponentGroup Id="SetPath" Directory="APPLICATIONFOLDER">

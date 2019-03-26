@@ -31,17 +31,25 @@
     <OutputName>qbittorrent-cli-$(Version)-$(Platform)</OutputName>
     <DefineConstants>Version=$(Version);$(DefineConstants)</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup>
+    <UtilsTempFolderGuid>$([System.Guid]::NewGuid())</UtilsTempFolderGuid>
+    <UtilsDir>$([System.IO.Path]::Combine($([System.IO.Path]::GetTempPath()), $(UtilsTempFolderGuid)))</UtilsDir>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Binaries.heat.wxs">
       <Link>Binaries.heat.wxs</Link>
     </Compile>
     <Compile Include="Product.wxs" />
+    <Compile Include="Utils.heat.wxs">
+      <Link>Utils.heat.wxs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="banner.bmp" />
     <Content Include="BinariesTransform.xsl" />
     <Content Include="dialog.bmp" />
     <Content Include="License.rtf" />
+    <Content Include="Utils\less.zip" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUIExtension">
@@ -49,27 +57,39 @@
       <Name>WixUIExtension</Name>
     </WixExtension>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils" />
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
   <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
     <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
   </Target>
-  <Target Name="HarvestBinaries" AfterTargets="ResolveReferences" BeforeTargets="Compile">
+  <Target Name="UnzipUtils" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <UtilsToUnzip Include="Utils\*.zip" />
+    </ItemGroup>
+    <Unzip SourceFiles="@(UtilsToUnzip)" DestinationFolder="$(UtilsDir)" />
+  </Target>
+  <Target Name="HarvestBinaries" AfterTargets="PrepareUtils" BeforeTargets="Compile">
     <PropertyGroup>
       <HarvestTransforms>BinariesTransform.xsl</HarvestTransforms>
     </PropertyGroup>
     <PropertyGroup>
       <BinariesDir Condition=" '$(BinariesDir)' == '' ">..\..\..\src\QBittorrent.CommandLineInterface\bin\publish\win-$(Platform)</BinariesDir>
-      <DefineConstants>BinariesDir=$(BinariesDir);$(DefineConstants)</DefineConstants>
+      <DefineConstants>BinariesDir=$(BinariesDir);UtilsDir=$(UtilsDir);$(DefineConstants)</DefineConstants>
     </PropertyGroup>
     <HeatDirectory OutputFile="Binaries.heat.wxs" Directory="$(BinariesDir)" DirectoryRefId="APPLICATIONFOLDER" ComponentGroupName="QBT.Binaries" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BinariesDir" Transforms="$(HarvestTransforms)" />
+    <HeatDirectory OutputFile="Utils.heat.wxs" Directory="$(UtilsDir)" DirectoryRefId="Utils" ComponentGroupName="Utils.Binaries" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.UtilsDir" />
   </Target>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.
 	<Target Name="BeforeBuild">
 	</Target>
-	<Target Name="AfterBuild">
-	</Target>
+	
 	-->
+  <Target Name="AfterBuild">
+    <RemoveDir Directories="$(UtilsDir)" />
+  </Target>
 </Project>
