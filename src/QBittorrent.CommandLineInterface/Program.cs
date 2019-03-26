@@ -23,7 +23,11 @@ namespace QBittorrent.CommandLineInterface
     {
         static int Main(string[] args)
         {
-            var app = new CommandLineApplication<Program>();
+            var app = new CommandLineApplication<Program>
+            {
+                MakeSuggestionsInErrorMessage = true,
+                UsePagerForHelpText = false
+            };
             try
             {
                 app.Conventions.UseDefaultConventions();
