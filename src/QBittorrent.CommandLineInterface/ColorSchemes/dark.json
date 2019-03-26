@@ -114,6 +114,11 @@
       "fg": "red",
       "fg-alt": "dark-red"
     },
+    "moving": {
+      "bg": "system-bg",
+      "fg": "green",
+      "fg-alt": "dark-green"
+    },
     "paused-download": {
       "bg": "system-bg",
       "fg": "dark-gray",

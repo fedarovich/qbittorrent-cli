@@ -43,6 +43,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 "  SU - Stalled Upload\n" +
                 "  QC - Queued for Checking\n" +
                 "  CR - Checking Resume Data\n" +
+                "  MV - Moving" +
                 "   ? - Unknown";
 
             private static readonly IReadOnlyDictionary<TorrentState, string> TorrentStateColorKeys;
@@ -254,6 +255,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                             return new Cell("QC").SetColors(colorSet);
                         case TorrentState.CheckingResumeData:
                             return new Cell("CR").SetColors(colorSet);
+                        case TorrentState.Moving:
+                            return new Cell("MV").SetColors(colorSet);
                         case TorrentState.Unknown:
                         default:
                             return new Cell(" ?").SetColors(colorSet);
