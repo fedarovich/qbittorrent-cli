@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
@@ -17,7 +13,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Start))]
     public partial class SearchCommand : ClientRootCommandBase
     {
-        [Command("start", "find", Description = "Starts the search.")]
+        [Command("start", "find", "torrent", Description = "Starts the search.")]
         public class Start : AuthenticatedCommandBase
         {
             private const string PluginsOptionDescription =
@@ -35,9 +31,6 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             [Option("-p|--plugin <NAME>", PluginsOptionDescription, CommandOptionType.MultipleValue)]
             public IList<string> Plugins { get; set; }
-
-            [Option("-q|--quiet", "Do not display search progress status.", CommandOptionType.NoValue)]
-            public bool Quiet { get; set; }
 
             [Option("-o|--offset <INT>", "The offset from the beginning.", CommandOptionType.SingleValue)]
             public int Offset { get; set; }
@@ -69,11 +62,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 var target = (pager != null && pager.Enabled) ? new TextRenderTarget(pager.Writer) : null;
                 
                 int index = offset + 1;
-                int total = 0;
 
                 try
                 {
                     SearchResults results;
+                    int total;
                     do
                     {
                         results = await client.GetSearchResultsAsync(id, offset, limit);
@@ -145,8 +138,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                     Console.CancelKeyPress -= OnCancel;
                 }
             }
-
-            
         }
     }
 }
