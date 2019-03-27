@@ -4,6 +4,7 @@ using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Commands;
+using QBittorrent.CommandLineInterface.Conventions;
 
 namespace QBittorrent.CommandLineInterface
 {
@@ -23,14 +24,13 @@ namespace QBittorrent.CommandLineInterface
     {
         static int Main(string[] args)
         {
-            var app = new CommandLineApplication<Program>
-            {
-                MakeSuggestionsInErrorMessage = true,
-                UsePagerForHelpText = false
-            };
+            var app = new CommandLineApplication<Program>();
             try
             {
-                app.Conventions.UseDefaultConventions();
+                app.Conventions
+                    .UseDefaultConventions()
+                    .UsePagerForHelpText(false)
+                    .MakeSuggestionsInErrorMessage();
                 int code = app.Execute(args);
                 return code;
             }
