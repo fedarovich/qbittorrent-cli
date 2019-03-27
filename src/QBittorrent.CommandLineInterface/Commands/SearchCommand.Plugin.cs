@@ -13,7 +13,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Plugin))]
     public partial class SearchCommand
     {
-        [Command("plugin", "plug-in", "Manages search plugins.")]
+        [Command("plugin", "plug-in", Description = "Manages search plugins.")]
         [Subcommand(typeof(Install))]
         [Subcommand(typeof(Uninstall))]
         [Subcommand(typeof(Enable))]
