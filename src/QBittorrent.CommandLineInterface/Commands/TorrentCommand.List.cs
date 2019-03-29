@@ -43,7 +43,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 "  SU - Stalled Upload\n" +
                 "  QC - Queued for Checking\n" +
                 "  CR - Checking Resume Data\n" +
-                "  MV - Moving" +
+                "  MV - Moving\n" +
                 "   ? - Unknown";
 
             private static readonly IReadOnlyDictionary<TorrentState, string> TorrentStateColorKeys;
