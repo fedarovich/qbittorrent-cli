@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.1;netframework4.6</TargetFrameworks>
+	<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <AssemblyName>qbt</AssemblyName>
   </PropertyGroup>
 
