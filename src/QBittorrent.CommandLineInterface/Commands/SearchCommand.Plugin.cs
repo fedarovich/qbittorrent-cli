@@ -7,6 +7,7 @@ using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.Formats;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -92,28 +93,23 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Command("list", "show", Description = "Shows the installed search plugins.")]
             public class List : AuthenticatedCommandBase
             {
+                private static readonly ListFormatter<SearchPlugin> Formatter = new ListFormatter<SearchPlugin>(PrintPluginsTable, PrintPluginsVerbose);
+
                 [Option("-v|--verbose", "Displays verbose information.", CommandOptionType.NoValue)]
                 public bool Verbose { get; set; }
 
+                [Option("-F|--format <LIST_FORMAT>", "Output format: table|list|csv|json", CommandOptionType.SingleValue)]
+                public string Format { get; set; }
 
                 protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client,
                     CommandLineApplication app, IConsole console)
                 {
                     var plugins = await client.GetSearchPluginsAsync();
-
-                    if (Verbose)
-                    {
-                        PrintPluginsVerbose(plugins);
-                    }
-                    else
-                    {
-                        PrintPluginsTable(plugins);
-                    }
-
+                    Formatter.PrintFormat(plugins, Format, Verbose);
                     return ExitCodes.Success;
                 }
 
-                private void PrintPluginsTable(IEnumerable<SearchPlugin> plugins)
+                private static void PrintPluginsTable(IEnumerable<SearchPlugin> plugins)
                 {
                     var doc = new Document(
                         new Grid
@@ -143,7 +139,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     ConsoleRenderer.RenderDocument(doc);
                 }
 
-                private void PrintPluginsVerbose(IEnumerable<SearchPlugin> plugins)
+                private static void PrintPluginsVerbose(IEnumerable<SearchPlugin> plugins)
                 {
                     var doc = new Document(
                         plugins.Select(plugin =>

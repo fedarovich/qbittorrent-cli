@@ -45,6 +45,7 @@
   <ItemGroup>
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="BencodeNET" Version="2.3.0" />
+    <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="IPNetwork2" Version="2.4.0.99" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.3" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'netframework4.6'" />

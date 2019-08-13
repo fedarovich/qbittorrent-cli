@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Alba.CsConsoleFormat;
+using CsvHelper;
+using CsvHelper.Configuration;
 using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
-using Color = System.Drawing.Color;
+using QBittorrent.CommandLineInterface.Formats;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -48,8 +49,9 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             private static readonly IReadOnlyDictionary<TorrentState, string> TorrentStateColorKeys;
 
-
             private static readonly Dictionary<string, string> SortColumns;
+
+            private static readonly ListFormatter<TorrentInfo> Formatter = new ListFormatter<TorrentInfo>(PrintTorrentsTable, PrintTorrentsVerbose);
 
             static List()
             {
@@ -93,6 +95,9 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Option("-o|--offset <OFFSET>", "Offset from the beginning of the list.", CommandOptionType.SingleValue)]
             public int? Offset { get; set; }
 
+            [Option("-F|--format <LIST_FORMAT>", "Output format: table|list|csv|json", CommandOptionType.SingleValue)]
+            public string Format { get; set; }
+
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var query = new TorrentListQuery
@@ -113,17 +118,10 @@ namespace QBittorrent.CommandLineInterface.Commands
 
             private void PrintTorrents(IEnumerable<TorrentInfo> torrents)
             {
-                if (Verbose)
-                {
-                    PrintTorrentsVerbose(torrents);
-                }
-                else
-                {
-                    PrintTorrentsTable(torrents);
-                }
+                Formatter.PrintFormat(torrents, Format, Verbose);
             }
 
-            private void PrintTorrentsVerbose(IEnumerable<TorrentInfo> torrents)
+            private static void PrintTorrentsVerbose(IEnumerable<TorrentInfo> torrents)
             {
                 var doc = new Document(
                     torrents.Select(torrent =>
@@ -176,7 +174,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
-            private void PrintTorrentsTable(IEnumerable<TorrentInfo> torrents)
+            private static void PrintTorrentsTable(IEnumerable<TorrentInfo> torrents)
             {
                 var doc = new Document(
                     new Grid
@@ -276,7 +274,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return colorSet;
                 }
             }
-
+            
             private static string FormatSpeed(long speed)
             {
                 if (speed < 1024)
