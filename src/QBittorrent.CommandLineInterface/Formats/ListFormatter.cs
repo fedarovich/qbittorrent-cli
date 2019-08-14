@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CsvHelper;
 using Newtonsoft.Json;
+using QBittorrent.CommandLineInterface.Converters;
 
 namespace QBittorrent.CommandLineInterface.Formats
 {
@@ -54,6 +56,7 @@ namespace QBittorrent.CommandLineInterface.Formats
         {
             using (var writer = new CsvWriter(Console.Out, options, true))
             {
+                writer.Configuration.TypeConverterCache.AddConverter<Uri>(UriConverter.Instance);
                 writer.WriteRecords(data);
             }
         }

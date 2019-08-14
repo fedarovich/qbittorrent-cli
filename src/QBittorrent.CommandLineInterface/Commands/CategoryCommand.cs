@@ -91,7 +91,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         }
 
         [Command(Description = "Shows the category list.")]
-        public class List : AuthenticatedCommandBase
+        public class List : ListCommandBase<Category>
         {
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
@@ -100,33 +100,37 @@ namespace QBittorrent.CommandLineInterface.Commands
                     ? await client.GetCategoriesAsync()
                     : (await client.GetPartialDataAsync()).CategoriesChanged;
 
+                Print(categories.Values);
+                return ExitCodes.Success;
+            }
+
+            protected override void PrintTable(IEnumerable<Category> categories)
+            {
                 if (categories?.Any() == true)
                 {
                     var doc = new Document(
-                        new Grid
-                        {
-                            Columns =
+                            new Grid
                             {
-                                new Column {Width = GridLength.Auto},
-                                new Column {Width = GridLength.Star(1)}
-                            },
-                            Children =
-                            {
-                                UIHelper.Header("Name"),
-                                UIHelper.Header("Save Path"),
-                                categories.Values.Select(c => new[]
+                                Columns =
                                 {
-                                    new Cell(c.Name),
-                                    new Cell(c.SavePath)
-                                })
-                            },
-                            Stroke = LineThickness.Single
-                        })
+                                    new Column {Width = GridLength.Auto},
+                                    new Column {Width = GridLength.Star(1)}
+                                },
+                                Children =
+                                {
+                                    UIHelper.Header("Name"),
+                                    UIHelper.Header("Save Path"),
+                                    categories.Select(c => new[]
+                                    {
+                                        new Cell(c.Name),
+                                        new Cell(c.SavePath)
+                                    })
+                                },
+                                Stroke = LineThickness.Single
+                            })
                         .SetColors(ColorScheme.Current.Normal);
                     ConsoleRenderer.RenderDocument(doc);
                 }
-
-                return ExitCodes.Success;
             }
         }
     }

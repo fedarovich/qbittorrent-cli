@@ -99,38 +99,42 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
 
                 [Command(Description = "Shows the monitored folder list.")]
-                public class List : AuthenticatedCommandBase
+                public class List : ListCommandBase<KeyValuePair<string, SaveLocation>>
                 {
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                     {
                         var preferences = await client.GetPreferencesAsync();
                         var folders = preferences.ScanDirectories ?? new Dictionary<string, SaveLocation>();
 
+                        Print(folders);
+                        return ExitCodes.Success;
+                    }
+
+                    protected override void PrintTable(IEnumerable<KeyValuePair<string, SaveLocation>> folders)
+                    {
                         var doc = new Document(
                             new Grid
                             {
                                 Columns =
                                 {
-                                new Column {Width = GridLength.Star(1)},
-                                new Column {Width = GridLength.Star(1)}
+                                    new Column {Width = GridLength.Star(1)},
+                                    new Column {Width = GridLength.Star(1)}
                                 },
                                 Children =
                                 {
-                                UIHelper.Header("Monitored Folder"),
-                                UIHelper.Header("Save Location"),
-                                folders.SelectMany(p => new []
-                                {
-                                    new Cell(p.Key),
-                                    FormatSaveLocation(p.Value)
-                                })
+                                    UIHelper.Header("Monitored Folder"),
+                                    UIHelper.Header("Save Location"),
+                                    folders.SelectMany(p => new[]
+                                    {
+                                        new Cell(p.Key),
+                                        FormatSaveLocation(p.Value)
+                                    })
                                 },
                                 Stroke = LineThickness.Single
                             }
                         ).SetColors(ColorScheme.Current.Normal);
 
                         ConsoleRenderer.RenderDocument(doc);
-
-                        return ExitCodes.Success;
 
                         Cell FormatSaveLocation(SaveLocation location)
                         {

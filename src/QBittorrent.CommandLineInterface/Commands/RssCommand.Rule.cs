@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.ViewModels;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -227,7 +229,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
 
             [Command(Description = "Shows RSS automatic downloading rule.", ExtendedHelpText = ExperimentalHelpText)]
-            public class List : AuthenticatedCommandBase
+            public class List : ListCommandBase<RssRuleViewModel>
             {
                 private static readonly Dictionary<string, Func<object, object>> CustomFormatters;
 
@@ -243,15 +245,37 @@ namespace QBittorrent.CommandLineInterface.Commands
                 protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
                     var rules = await client.GetRssAutoDownloadingRulesAsync();
-                    foreach (var (name, rule) in rules)
-                    {
-                        var vm = new RssRuleViewModel(name, rule);
-                        UIHelper.PrintObject(vm, CustomFormatters);
-                        console.WriteLine();
-                    }
-
+                    Print(rules.Select(r => new RssRuleViewModel(r.Key, r.Value)), true);
                     return ExitCodes.Success;
                 }
+
+                protected override void PrintTable(IEnumerable<RssRuleViewModel> list)
+                {
+                    var doc = new Document(
+                            new Grid
+                            {
+                                Columns =
+                                {
+                                    new Column {Width = GridLength.Star(1)},
+                                    new Column {Width = GridLength.Auto},
+                                },
+                                Children =
+                                {
+                                    UIHelper.Header("Name"),
+                                    UIHelper.Header("Enabled"),
+                                    list.Select(r => new[]
+                                    {
+                                        new Cell(r.Name),
+                                        new Cell(r.Enabled)
+                                    })
+                                },
+                                Stroke = LineThickness.Single
+                            })
+                        .SetColors(ColorScheme.Current.Normal);
+                    ConsoleRenderer.RenderDocument(doc);
+                }
+
+                protected override IReadOnlyDictionary<string, Func<object, object>> ListCustomFormatters => CustomFormatters;
 
                 private static object FormatAffectedFeeds(object obj)
                 {

@@ -52,6 +52,15 @@ namespace QBittorrent.CommandLineInterface
             return new object[] { Label(label), dataCell };
         }
 
+        public static void PrintList<T>(IEnumerable<T> list,
+            IReadOnlyDictionary<string, Func<object, object>> customFormatters = null)
+        {
+            var margin = new Thickness(0, 0, 0, 1);
+            var elements = list.Select(item => ToDocument(item, customFormatters).With(x => x.Margin = margin));
+            var document = new Document(elements);
+            ConsoleRenderer.RenderDocument(document);
+        }
+
         public static void PrintObject<T>(T obj,
             IReadOnlyDictionary<string, Func<object, object>> customFormatters = null)
         {
@@ -62,7 +71,7 @@ namespace QBittorrent.CommandLineInterface
         public static Document ToDocument<T>(T obj,
             IReadOnlyDictionary<string, Func<object, object>> customFormatters = null)
         {
-            const string DefaultFormat = "{0}";
+            const string defaultFormat = "{0}";
 
             var properties = (
                     from prop in typeof(T).GetRuntimeProperties()
@@ -70,7 +79,7 @@ namespace QBittorrent.CommandLineInterface
                     let name = attr?.Name ?? prop.Name
                     let formatAttr = prop.GetCustomAttribute<DisplayFormatAttribute>()
                     orderby attr?.GetOrder() ?? 0
-                    select (name, value: prop.GetValue(obj), format: formatAttr?.DataFormatString ?? DefaultFormat, nullString: formatAttr?.NullDisplayText, propName: prop.Name)
+                    select (name, value: prop.GetValue(obj), format: formatAttr?.DataFormatString ?? defaultFormat, nullString: formatAttr?.NullDisplayText, propName: prop.Name)
                 ).ToList();
 
             var document = new Document
