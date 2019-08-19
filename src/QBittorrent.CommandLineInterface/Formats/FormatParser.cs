@@ -43,6 +43,16 @@ namespace QBittorrent.CommandLineInterface.Formats
             };
         }
 
+        public static PropertyFormatOptions GetPropertyOptions(this IReadOnlyDictionary<string, string> options)
+        {
+            return new PropertyFormatOptions
+            {
+                Name = options.TryGetNotEmptyString("name", null),
+                Format = options.TryGetNotEmptyString("format", null),
+                Culture = options.TryGetNotEmptyString("culture", null)
+            };
+        }
+
         public static bool TryGetBoolean(this IReadOnlyDictionary<string, string> options, string key, bool defaultValue = false)
         {
             return options.TryGetValue(key, out var stringValue) && bool.TryParse(stringValue, out bool result) ? result : defaultValue;

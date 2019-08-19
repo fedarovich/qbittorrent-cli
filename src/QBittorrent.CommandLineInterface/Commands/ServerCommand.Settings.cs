@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using QBittorrent.CommandLineInterface.Formats;
 using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -53,12 +54,10 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public string Message { get; }
             }
 
-            public abstract class SettingsCommand<T> : AuthenticatedCommandBase
+            public abstract class SettingsCommand<T> : AuthenticatedFormattableCommandBase<T>
             {
                 protected const string ExtendedHelp =
                     "\nRun this command without options too see the current settings.";
-
-                protected Dictionary<string, Func<object, object>> CustomFormatters { get; } = new Dictionary<string, Func<object, object>>();
 
                 protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
@@ -134,7 +133,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 protected virtual void PrintPreferences(QBittorrentClient client, Preferences preferences)
                 {
                     var vm = (T)Activator.CreateInstance(typeof(T), preferences);
-                    UIHelper.PrintObject(vm, CustomFormatters);
+                    Print(vm);
                 }
             }
 

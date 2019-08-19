@@ -12,12 +12,12 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class GlobalCommand : ClientRootCommandBase
     {
         [Command(Description = "Gets the global transfer info.")]
-        public class Info : AuthenticatedCommandBase
+        public class Info : AuthenticatedFormattableCommandBase<GlobalTransferInfoViewModel>
         {
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var info = await client.GetGlobalTransferInfoAsync();
-                UIHelper.PrintObject(new GlobalTransferInfoViewModel(info));
+                Print(new GlobalTransferInfoViewModel(info));
                 return ExitCodes.Success;
             }
         }

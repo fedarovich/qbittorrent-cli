@@ -54,12 +54,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                         Stroke = UIHelper.NoneStroke,
                         Columns =
                         {
-                        UIHelper.FieldsColumns
+                            UIHelper.FieldsColumns
                         },
                         Children =
                         {
-                        UIHelper.Row("Use default credentials", net.UseDefaultCredentials),
-                        UIHelper.Row("Ignore certificate errors", net.IgnoreCertificateErrors)
+                            UIHelper.Row("Use default credentials", net.UseDefaultCredentials),
+                            UIHelper.Row("Ignore certificate errors", net.IgnoreCertificateErrors)
                         }
                     }
                 ).SetColors(ColorScheme.Current.Normal);
