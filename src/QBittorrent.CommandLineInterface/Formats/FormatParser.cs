@@ -39,7 +39,8 @@ namespace QBittorrent.CommandLineInterface.Formats
             {
                 Delimiter = options.TryGetNotEmptyString("delimiter", ","),
                 Quote = options.TryGetChar("quote", '"'),
-                Sanitize = false
+                Sanitize = false,
+                Culture = options.TryGetNotEmptyString("culture", null)
             };
         }
 

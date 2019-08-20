@@ -1,4 +1,5 @@
-﻿using CsvHelper.Configuration;
+﻿using System.Globalization;
+using CsvHelper.Configuration;
 
 namespace QBittorrent.CommandLineInterface.Formats
 {
@@ -10,13 +11,18 @@ namespace QBittorrent.CommandLineInterface.Formats
 
         public bool Sanitize { get; set; }
 
+        public string Culture { get; set; }
+
         public static implicit operator Configuration(CsvFormatOptions options)
         {
             return new Configuration
             {
                 Delimiter = options.Delimiter,
                 Quote = options.Quote,
-                SanitizeForInjection = options.Sanitize
+                SanitizeForInjection = options.Sanitize,
+                CultureInfo = string.IsNullOrWhiteSpace(options.Culture) 
+                    ? CultureInfo.InvariantCulture 
+                    : CultureInfo.GetCultureInfo(options.Culture)
             };
         }
     }

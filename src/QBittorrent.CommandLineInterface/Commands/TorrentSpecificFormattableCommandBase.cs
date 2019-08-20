@@ -7,12 +7,12 @@ using QBittorrent.CommandLineInterface.Formats;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
-    public abstract class AuthenticatedFormattableCommandBase<T> : AuthenticatedCommandBase
+    public abstract class TorrentSpecificFormattableCommandBase<T> : TorrentSpecificCommandBase
     {
         private readonly ObjectFormatter<T> _formatter;
         private readonly Lazy<IEnumerable<(string name, PropertyInfo prop)>> _props;
 
-        protected AuthenticatedFormattableCommandBase()
+        protected TorrentSpecificFormattableCommandBase()
         {
             _props = ObjectFormatter<T>.GetCommandPropertyMappings(GetType());
             _formatter = new ObjectFormatter<T>(PrintList, FindProperty);

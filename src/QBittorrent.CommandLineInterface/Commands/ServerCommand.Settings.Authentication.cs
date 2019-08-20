@@ -20,14 +20,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Subcommand(typeof(Whitelist))]
             public class Authentication : SettingsCommand<AuthenticationViewModel>
             {
-                public Authentication()
-                {
-                    CustomFormatters[nameof(AuthenticationViewModel.BypassAuthenticationSubnetWhitelist)] =
-                        value => (value is IList<string> list)
-                            ? string.Join(Environment.NewLine, list)
-                            : string.Empty;
-                }
-
                 [Option("-u|--server-username <USERNAME>", "qBittorrent web interface username.", CommandOptionType.SingleValue, Inherited = false)]
                 [MinLength(3)]
                 public string WebUIUsername { get; set; }
@@ -57,6 +49,15 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     return Task.CompletedTask;
                 }
+
+                protected override IReadOnlyDictionary<string, Func<object, object>> CustomFormatters =>
+                    new Dictionary<string, Func<object, object>>
+                    {
+                        [nameof(AuthenticationViewModel.BypassAuthenticationSubnetWhitelist)] =
+                            value => (value is IList<string> list)
+                                ? string.Join(Environment.NewLine, list)
+                                : string.Empty
+                    };
 
                 [Command(Description = "Manages authentication bypass whitelist.")]
                 [Subcommand(typeof(List))]

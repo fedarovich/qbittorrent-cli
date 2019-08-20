@@ -30,54 +30,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                 private string _certificate;
                 private string _key;
 
-                public WebInterface()
-                {
-                    CustomFormatters[nameof(WebInterfaceViewModel.Locale)] = FormatLanguage;
-                    CustomFormatters[nameof(WebInterfaceViewModel.WebUISslCertificate)] = FormatCertificate;
-
-                    string FormatLanguage(object arg)
-                    {
-                        if (!(arg is string name))
-                            return null;
-
-                        try
-                        {
-                            var englishName = CultureInfo.GetCultureInfo(name.Replace('_', '-')).EnglishName;
-                            return $"{name} ({englishName})";
-                        }
-                        catch
-                        {
-                            return null;
-                        }
-                    }
-
-                    Element FormatCertificate(object arg)
-                    {
-                        if (arg == null)
-                            return null;
-
-                        var memoryStream = new MemoryStream(Encoding.ASCII.GetBytes((string)arg));
-                        var certs = ReadPemObjects<X509Certificate>(new StreamReader(memoryStream));
-
-                        var stack = new Stack(certs.Select(cert => 
-                            new Grid
-                            {
-                                Stroke = new LineThickness(LineWidth.Single),
-                                Columns = { UIHelper.FieldsColumns },
-                                Children =
-                                {
-                                    UIHelper.Row("Serial number", cert.SerialNumber),
-                                    UIHelper.Row("Signature algorithm", cert.SigAlgName),
-                                    UIHelper.Row("Issuer", cert.IssuerDN),
-                                    UIHelper.Row("Valid from", cert.NotBefore),
-                                    UIHelper.Row("Valid to", cert.NotAfter),
-                                    UIHelper.Row("Subject", cert.SubjectDN)
-                                }
-                            }));
-                        return stack;
-                    }
-                }              
-
                 [Option("-l|--lang <LANGUAGE>", "Web UI language", CommandOptionType.SingleValue)]
                 [MinLength(2)]
                 public string Locale { get; set; }
@@ -156,6 +108,52 @@ namespace QBittorrent.CommandLineInterface.Commands
                     IPasswordFinder GetPasswordFinder() => CertificateKeyPassword != null
                         ? new PredefinedPasswordFinder(CertificateKeyPassword)
                         : (IPasswordFinder)new ConsolePasswordFinder(console);
+                }
+
+                protected override IReadOnlyDictionary<string, Func<object, object>> CustomFormatters => 
+                    new Dictionary<string, Func<object, object>>
+                    {
+                        [nameof(WebInterfaceViewModel.Locale)] = FormatLanguage,
+                        [nameof(WebInterfaceViewModel.WebUISslCertificate)] = FormatCertificate
+                    };
+
+                private string FormatLanguage(object arg)
+                {
+                    if (!(arg is string name)) return null;
+
+                    try
+                    {
+                        var englishName = CultureInfo.GetCultureInfo(name.Replace('_', '-')).EnglishName;
+                        return $"{name} ({englishName})";
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+
+                private Element FormatCertificate(object arg)
+                {
+                    if (arg == null) return null;
+
+                    var memoryStream = new MemoryStream(Encoding.ASCII.GetBytes((string)arg));
+                    var certs = ReadPemObjects<X509Certificate>(new StreamReader(memoryStream));
+
+                    var stack = new Stack(certs.Select(cert => new Grid
+                    {
+                        Stroke = new LineThickness(LineWidth.Single),
+                        Columns = { UIHelper.FieldsColumns },
+                        Children =
+                        {
+                            UIHelper.Row("Serial number", cert.SerialNumber),
+                            UIHelper.Row("Signature algorithm", cert.SigAlgName),
+                            UIHelper.Row("Issuer", cert.IssuerDN),
+                            UIHelper.Row("Valid from", cert.NotBefore),
+                            UIHelper.Row("Valid to", cert.NotAfter),
+                            UIHelper.Row("Subject", cert.SubjectDN)
+                        }
+                    }));
+                    return stack;
                 }
 
                 protected override void CustomFillPreferences(Preferences preferences)

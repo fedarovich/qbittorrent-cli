@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -20,6 +21,16 @@ namespace QBittorrent.CommandLineInterface.Formats
         {
             _printList = printList ?? (obj => UIHelper.PrintObject(obj));
             _customPropertyBinder = customPropertyBinder;
+        }
+
+        public static Lazy<IEnumerable<(string name, PropertyInfo prop)>> GetCommandPropertyMappings(Type commandType)
+        {
+            return new Lazy<IEnumerable<(string name, PropertyInfo prop)>>(() =>
+                from commandProp in commandType.GetTypeInfo().DeclaredProperties
+                let option = commandProp.GetCustomAttribute<OptionAttribute>()
+                where option != null
+                join prop in typeof(T).GetProperties() on commandProp.Name equals prop.Name
+                select (new CommandOption(option.Template, option.OptionType.GetValueOrDefault()).LongName, prop));
         }
 
         public void PrintFormat(in T data, string formatOptions)

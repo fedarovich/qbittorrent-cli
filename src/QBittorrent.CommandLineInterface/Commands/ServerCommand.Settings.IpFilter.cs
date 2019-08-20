@@ -23,12 +23,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Subcommand(typeof(List))]
             public class IpFilter : SettingsCommand<IpFilterViewModel>
             {
-                public IpFilter()
-                {
-                    CustomFormatters[nameof(IpFilterViewModel.BannedIpAddresses)] =
-                        value => value is IEnumerable<string> list ? string.Join(Environment.NewLine, list) : null;
-                }
-
                 [Option("-e|--enabled <BOOL>", "Enables/disables IP filter", CommandOptionType.SingleValue, Inherited = false)]
                 public bool? IpFilterEnabled { get; set; }
 
@@ -37,6 +31,13 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 [Option("-t|--filter-trackers <BOOL>", "Apply filter to trackers", CommandOptionType.SingleValue, Inherited = false)]
                 public bool? IpFilterTrackers { get; set; }
+
+                protected override IReadOnlyDictionary<string, Func<object, object>> CustomFormatters =>
+                    new Dictionary<string, Func<object, object>>
+                    {
+                        [nameof(IpFilterViewModel.BannedIpAddresses)] =
+                            value => value is IEnumerable<string> list ? string.Join(Environment.NewLine, list) : null
+                    };
 
                 [Command(Description = "Adds IP addresses to the ban-list.")]
                 public class Add : AuthenticatedCommandBase

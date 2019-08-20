@@ -228,12 +228,6 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Command(Description = "Manages connection settings.", ExtendedHelpText = ExtendedHelp)]
             public class Connection : SettingsCommand<ConnectionViewModel>
             {
-                public Connection()
-                {
-                    CustomFormatters[nameof(ConnectionViewModel.BittorrentProtocol)] =
-                        value => Client.BittorrentProtocol.Both.Equals(value) ? "TCP and uTP" : null;
-                }
-
                 [Option("-b|--protocol <PROTOCOL>", "Bittorrent protocol: TCP, uTP, Both", CommandOptionType.SingleValue)]
                 public BittorrentProtocol? BittorrentProtocol { get; set; }
 
@@ -262,17 +256,18 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-u|--max-uploads-per-torrent <INT>", "Maximal number of upload slots per torrent. Use -1 to disable the limit.", CommandOptionType.SingleValue)]
                 [Range(-1, int.MaxValue)]
                 public int? MaxUploadsPerTorrent { get; set; }
+
+                protected override IReadOnlyDictionary<string, Func<object, object>> CustomFormatters =>
+                    new Dictionary<string, Func<object, object>>
+                    {
+                        [nameof(ConnectionViewModel.BittorrentProtocol)] =
+                            value => Client.BittorrentProtocol.Both.Equals(value) ? "TCP and uTP" : null
+                    };
             }
 
             [Command(Description = "Manages proxy settings.", ExtendedHelpText = ExtendedHelp)]
             public class Proxy : SettingsCommand<ProxyViewModel>
             {
-                public Proxy()
-                {
-                    CustomFormatters[nameof(ProxyViewModel.ProxyType)] =
-                        value => value != null ? (Enum.IsDefined(typeof(ProxyType), value) ? value.ToString() : "None") : null;
-                }
-
                 [Option("-t|--type <TYPE>", "Proxy type (None|Http|HttpAuth|Socks4|Socks5|Socks5Auth)", CommandOptionType.SingleValue)]
                 public ProxyType? ProxyType { get; set; }
 
@@ -310,6 +305,13 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     return Task.CompletedTask;
                 }
+
+                protected override IReadOnlyDictionary<string, Func<object, object>> CustomFormatters =>
+                    new Dictionary<string, Func<object, object>>
+                    {
+                        [nameof(ProxyViewModel.ProxyType)] =
+                            value => value != null ? (Enum.IsDefined(typeof(ProxyType), value) ? value.ToString() : "None") : null
+                    };
             }
 
             [Command(Description = "Manages speed limits.", ExtendedHelpText = ExtendedHelp)]

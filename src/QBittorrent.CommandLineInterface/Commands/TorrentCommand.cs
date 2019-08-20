@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Alba.CsConsoleFormat;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.ColorSchemes;
@@ -23,28 +25,57 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class TorrentCommand : ClientRootCommandBase
     {
         [Command(Description = "Shows the torrent properties.")]
-        public class Properties : TorrentSpecificCommandBase
+        public class Properties : TorrentSpecificFormattableCommandBase<TorrentPropertiesViewModel>
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var props = await client.GetTorrentPropertiesAsync(Hash);
-                UIHelper.PrintObject(new TorrentPropertiesViewModel(props));
+                Print(new TorrentPropertiesViewModel(props));
                 return ExitCodes.Success;
             }
         }
 
         [Command(Description = "Shows the torrent content. Alias for \"torrent file list\"")]
-        public class Content : TorrentSpecificCommandBase
+        public class Content : TorrentSpecificListCommandBase<TorrentContentViewModel>
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var contents = await client.GetTorrentContentsAsync(Hash);
-                foreach (var (content, id) in contents.Select((x, i) => (x, i)))
-                {
-                    UIHelper.PrintObject(new TorrentContentViewModel(content, id));
-                    console.WriteLine();
-                }
+                var viewModels = contents.Select((c, i) => new TorrentContentViewModel(c, i));
+                Print(viewModels, true);
                 return ExitCodes.Success;
+            }
+
+            protected override void PrintTable(IEnumerable<TorrentContentViewModel> list)
+            {
+                var doc = new Document(
+                        new Grid
+                        {
+                            Columns =
+                            {
+                                    new Column {Width = GridLength.Auto},
+                                    new Column {Width = GridLength.Star(1)},
+                                    new Column {Width = GridLength.Auto},
+                                    new Column {Width = GridLength.Auto},
+                            },
+                            Children =
+                            {
+                                    UIHelper.Header("Id"),
+                                    UIHelper.Header("Name"),
+                                    UIHelper.Header("Size"),
+                                    UIHelper.Header("Progress"),
+                                    list.Select(c => new[]
+                                    {
+                                        new Cell(c.Id),
+                                        new Cell(c.Name),
+                                        new Cell(c.Size.ToString("N0")),
+                                        new Cell(c.Progress.ToString("P0")),
+                                    })
+                            },
+                            Stroke = LineThickness.Single
+                        })
+                    .SetColors(ColorScheme.Current.Normal);
+                ConsoleRenderer.RenderDocument(doc);
             }
         }
 

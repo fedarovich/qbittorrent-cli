@@ -15,8 +15,10 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class TorrentCommand
     {
         [Command("share", "sharing", "seeding", Description = "Manages torrent sharing limits.")]
-        public class Share : TorrentSpecificCommandBase
+        public class Share : TorrentSpecificFormattableCommandBase<TorrentShareViewModel>
         {
+            private IReadOnlyDictionary<string, Func<object, object>> _customFormatters;
+
             [Option("-r|--ratio-limit <VALUE>", "Set the ratio limit (number|GLOBAL|NONE)", CommandOptionType.SingleValue)]
             [ShareRatioLimitValidation]
             public string RatioLimit { get; set; }
@@ -50,12 +52,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                     client.GetPreferencesAsync());
                 var viewModel = new TorrentShareViewModel(properties, info);
 
-                UIHelper.PrintObject(viewModel,
-                    new Dictionary<string, Func<object, object>>
-                    {
-                        [nameof(viewModel.RatioLimit)] = FormatRatioLimit,
-                        [nameof(viewModel.SeedingTimeLimit)] = FormatSeedingTimeLimit
-                    });
+                _customFormatters = new Dictionary<string, Func<object, object>>
+                {
+                    [nameof(viewModel.RatioLimit)] = FormatRatioLimit,
+                    [nameof(viewModel.SeedingTimeLimit)] = FormatSeedingTimeLimit
+                };
+                Print(viewModel);
 
                 return ExitCodes.Success;
 
@@ -87,6 +89,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                     return time == ShareLimits.SeedingTime.Unlimited ? "None" : time?.ToString();
                 }
             }
+
+            protected override IReadOnlyDictionary<string, Func<object, object>> CustomFormatters => _customFormatters;
 
             private double? GetRatioLimit()
             {
