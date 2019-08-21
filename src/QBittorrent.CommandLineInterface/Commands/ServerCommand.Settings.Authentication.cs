@@ -16,7 +16,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand(typeof(Authentication))]
         public partial class Settings
         {
-            [Command("authentication", "auth", Description = "Manages authentication settings.")]
+            [Command("authentication", "auth", Description = "Manages authentication settings.", ExtendedHelpText = ExtendedHelp)]
             [Subcommand(typeof(Whitelist))]
             public class Authentication : SettingsCommand<AuthenticationViewModel>
             {

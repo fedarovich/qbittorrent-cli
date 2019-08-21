@@ -24,7 +24,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Reannounce))]
     public partial class TorrentCommand : ClientRootCommandBase
     {
-        [Command(Description = "Shows the torrent properties.")]
+        [Command(Description = "Shows the torrent properties.", ExtendedHelpText = FormatHelpText)]
         public class Properties : TorrentSpecificFormattableCommandBase<TorrentPropertiesViewModel>
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
@@ -35,7 +35,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
         }
 
-        [Command(Description = "Shows the torrent content. Alias for \"torrent file list\"")]
+        [Command(Description = "Shows the torrent content. Alias for \"torrent file list\"", ExtendedHelpText = FormatHelpText)]
         public class Content : TorrentSpecificListCommandBase<TorrentContentViewModel>
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

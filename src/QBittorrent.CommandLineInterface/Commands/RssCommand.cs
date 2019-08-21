@@ -6,6 +6,6 @@ namespace QBittorrent.CommandLineInterface.Commands
     public partial class RssCommand
     {
         private protected const string ExperimentalHelpText =
-            "This command is experimental. It may have errors and its behavior may change in future.";
+            "\nThis command is experimental. It may have errors and its behavior may change in future.";
     }
 }

@@ -11,7 +11,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(SavePath))]
     public partial class GlobalCommand : ClientRootCommandBase
     {
-        [Command(Description = "Gets the global transfer info.")]
+        [Command(Description = "Gets the global transfer info.", ExtendedHelpText = FormatHelpText)]
         public class Info : AuthenticatedFormattableCommandBase<GlobalTransferInfoViewModel>
         {
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

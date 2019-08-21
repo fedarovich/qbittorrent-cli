@@ -20,7 +20,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand(typeof(Priority))]
         public class File : ClientRootCommandBase
         {
-            [Command(Description = "Gets the torrent contents.")]
+            [Command(Description = "Gets the torrent contents.", ExtendedHelpText = FormatHelpText)]
             public class List : TorrentSpecificListCommandBase<TorrentContentViewModel>
             {
                 protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

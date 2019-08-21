@@ -17,7 +17,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(List))]
     public partial class TorrentCommand
     {
-        [Command(Description = "Shows the torrent list.", ExtendedHelpText = ExtendedHelpText)]
+        [Command(Description = "Shows the torrent list.", ExtendedHelpText = FormatHelpText + ExtendedHelpText)]
         public class List : ListCommandBase<TorrentInfo>
         {
             private const string ExtendedHelpText =

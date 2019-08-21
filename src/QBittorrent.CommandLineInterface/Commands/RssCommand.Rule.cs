@@ -228,7 +228,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
-            [Command(Description = "Shows RSS automatic downloading rule.", ExtendedHelpText = ExperimentalHelpText)]
+            [Command(Description = "Shows RSS automatic downloading rule.", ExtendedHelpText = FormatHelpText + ExperimentalHelpText)]
             public class List : ListCommandBase<RssRuleViewModel>
             {
                 private static readonly Dictionary<string, Func<object, object>> CustomFormatters;

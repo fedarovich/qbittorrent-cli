@@ -90,7 +90,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
         }
 
-        [Command(Description = "Shows the category list.")]
+        [Command(Description = "Shows the category list.", ExtendedHelpText = FormatHelpText)]
         public class List : ListCommandBase<Category>
         {
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

@@ -89,7 +89,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
-            [Command("list", "show", Description = "Shows the installed search plugins.")]
+            [Command("list", "show", Description = "Shows the installed search plugins.", ExtendedHelpText = FormatHelpText)]
             public class List : ListCommandBase<SearchPlugin>
             {
                 [Option("-v|--verbose", "Displays verbose information.", CommandOptionType.NoValue)]

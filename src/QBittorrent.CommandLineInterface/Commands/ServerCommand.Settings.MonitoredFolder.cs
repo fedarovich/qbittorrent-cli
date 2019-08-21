@@ -98,7 +98,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     }
                 }
 
-                [Command(Description = "Shows the monitored folder list.")]
+                [Command(Description = "Shows the monitored folder list.", ExtendedHelpText = FormatHelpText)]
                 public class List : ListCommandBase<KeyValuePair<string, SaveLocation>>
                 {
                     protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)

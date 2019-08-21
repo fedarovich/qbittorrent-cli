@@ -14,7 +14,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Share))]
     public partial class TorrentCommand
     {
-        [Command("share", "sharing", "seeding", Description = "Manages torrent sharing limits.")]
+        [Command("share", "sharing", "seeding", Description = "Manages torrent sharing limits.", ExtendedHelpText = FormatHelpText)]
         public class Share : TorrentSpecificFormattableCommandBase<TorrentShareViewModel>
         {
             private IReadOnlyDictionary<string, Func<object, object>> _customFormatters;

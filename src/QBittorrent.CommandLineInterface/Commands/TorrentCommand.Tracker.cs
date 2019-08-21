@@ -21,7 +21,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Subcommand(typeof(Delete))]
         public class Tracker : ClientRootCommandBase
         {
-            [Command(Description = "Shows the torrent trackers.")]
+            [Command(Description = "Shows the torrent trackers.", ExtendedHelpText = FormatHelpText)]
             public class List : TorrentSpecificListCommandBase<TorrentTrackerViewModel>
             {
                 [Option("-s|--sticky", "Include \"sticky tracker\": DHT, PeX, LSD.", CommandOptionType.NoValue)]

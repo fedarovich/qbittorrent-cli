@@ -11,6 +11,9 @@ namespace QBittorrent.CommandLineInterface.Commands
 {
     public abstract class ClientCommandBase
     {
+        protected internal const string FormatHelpText =
+            "\nSee https://github.com/fedarovich/qbittorrent-cli/wiki/Output-Formats for more information about output formats.\n";
+        
         [Option("--url <SERVER_URL>", "QBittorrent Server URL", CommandOptionType.SingleValue)]
         public string Url { get; set; }
 

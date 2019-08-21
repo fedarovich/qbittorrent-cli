@@ -57,7 +57,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             public abstract class SettingsCommand<T> : AuthenticatedFormattableCommandBase<T>
             {
                 protected const string ExtendedHelp =
-                    "\nRun this command without options too see the current settings.";
+                    "\nRun this command without options too see the current settings.\n" + FormatHelpText;
 
                 protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
