@@ -66,7 +66,7 @@ namespace QBittorrent.CommandLineInterface.Formats
 
         public static string TryGetNotEmptyString(this IReadOnlyDictionary<string, string> options, string key, string defaultValue)
         {
-            return options.TryGetValue(key, out var stringValue) && !string.IsNullOrWhiteSpace(stringValue) ? stringValue : defaultValue;
+            return options.TryGetValue(key, out var stringValue) && !string.IsNullOrEmpty(stringValue) ? stringValue : defaultValue;
         }
     }
 }
