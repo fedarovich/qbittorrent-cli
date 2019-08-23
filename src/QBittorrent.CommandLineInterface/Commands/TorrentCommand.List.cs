@@ -95,7 +95,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 var query = new TorrentListQuery
                 {
                     Category = Category,
-                    Filter = Enum.TryParse(Filter, out TorrentListFilter filter) ? filter : TorrentListFilter.All,
+                    Filter = Enum.TryParse(Filter, true, out TorrentListFilter filter) ? filter : TorrentListFilter.All,
                     SortBy = Sort != null
                         ? (SortColumns.TryGetValue(Sort, out var sort) ? sort : null)
                         : null,
