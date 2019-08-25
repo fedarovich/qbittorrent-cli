@@ -198,7 +198,7 @@ namespace DocumentationGenerator
 
                 foreach (var opt in visibleOptions)
                 {
-                    var message = $"| {Format(opt)} | {opt.Description} |";
+                    var message = $"| {Format(opt)} | {opt.Description.Replace("|", " \\| ")} |";
                     output.WriteLine(message);
                 }
                 output.WriteLine();
