@@ -14,7 +14,6 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using QBittorrent.Client;
-using QBittorrent.CommandLineInterface.ColorSchemes;
 using QBittorrent.CommandLineInterface.ViewModels.ServerPreferences;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -51,22 +50,36 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public bool? WebUIHttps { get; set; }
 
                 [Option("-c|--cert <PATH>",
-                    "X509 certificate path. The certificate can be in PEM (.pem, .crt, .cer) format.",
+                    "X509 certificate path on the client machine. The certificate can be in PEM (.pem, .crt, .cer) format. For qBittorrent before 4.2.",
                     CommandOptionType.SingleValue)]
                 [FileExists]
                 [NoAutoSet]
+                [MaxApiVersion("2.3.0", "--cert option cannot be used with qBittorrent 4.2.0 or later. Use --cert-path option instead.")]
                 public string CertificatePath { get; set; }
 
                 [Option("-k|--key <PATH>",
-                    "X509 certificate key path. The key must be in PEM (.key) format without encryption.",
+                    "X509 certificate key path on the client machine. The key must be in PEM (.key) format without encryption. For qBittorrent before 4.2.",
                     CommandOptionType.SingleValue)]
                 [FileExists]
                 [NoAutoSet]
+                [MaxApiVersion("2.3.0", "--key option cannot be used with qBittorrent 4.2.0 or later. Use --key-path option instead.")]
                 public string CertificateKeyPath { get; set; }
 
                 [Option("-P|--key-password <PASSWORD>", "X509 certificate key password.", CommandOptionType.SingleValue)]
                 [NoAutoSet]
                 public string CertificateKeyPassword { get; set; }
+
+                [Option("-C|--cert-path <PATH>", 
+                    "X509 certificate path on the server machine. The certificate can be in PEM (.pem, .crt, .cer) format. For qBittorrent 4.2 or later.",
+                    CommandOptionType.SingleValue)]
+                [MinApiVersion("2.3.0", "--cert-path option requires qBittorrent 4.2.0 or later. Use --cert option instead.")]
+                public string WebUISslCertificatePath { get; set; }
+
+                [Option("-K|--key-path <PATH>",
+                    "X509 certificate path on the server machine. The key must be in PEM (.key) format without encryption. For qBittorrent 4.2 or later.",
+                    CommandOptionType.SingleValue)]
+                [MinApiVersion("2.3.0", "--key-path option requires qBittorrent 4.2.0 or later. Use --key option instead.")]
+                public string WebUISslKeyPath { get; set; }
 
                 [Option("-A|--alt-ui <BOOL>", "Enables/Disables alternative web UI. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
                 [MinApiVersion("2.2.0", "Alternative Web UI requires qBittorrent 4.1.5 or later.")]
@@ -76,7 +89,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [MinApiVersion("2.2.0", "Alternative Web UI requires qBittorrent 4.1.5 or later.")]
                 public string AlternativeWebUIPath { get; set; }
 
-                protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                protected override async Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
                     if (WebUIAddress?.Trim() == string.Empty)
                     {
@@ -102,8 +115,6 @@ namespace QBittorrent.CommandLineInterface.Commands
                             (_certificate, _key) = TransformPfx(GetPasswordFinder());
                             break;
                     }
-
-                    return Task.CompletedTask;
 
                     IPasswordFinder GetPasswordFinder() => CertificateKeyPassword != null
                         ? new PredefinedPasswordFinder(CertificateKeyPassword)
@@ -132,7 +143,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                     }
                 }
 
-                private Element FormatCertificate(object arg)
+                private object FormatCertificate(object arg)
                 {
                     if (arg == null) return null;
 
@@ -152,7 +163,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             UIHelper.Row("Valid to", cert.NotAfter),
                             UIHelper.Row("Subject", cert.SubjectDN)
                         }
-                    }));
+                    }).ToArray<object>());
                     return stack;
                 }
 
@@ -165,7 +176,7 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                     if (_key != null)
                     {
-                        preferences.WebUISslKey = _certificate;
+                        preferences.WebUISslKey = _key;
                     }
                 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Text;
 using QBittorrent.Client;
 
@@ -34,11 +35,20 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         public bool? WebUIHttps => _wrappedObject.WebUIHttps;
 
         [Display(Name = "SSL Certificate")]
+        [DisplayFormat(NullDisplayText = "n/a")]
         public string WebUISslCertificate => _wrappedObject.WebUISslCertificate;
 
         [Display(Name = "SSL Key")]
-        [DisplayFormat(DataFormatString = "**********")]
+        [DisplayFormat(DataFormatString = "**********", NullDisplayText = "n/a")]
         public string WebUISslKey => _wrappedObject.WebUISslKey;
+
+        [Display(Name = "SSL Certificate Path")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public string WebUISslCertificatePath => _wrappedObject.WebUISslCertificatePath?.Replace('/', Path.DirectorySeparatorChar);
+
+        [Display(Name = "SSL Key Path")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public string WebUISslKeyPath => _wrappedObject.WebUISslKeyPath?.Replace('/', Path.DirectorySeparatorChar);
 
         [Display(Name = "Alt. Web UI")]
         [DisplayFormat(NullDisplayText = "n/a")]

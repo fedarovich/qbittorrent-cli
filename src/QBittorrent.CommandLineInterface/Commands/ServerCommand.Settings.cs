@@ -54,6 +54,20 @@ namespace QBittorrent.CommandLineInterface.Commands
                 public string Message { get; }
             }
 
+            [AttributeUsage(AttributeTargets.Property)]
+            private class MaxApiVersionAttribute : Attribute
+            {
+                public MaxApiVersionAttribute(string maxVersionExclusive, string message)
+                {
+                    MaxVersionExclusive = ApiVersion.Parse(maxVersionExclusive);
+                    Message = message ?? throw new ArgumentNullException(nameof(message));
+                }
+
+                public ApiVersion MaxVersionExclusive { get; }
+
+                public string Message { get; }
+            }
+
             public abstract class SettingsCommand<T> : AuthenticatedFormattableCommandBase<T>
             {
                 protected const string ExtendedHelp =
@@ -72,19 +86,32 @@ namespace QBittorrent.CommandLineInterface.Commands
                          where value != null && (option.OptionType != CommandOptionType.NoValue || !false.Equals(value))
                          let autoSet = prop.GetCustomAttribute<NoAutoSetAttribute>() == null
                          let minApiVersion = prop.GetCustomAttribute<MinApiVersionAttribute>()
-                         select (prop.Name, value, autoSet, minApiVersion))
+                         let maxApiVersion = prop.GetCustomAttribute<MaxApiVersionAttribute>()
+                         select (prop.Name, value, autoSet, minApiVersion, maxApiVersion))
                         .ToList();
 
-                    var versionSpecificProps = props
+                    var minVersionProps = props
                         .Where(p => p.minApiVersion != null)
                         .ToLookup(
                             p => (p.minApiVersion.MinVersion, p.minApiVersion.Message),
                             p => p.value);
-                    foreach (var pair in versionSpecificProps)
+                    foreach (var pair in minVersionProps)
                     {
                         var (minVersion, message) = pair.Key;
                         var values = pair.ToArray();
-                        await WarnIfNotSupported(client, console, minVersion, message, values);
+                        await WarnIfNotSupported(client, console, minVersion, message, false, values);
+                    }
+
+                    var maxVersionProps = props
+                        .Where(p => p.maxApiVersion != null)
+                        .ToLookup(
+                            p => (MaxVersion: p.maxApiVersion.MaxVersionExclusive, p.maxApiVersion.Message),
+                            p => p.value);
+                    foreach (var pair in maxVersionProps)
+                    {
+                        var (maxVersion, message) = pair.Key;
+                        var values = pair.ToArray();
+                        await WarnIfNotSupported(client, console, maxVersion, message, true, values);
                     }
 
                     if (props.Any())
@@ -108,14 +135,15 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
 
                 protected async Task WarnIfNotSupported(QBittorrentClient client, IConsole console,
-                    ApiVersion minVersion,
+                    ApiVersion version,
                     string message,
+                    bool max,
                     params object[] properties)
                 {
                     if (properties == null || properties.All(p => p == null))
                         return;
 
-                    if (await client.GetApiVersionAsync() < minVersion)
+                    if ((await client.GetApiVersionAsync() < version) ^ max)
                     {
                         console.WriteLineColored(message, ColorScheme.Current.Warning);
                     }
