@@ -31,7 +31,7 @@ curl -T "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/artful/qbittorrent-cli_${PkgFullVer
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_arm64.deb" "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-debian/qbittorrent-cli/${PkgFullVersion}/bionic/pool/main/q/qbittorrent-cli_${PkgFullVersion}_arm64.deb;deb_distribution=bionic;deb_component=main;deb_architecture=arm64?publish=1"
 curl -T "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/disco/qbittorrent-cli_${PkgFullVersion}_arm64.deb"  "-ufedarovich:$1" "https://api.bintray.com/content/fedarovich/qbittorrent-cli-debian/qbittorrent-cli/${PkgFullVersion}/disco/pool/main/q/qbittorrent-cli_${PkgFullVersion}_arm64.deb;deb_distribution=disco;deb_distribution=buster;deb_component=main;deb_architecture=arm64?publish=1"
 
-curl --user "fedarovich:$1" --data '' https://bintray.com/api/v1/calc_metadata/fedarovich/qbittorrent-cli-debian
+curl -X POST --user "fedarovich:$1" https://api.bintray.com/calc_metadata/fedarovich/qbittorrent-cli-debian
 
 ###############################################################################
 # Upload Fedora/CentOS/RHEL packages                                          #
