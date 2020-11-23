@@ -14,7 +14,7 @@
     <authors>Pavel Fedarovich</authors>
     <projectUrl>https://github.com/fedarovich/qbittorrent-cli</projectUrl>
     <iconUrl>https://github.com/fedarovich/qbittorrent-cli/tree/master/setup/windows/package-icon.png</iconUrl>
-    <copyright>2017-2018 Pavel Fedarovich</copyright>
+    <copyright>2017-2020 Pavel Fedarovich</copyright>
     <licenseUrl>https://rawcdn.githack.com/fedarovich/qbittorrent-cli/e8ae9f9c6a2048eec8ef06a70c2a4ade0e7bcaed/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/fedarovich/qbittorrent-cli</projectSourceUrl>
