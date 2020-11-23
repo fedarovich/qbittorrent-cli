@@ -87,11 +87,12 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                var (apiVersion, legacyApiVersion, legacyApiMinVersion, qVersion) = await TaskHelper.WhenAll(
+                var (apiVersion, legacyApiVersion, legacyApiMinVersion, qVersion, build) = await TaskHelper.WhenAll(
                     client.GetApiVersionAsync(),
                     client.GetLegacyApiVersionAsync(),
                     client.GetLegacyMinApiVersionAsync(),
-                    client.GetQBittorrentVersionAsync());
+                    client.GetQBittorrentVersionAsync(),
+                    client.GetBuildInfoAsync());
 
                 var doc = new Document(
                     new Grid
@@ -103,7 +104,13 @@ namespace QBittorrent.CommandLineInterface.Commands
                             UIHelper.Row("QBittorrent version", qVersion),
                             UIHelper.Row("API version", apiVersion),
                             UIHelper.Row("Legacy API version", legacyApiVersion),
-                            UIHelper.Row("Legacy API min version", legacyApiMinVersion)
+                            UIHelper.Row("Legacy API min version", legacyApiMinVersion),
+                            UIHelper.Row("Bitness", build.Bitness),
+                            UIHelper.Row("Libtorrent version", build.LibtorrentVersion),
+                            UIHelper.Row("Qt version", build.QtVersion),
+                            UIHelper.Row("Boost version", build.BoostVersion),
+                            UIHelper.Row("OpenSSL version", build.OpenSslVersion),
+                            UIHelper.Row("ZLib version", build.ZlibVersion),
                         }
                     }
                  ).SetColors(ColorScheme.Current.Normal);
