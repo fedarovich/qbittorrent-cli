@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -14,7 +15,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Peers))]
     public partial class TorrentCommand
     {
-        [Command(Description = "Show the list of torrent peers.")]
+        [Command(Description = "Show the list of torrent peers.", ExtendedHelpText = "[DEPRECATED] Use \"torrent peer list\" instead.")]
         public class Peers : TorrentSpecificCommandBase
         {
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
@@ -43,7 +44,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                         {
                             UIHelper.Header("CC"),
                             UIHelper.Header("Endpoint"),
-                            UIHelper.Header("Сlient"),
+                            UIHelper.Header("Client"),
                             UIHelper.Header("Progress"),
                             UIHelper.Header("DL Speed", TextAlign.Center),
                             UIHelper.Header("UL Speed", TextAlign.Center),

@@ -16,6 +16,7 @@ namespace QBittorrent.CommandLineInterface
     [Subcommand(typeof(NetworkCommand))]
     [Subcommand(typeof(TorrentCommand))]
     [Subcommand(typeof(InspectCommand))]
+    [Subcommand(typeof(PeerCommand))]
     [Subcommand(typeof(RssCommand))]
     [Subcommand(typeof(SearchCommand))]
     [Subcommand(typeof(TagCommand))]
