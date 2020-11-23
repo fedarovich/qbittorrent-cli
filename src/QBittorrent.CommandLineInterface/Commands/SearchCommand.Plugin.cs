@@ -149,7 +149,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                                     UIHelper.Row("Is enabled", plugin.IsEnabled),
                                     UIHelper.Row("URL", plugin.Url),
                                     UIHelper.Row("Categories",
-                                        new Alba.CsConsoleFormat.List(plugin.SupportedCategories.ToArray<object>()))
+                                        new Alba.CsConsoleFormat.List(plugin.Categories.Select(c => $"{c.Id} - {c.Name}").ToArray<object>()))
                                 },
                                 Margin = new Thickness(0, 0, 0, 2)
                             }

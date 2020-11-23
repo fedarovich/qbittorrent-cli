@@ -43,7 +43,7 @@
     <PackageReference Include="BencodeNET" Version="2.3.0" />
     <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="IPNetwork2" Version="2.5.235" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.4" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'net46'" />
     <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'net46'" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
