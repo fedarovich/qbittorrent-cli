@@ -2,20 +2,16 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.1;netframework4.6</TargetFrameworks>
-	<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net46</TargetFrameworks>
+	  <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <AssemblyName>qbt</AssemblyName>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netframework4.6'">
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
   </PropertyGroup>
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Authors>Pavel Fedarovich</Authors>
     <Company>Pavel Fedarovich</Company>
-    <Copyright>© Pavel Fedarovich, 2018-2019</Copyright>
+    <Copyright>© Pavel Fedarovich, 2018-$([System.DateTime]::Now.Year)</Copyright>
     <PackageProjectUrl>https://github.com/fedarovich/qbittorrent-cli</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fedarovich/qbittorrent-cli</RepositoryUrl>
     <PackageTags>torrent qbittorrent</PackageTags>
@@ -46,28 +42,28 @@
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="BencodeNET" Version="2.3.0" />
     <PackageReference Include="CsvHelper" Version="12.1.2" />
-    <PackageReference Include="IPNetwork2" Version="2.4.0.99" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.3" />
-    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'netframework4.6'" />
-    <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'netframework4.6'" />
+    <PackageReference Include="IPNetwork2" Version="2.5.235" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
+    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'net46'" />
+    <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'net46'" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NJsonSchema" Version="9.13.27" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.5.2" />
-    <PackageReference Include="QBittorrent.Client" Version="1.6.19350.1" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.7.0" />
+    <PackageReference Include="NJsonSchema" Version="9.14.1" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
+    <PackageReference Include="QBittorrent.Client" Version="1.7.20325.1" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'netframework4.6'">
+  <ItemGroup Condition="'$(TargetFramework)' != 'net46'">
     <None Remove="App.config" />
   </ItemGroup>
   
-  <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == '' AND '$(TargetFramework)' != 'netframework4.6'">
+  <Target Name="IncludeRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(RuntimeIdentifier)' == '' AND '$(TargetFramework)' != 'net46'">
     <ItemGroup>
       <ResolvedFileToPublish Include="qbt.cmd" RelativePath="qbt.cmd" />
       <ResolvedFileToPublish Include="qbt.sh" RelativePath="qbt" />
     </ItemGroup>
   </Target>
-  <Target Name="IncludeMonoRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(TargetFramework)' == 'netframework4.6'">
+  <Target Name="IncludeMonoRunScripts" AfterTargets="ComputeFilesToPublish" Condition="'$(TargetFramework)' == 'net46'">
     <ItemGroup>
       <ResolvedFileToPublish Include="qbt-mono.sh" RelativePath="qbt" />
     </ItemGroup>

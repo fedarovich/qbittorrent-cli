@@ -35,6 +35,6 @@ namespace QBittorrent.CommandLineInterface.ViewModels
         public bool IsSeeding => _wrappedObject.IsSeeding;
 
         [Display(Name = "Piece Range")]
-        public Range PieceRange => _wrappedObject.PieceRange;
+        public Client.Range PieceRange => _wrappedObject.PieceRange;
     }
 }
