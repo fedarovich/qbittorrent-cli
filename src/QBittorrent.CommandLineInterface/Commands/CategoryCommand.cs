@@ -18,7 +18,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(List))]
     public class CategoryCommand : ClientRootCommandBase
     {
-        [Command(Description = "Adds a new category.")]
+        [Command("add", "create", Description = "Adds a new category.")]
         public class Add : AuthenticatedCommandBase
         {
             [Argument(0, "<NAME>", "Category name.")]

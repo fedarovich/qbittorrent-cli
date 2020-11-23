@@ -193,7 +193,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         {
             protected override bool AllowAll => true;
 
-            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to resume all torrents.")]
+            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to reannounce all torrents.")]
             public override string Hash { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
