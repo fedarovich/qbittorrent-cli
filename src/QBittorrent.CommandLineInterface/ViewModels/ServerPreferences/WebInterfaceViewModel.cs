@@ -56,5 +56,22 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
 
         [Display(Name = "Alt. Web UI Path")]
         public string AlternativeWebUIPath => _wrappedObject.AlternativeWebUIPath;
+
+        [Display(Name = "Set Secure cookie attribute")]
+        public bool? WebUISecureCookie => _wrappedObject.WebUISecureCookie;
+
+        [Display(Name = "Max. number of authentication failures")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public int? WebUIMaxAuthenticationFailures => _wrappedObject.WebUIMaxAuthenticationFailures;
+
+        [Display(Name = "Ban duration")]
+        [DisplayFormat(DataFormatString = "{0} s", NullDisplayText = "n/a")]
+        public int? WebUIBanDuration => _wrappedObject.WebUIBanDuration;
+
+        [Display(Name = "Use custom HTTP headers")]
+        public bool? WebUICustomHttpHeadersEnabled => _wrappedObject.WebUICustomHttpHeadersEnabled;
+
+        [Display(Name = "Custom HTTP headers")]
+        public IList<string> WebUICustomHttpHeaders => _wrappedObject.WebUICustomHttpHeaders;
     }
 }

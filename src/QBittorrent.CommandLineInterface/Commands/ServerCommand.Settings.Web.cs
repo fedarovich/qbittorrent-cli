@@ -89,6 +89,39 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [MinApiVersion("2.2.0", "Alternative Web UI requires qBittorrent 4.1.5 or later.")]
                 public string AlternativeWebUIPath { get; set; }
 
+                [Option("-S|--secure-cookie <BOOL>", 
+                    "Set Secure attribute on cookie when using HTTPS. Requires qBittorrent 4.2.2 or later.", 
+                    CommandOptionType.SingleValue)]
+                [MinApiVersion("2.4.1", "--secure-cookie option requires qBittorrent 4.2.2 or later.")]
+                public bool? WebUISecureCookie { get; set; }
+
+                [Option("-m|--max-auth-failures <NUMBER>",
+                    "The number of the failed authentication attempts after which the client will be banned. Requires qBittorrent 4.2.2 or later.",
+                    CommandOptionType.SingleValue)]
+                [MinApiVersion("2.4.1", "--secure-cookie option requires qBittorrent 4.2.2 or later.")]
+                public int? WebUIMaxAuthenticationFailures { get; set; }
+
+                [Option("-b|--ban-duration <SECONDS>",
+                    "The duration (in seconds) the client will be banned for after the specified in --max-auth-failures number of failed authentication attempts." +
+                    " Requires qBittorrent 4.2.2 or later.",
+                    CommandOptionType.SingleValue)]
+                [MinApiVersion("2.4.1", "--secure-cookie option requires qBittorrent 4.2.2 or later.")]
+                public int? WebUIBanDuration { get; set; }
+
+                [Option("-e|--use-custom-http-headers <BOOL>",
+                    "Enable or disables custom HTTP headers for Web UI. Requires qBittorrent 4.2.5 or later.",
+                    CommandOptionType.SingleValue)]
+                [MinApiVersion("2.5.1", "--secure-cookie option requires qBittorrent 4.2.5 or later.")]
+                public bool? WebUICustomHttpHeadersEnabled { get; set; }
+                
+                [Option("-H|--custom-http-header <HEADER>",
+                    "Custom HTTP header for Web UI. Use a colon (:) as a separator between header name and value. " +
+                    "This option can be repeated in order to set several headers. " +
+                    "Requires qBittorrent 4.2.5 or later.",
+                    CommandOptionType.MultipleValue)]
+                [MinApiVersion("2.5.1", "--secure-cookie option requires qBittorrent 4.2.5 or later.")]
+                public IList<string> WebUICustomHttpHeaders { get; set; }
+
                 protected override async Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
                     if (WebUIAddress?.Trim() == string.Empty)
@@ -125,7 +158,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                     new Dictionary<string, Func<object, object>>
                     {
                         [nameof(WebInterfaceViewModel.Locale)] = FormatLanguage,
-                        [nameof(WebInterfaceViewModel.WebUISslCertificate)] = FormatCertificate
+                        [nameof(WebInterfaceViewModel.WebUISslCertificate)] = FormatCertificate,
+                        [nameof(WebInterfaceViewModel.WebUICustomHttpHeaders)] = FormatCustomHttpHeaders
                     };
 
                 private string FormatLanguage(object arg)
@@ -165,6 +199,12 @@ namespace QBittorrent.CommandLineInterface.Commands
                         }
                     }).ToArray<object>());
                     return stack;
+                }
+
+                private object FormatCustomHttpHeaders(object arg)
+                {
+                    if (arg is not IList<string> headers) return null;
+                    return string.Join(Environment.NewLine, headers);
                 }
 
                 protected override void CustomFillPreferences(Preferences preferences)
