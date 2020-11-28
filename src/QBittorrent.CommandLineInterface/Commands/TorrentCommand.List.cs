@@ -70,7 +70,9 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Option("--verbose", "Displays verbose information.", CommandOptionType.NoValue)]
             public bool Verbose { get; set; }
 
-            [Option("-f|--filter <STATUS>", "Filter by status: all|downloading|completed|paused|active|inactive", CommandOptionType.SingleValue)]
+            [Option("-f|--filter <STATUS>", 
+                "Filter by status:\nall|downloading|seeding|completed|paused|resumed|\nactive|inactive|errored|stalled|stalledDownloading|stalledUploading", 
+                CommandOptionType.SingleValue)]
             [EnumValidation(typeof(TorrentListFilter), AllowEmpty = true)]
             public string Filter { get; set; }
 
