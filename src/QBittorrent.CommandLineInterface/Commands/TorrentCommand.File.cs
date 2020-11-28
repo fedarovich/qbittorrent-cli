@@ -18,6 +18,7 @@ namespace QBittorrent.CommandLineInterface.Commands
         [Command(Description = "Gets and manipulates torrent contents.")]
         [Subcommand(typeof(List))]
         [Subcommand(typeof(Priority))]
+        [Subcommand(typeof(Rename))]
         public class File : ClientRootCommandBase
         {
             [Command(Description = "Gets the torrent contents.", ExtendedHelpText = FormatHelpText)]
@@ -87,6 +88,24 @@ namespace QBittorrent.CommandLineInterface.Commands
                         console.WriteLineColored(contents?[File]?.Priority.ToString(), ColorScheme.Current.Normal);
                     }
 
+                    return ExitCodes.Success;
+                }
+            }
+
+            [Command(Description = "Renames the file.")]
+            public class Rename : TorrentSpecificCommandBase
+            {
+                [Option("-f|--file <FILE_ID>", "File Id. Use \"torrent file list <HASH>\" command to get the possible values.", CommandOptionType.SingleValue)]
+                [Required]
+                public int File { get; set; }
+
+                [Option("-n|--name <NEW_NAME>", "New file name.", CommandOptionType.SingleValue)]
+                [Required]
+                public string NewName { get; set; }
+
+                protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+                {
+                    await client.RenameFileAsync(Hash, File, NewName);
                     return ExitCodes.Success;
                 }
             }
