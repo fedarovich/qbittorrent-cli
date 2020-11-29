@@ -71,7 +71,7 @@ namespace QBittorrent.CommandLineInterface.Commands
             public bool Verbose { get; set; }
 
             [Option("-f|--filter <STATUS>", 
-                "Filter by status:\nall|downloading|seeding|completed|paused|resumed|\nactive|inactive|errored|stalled|stalledDownloading|stalledUploading", 
+                "Filter by status: \nall|downloading|seeding|completed|paused|resumed|\nactive|inactive|errored|stalled|stalledDownloading|stalledUploading", 
                 CommandOptionType.SingleValue)]
             [EnumValidation(typeof(TorrentListFilter), AllowEmpty = true)]
             public string Filter { get; set; }
