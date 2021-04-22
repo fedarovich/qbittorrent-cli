@@ -29,16 +29,16 @@ package_cloud push fedarovich/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRE
 # x86_64
 package_cloud push fedarovich/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
 package_cloud push fedarovich/qbittorrent-cli/opensuse/15.0 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/tw "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
+package_cloud push fedarovich/qbittorrent-cli/opensuse/15.3 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
 
 # armv7hl
 package_cloud push fedarovich/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
 package_cloud push fedarovich/qbittorrent-cli/opensuse/15.0 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/tw "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
+package_cloud push fedarovich/qbittorrent-cli/opensuse/15.3 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
 
 # aarch64
 package_cloud push fedarovich/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
 package_cloud push fedarovich/qbittorrent-cli/opensuse/15.0 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/tw "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
+package_cloud push fedarovich/qbittorrent-cli/opensuse/15.3 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
 
 set +x
