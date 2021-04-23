@@ -4,6 +4,8 @@
 | ------- | ------- | ------- |
 | [![Current Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-ci)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=8) | [![Nightly Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-nightly)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=7) | [![Release Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-release)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=6) |
 
+[![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=flat-square)](https://cloudsmith.com)
+
 ***
 
 ## Description
