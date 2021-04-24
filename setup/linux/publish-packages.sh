@@ -11,34 +11,43 @@ PkgFullVersion="$PkgVersion-$PkgIteration"
 ###############################################################################
 
 # amd64
-package_cloud push fedarovich/qbittorrent-cli/debian/stretch "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/universal/qbittorrent-cli_${PkgFullVersion}_amd64.deb"
-package_cloud push fedarovich/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/universal/qbittorrent-cli_${PkgFullVersion}_amd64.deb"
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/bionic "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/focal "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/focal/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/any-version "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/any-version/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/debian/any-version "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
 
 # armhf
-package_cloud push fedarovich/qbittorrent-cli/debian/stretch "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/universal/qbittorrent-cli_${PkgFullVersion}_armhf.deb"
-package_cloud push fedarovich/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/universal/qbittorrent-cli_${PkgFullVersion}_armhf.deb"
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/bionic "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/focal "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/focal/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/any-version "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/any-version/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/debian/any-version "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
 
 # arm64
-package_cloud push fedarovich/qbittorrent-cli/debian/stretch "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/universal/qbittorrent-cli_${PkgFullVersion}_arm64.deb"
-package_cloud push fedarovich/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/universal/qbittorrent-cli_${PkgFullVersion}_arm64.deb"
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/bionic "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/focal "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/focal/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/any-version "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/any-version/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/debian/any-version "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
 
 ###############################################################################
 # Upload Fedora/CentOS/RHEL packages                                          #
 ###############################################################################
 
 # x86_64
-package_cloud push fedarovich/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/15.0 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/15.3 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm"
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" -k $1
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/opensuse/15.2 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" -k $1
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/opensuse/Tumbleweed "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.x86_64.rpm" -k $1
 
 # armv7hl
-package_cloud push fedarovich/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/15.0 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/15.3 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm"
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" -k $1
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/opensuse/15.2 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" -k $1
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/opensuse/Tumbleweed "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.armv7hl.rpm" -k $1
 
 # aarch64
-package_cloud push fedarovich/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/15.0 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
-package_cloud push fedarovich/qbittorrent-cli/opensuse/15.3 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm"
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/fedora/32 "$BUILD_BINARIESDIRECTORY/pkg/fedora/32/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm" -k $1
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/opensuse/15.2 "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm" -k $1
+cloudsmith push rpm qbittorrent-cli/qbittorrent-cli/opensuse/Tumbleweed "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw/qbittorrent-cli-${PkgFullVersion}.aarch64.rpm" -k $1
 
 set +x
