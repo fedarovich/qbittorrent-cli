@@ -4,6 +4,8 @@
 | ------- | ------- | ------- |
 | [![Current Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-ci)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=8) | [![Nightly Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-nightly)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=7) | [![Release Build](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_apis/build/status/qbt-release)](https://dev.azure.com/pavelfedarovich/qBittorrent-CLI/_build/latest?definitionId=6) |
 
+[![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=flat-square)](https://cloudsmith.com)
+
 ***
 
 ## Description
@@ -20,3 +22,12 @@ qBittorrent CLI is fully compatible with qBittorrent 4.0 or later. It is also *p
 [![documentation](https://img.shields.io/badge/documentation-wiki-blue.svg)](https://github.com/fedarovich/qbittorrent-cli/wiki)
 
 Please, see the [Wiki](https://github.com/fedarovich/qbittorrent-cli/wiki) to get information about the product setup and usage.
+
+## Attributions
+
+[![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=flat-square)](https://cloudsmith.com)
+
+Package repository hosting is graciously provided by  [Cloudsmith](https://cloudsmith.com).
+Cloudsmith is the only fully hosted, cloud-native, universal package management solution, that
+enables your organization to create, store and share packages in any format, to any place, with total
+confidence.
