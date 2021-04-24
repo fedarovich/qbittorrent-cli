@@ -14,21 +14,21 @@ PkgFullVersion="$PkgVersion-$PkgIteration"
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/bionic "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/focal "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/focal/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
-cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/any-version "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/any-version/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/groovy "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/groovy/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/debian/any-version "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version/qbittorrent-cli_${PkgFullVersion}_amd64.deb" -k $1
 
 # armhf
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/bionic "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/focal "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/focal/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
-cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/any-version "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/any-version/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/groovy "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/groovy/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/debian/any-version "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version/qbittorrent-cli_${PkgFullVersion}_armhf.deb" -k $1
 
 # arm64
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/xenial "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/xenial/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/bionic "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/bionic/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/focal "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/focal/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
-cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/any-version "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/any-version/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
+cloudsmith push deb qbittorrent-cli/qbittorrent-cli/ubuntu/groovy "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/groovy/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
 cloudsmith push deb qbittorrent-cli/qbittorrent-cli/debian/any-version "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version/qbittorrent-cli_${PkgFullVersion}_arm64.deb" -k $1
 
 ###############################################################################
