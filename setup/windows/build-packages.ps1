@@ -8,14 +8,16 @@ if (Test-Path "$RepoPath") {
     Remove-Item "$RepoPath" -Recurse -Force
 }
 
+#https://github.com/fedarovich/qbittorrent-cli/releases/download/v1.6.21114.2/qbittorrent-cli-1.6.21114.2-x64.msi
+
 choco new qbittorrent-cli `
     --verbose `
     --version=$env:BUILD_BUILDNUMBER `
     --maintainer="Pavel Fedarovich" `
     maintainerrepo="https://github.com/fedarovich/qbittorrent-cli" `
     installertype=msi `
-    url="https://dl.bintray.com/fedarovich/qbittorrent-cli-windows/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi" `
-    url64="https://dl.bintray.com/fedarovich/qbittorrent-cli-windows/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi" `
+    url="https://github.com/fedarovich/qbittorrent-cli/releases/download/$env:BUILD_BUILDNUMBER/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi" `
+    url64="https://github.com/fedarovich/qbittorrent-cli/releases/download/$env:BUILD_BUILDNUMBER/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi" `
     checksum="$($Hash32.Hash)" `
     checksum64="$($Hash64.Hash)"
 
