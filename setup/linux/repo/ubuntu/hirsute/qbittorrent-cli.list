@@ -3,6 +3,6 @@
 # Description: A certifiably-awesome open-source package repository curated by qbittorrent-cli, hosted by Cloudsmith.
 
 
-deb https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/deb/ubuntu bionic main
+deb https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/deb/ubuntu hirsute main
 
-deb-src https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/deb/ubuntu bionic main
+deb-src https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/deb/ubuntu hirsute main

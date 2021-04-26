@@ -1,7 +1,0 @@
-[bintray-qbittorrent-cli-fedora-25]
-name=bintray-qbittorrent-cli-fedora-25
-baseurl=https://dl.bintray.com/fedarovich/qbittorrent-cli-rpm/fedora/25
-gpgkey=https://bintray.com/user/downloadSubjectPublicKey?username=fedarovich
-gpgcheck=0
-repo_gpgcheck=1
-enabled=1

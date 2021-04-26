@@ -5,7 +5,7 @@
 
 [qbittorrent-cli-qbittorrent-cli]
 name=qbittorrent-cli-qbittorrent-cli
-baseurl=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/rpm/opensuse/Tumbleweed/$basearch
+baseurl=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/rpm/el/any-version/$basearch
 repo_gpgcheck=1
 enabled=1
 gpgkey=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/gpg.F8756541ADDA2B7D.key
@@ -19,7 +19,7 @@ type=rpm-md
 
 [qbittorrent-cli-qbittorrent-cli-noarch]
 name=qbittorrent-cli-qbittorrent-cli-noarch
-baseurl=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/rpm/opensuse/Tumbleweed/noarch
+baseurl=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/rpm/el/any-version/noarch
 repo_gpgcheck=1
 enabled=1
 gpgkey=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/gpg.F8756541ADDA2B7D.key
@@ -33,7 +33,7 @@ type=rpm-md
 
 [qbittorrent-cli-qbittorrent-cli-source]
 name=qbittorrent-cli-qbittorrent-cli-source
-baseurl=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/rpm/opensuse/Tumbleweed/SRPMS
+baseurl=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/rpm/el/any-version/SRPMS
 repo_gpgcheck=1
 enabled=1
 gpgkey=https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/gpg.F8756541ADDA2B7D.key

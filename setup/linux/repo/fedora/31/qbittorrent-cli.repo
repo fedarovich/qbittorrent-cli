@@ -1,7 +1,0 @@
-[bintray-qbittorrent-cli-fedora-31]
-name=bintray-qbittorrent-cli-fedora-31
-baseurl=https://dl.bintray.com/fedarovich/qbittorrent-cli-rpm/centos/7
-gpgkey=https://bintray.com/user/downloadSubjectPublicKey?username=fedarovich
-gpgcheck=0
-repo_gpgcheck=1
-enabled=1
