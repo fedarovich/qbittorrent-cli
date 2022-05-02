@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace QBittorrent.CommandLineInterface.Services
 {
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     internal class WindowsEncryptionService : EncryptionService
     {
         private const int EntropyLength = 16;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace QBittorrent.CommandLineInterface.Services
 {
@@ -10,9 +8,16 @@ namespace QBittorrent.CommandLineInterface.Services
 
         static EncryptionService()
         {
+#if NET6_0_OR_GREATER
+            Instance = OperatingSystem.IsWindows() 
+                ? (EncryptionService) new WindowsEncryptionService()
+                : new UnixEncryptionService();
+#else
             Instance = Environment.OSVersion.Platform == PlatformID.Win32NT 
                 ? (EncryptionService) new WindowsEncryptionService()
                 : new UnixEncryptionService();
+#endif
+
         }
 
         private protected EncryptionService()
