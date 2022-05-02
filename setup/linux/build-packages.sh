@@ -21,7 +21,7 @@ echo '|                    Creating packages for x64                           |
 echo '--------------------------------------------------------------------------'
 set -x
 
-#prepare file system
+#prepare file system for .netcore3.1
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/x64"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
@@ -39,7 +39,18 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version" && fpm -s dir -t deb 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/32"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d libssl45 -d libicu
-mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d libssl48 -d libicu
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a x86_64 --description "$PkgDesc" -p "$_" -d libssl50 -d libicu
+
+#prepare file system for .net6
+PkgRoot="$BUILD_BINARIESDIRECTORY/build/x64-net6"
+mkdir -p "$PkgRoot/usr/bin"
+mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
+tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-x64-net6-$BUILD_BUILDNUMBER.tar.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
+chmod +x "$PkgRoot/usr/lib/qbittorrent-cli/qbt"
+ln -sfr "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
+
+#build packages
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/jammy"  && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a amd64 --description "$PkgDesc" -p "$_" -d libssl3 -d "libicu70 | libicu71"
 
 ###############################################################################
 # Create packages for ARM                                                     #
@@ -51,7 +62,7 @@ echo '|                    Creating packages for ARM                           |
 echo '--------------------------------------------------------------------------'
 set -x
 
-#prepare file system
+#prepare file system for .netcore3.1
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
@@ -69,7 +80,18 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version" && fpm -s dir -t deb 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/32"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libssl45 -d libicu
-mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libssl48 -d libicu
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armv7hl --description "$PkgDesc" -p "$_" -d libssl50 -d libicu
+
+#prepare file system for .net6
+PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm-net6"
+mkdir -p "$PkgRoot/usr/bin"
+mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
+tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-arm-net6-$BUILD_BUILDNUMBER.tar.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
+chmod +x "$PkgRoot/usr/lib/qbittorrent-cli/qbt"
+ln -sfr "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
+
+#build packages
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/jammy"  && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a armhf --description "$PkgDesc" -p "$_" -d libssl3 -d "libicu70 | libicu71"
 
 ###############################################################################
 # Create packages for ARM 64                                                  #
@@ -81,7 +103,7 @@ echo '|                    Creating packages for ARM64                         |
 echo '--------------------------------------------------------------------------'
 set -x
 
-#prepare file system
+#prepare file system for .netcore3.1
 PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm64"
 mkdir -p "$PkgRoot/usr/bin"
 mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
@@ -99,7 +121,18 @@ mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/debian/any-version" && fpm -s dir -t deb 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/fedora/32"  && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d openssl-libs -d libicu
 
 mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/15" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d libssl45 -d libicu
-mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d libssl48 -d libicu
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/opensuse/tw" && fpm -s dir -t rpm -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a aarch64 --description "$PkgDesc" -p "$_" -d libssl50 -d libicu
+
+#prepare file system for .net6
+PkgRoot="$BUILD_BINARIESDIRECTORY/build/arm64-net6"
+mkdir -p "$PkgRoot/usr/bin"
+mkdir -p "$PkgRoot/usr/lib/qbittorrent-cli"
+tar -xvf "$BUILD_BINARIESDIRECTORY/tgz/cli/qbt-linux-arm64-net6-$BUILD_BUILDNUMBER.tar.gz" -C "$PkgRoot/usr/lib/qbittorrent-cli"
+chmod +x "$PkgRoot/usr/lib/qbittorrent-cli/qbt"
+ln -sfr "$PkgRoot/usr/lib/qbittorrent-cli/qbt" "$PkgRoot/usr/bin/qbt"
+
+#build packages
+mkdir -p "$BUILD_BINARIESDIRECTORY/pkg/ubuntu/jammy"  && fpm -s dir -t deb -f -C "$PkgRoot" --name $PkgName --version $PkgVersion --iteration $PkgIteration --license "$PkgLicense" --vendor "$PkgVendor" --maintainer "$PkgMaintainer" --url "$PkgHomepage" -a arm64 --description "$PkgDesc" -p "$_" -d libssl3 -d "libicu70 | libicu71"
 
 ###############################################################################
 # Clean up                                                     #
