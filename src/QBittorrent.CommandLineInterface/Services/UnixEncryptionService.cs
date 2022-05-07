@@ -112,7 +112,7 @@ namespace QBittorrent.CommandLineInterface.Services
                 ResetKey();
             }
 
-            using (var stream = file.OpenRead())
+            using (var stream = file.Open(FileMode.Open, FileAccess.Read, FilePermissions.S_IRUSR))
             {
                 var data = new byte[stream.Length];
                 stream.Read(data, 0, data.Length);
