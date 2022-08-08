@@ -16,8 +16,8 @@ choco new qbittorrent-cli `
     --maintainer="Pavel Fedarovich" `
     maintainerrepo="https://github.com/fedarovich/qbittorrent-cli" `
     installertype=msi `
-    url="https://github.com/fedarovich/qbittorrent-cli/releases/download/$env:BUILD_BUILDNUMBER/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi" `
-    url64="https://github.com/fedarovich/qbittorrent-cli/releases/download/$env:BUILD_BUILDNUMBER/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi" `
+    url="https://github.com/fedarovich/qbittorrent-cli/releases/download/v$env:BUILD_BUILDNUMBER/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x86.msi" `
+    url64="https://github.com/fedarovich/qbittorrent-cli/releases/download/v$env:BUILD_BUILDNUMBER/qbittorrent-cli-$env:BUILD_BUILDNUMBER-x64.msi" `
     checksum="$($Hash32.Hash)" `
     checksum64="$($Hash64.Hash)"
 
