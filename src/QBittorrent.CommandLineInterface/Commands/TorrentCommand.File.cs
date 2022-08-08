@@ -96,17 +96,60 @@ namespace QBittorrent.CommandLineInterface.Commands
             public class Rename : TorrentSpecificCommandBase
             {
                 [Option("-f|--file <FILE_ID>", "File Id. Use \"torrent file list <HASH>\" command to get the possible values.", CommandOptionType.SingleValue)]
-                [Required]
-                public int File { get; set; }
+                public int? File { get; set; }
 
-                [Option("-n|--name <NEW_NAME>", "New file name.", CommandOptionType.SingleValue)]
+                [Option("-o|--old-name <OLD_NAME>", "Old file path/name.", CommandOptionType.SingleValue)]
+                public string OldName { get; set; }
+
+                [Option("-n|--name <NEW_NAME>", "New file path/name.", CommandOptionType.SingleValue)]
                 [Required]
                 public string NewName { get; set; }
 
                 protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
-                    await client.RenameFileAsync(Hash, File, NewName);
+                    if ((File == null) == (OldName == null))
+                    {
+                        throw new InvalidOperationException("Either --file or --old-name option must be specified.");
+                    }
+
+                    var version = await client.GetApiVersionAsync();
+                    if (version < new ApiVersion(2, 8, 0))
+                    {
+                        await RenameFileLegacy(client);
+                    }
+                    else
+                    {
+                        await RenameFile(client);
+                    }
                     return ExitCodes.Success;
+                }
+
+                private async Task RenameFileLegacy(QBittorrentClient client)
+                {
+                    if (File != null)
+                    {
+                        await client.RenameFileAsync(Hash, File.Value, NewName);
+                    }
+                    else
+                    {
+                        var contents = await client.GetTorrentContentsAsync(Hash);
+                        var file = contents.Select((content, index) => (content, index)).Single(t => t.content.Name == OldName).index;
+                        await client.RenameFileAsync(Hash, file, NewName);
+                    }
+                }
+
+                private async Task RenameFile(QBittorrentClient client)
+                {
+                    if (File != null)
+                    {
+                        var content = await client.GetTorrentContentsAsync(Hash);
+                        var oldName = content[File.Value].Name;
+                        await client.RenameFileAsync(Hash, oldName, NewName);
+                    }
+                    else
+                    {
+                        await client.RenameFileAsync(Hash, OldName, NewName);
+                    }
                 }
             }
         }
