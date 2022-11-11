@@ -16,6 +16,7 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(WebSeeds))]
     [Subcommand(typeof(Pause))]
     [Subcommand(typeof(Resume))]
+    [Subcommand(typeof(ForceResume))]
     [Subcommand(typeof(Delete))]
     [Subcommand(typeof(Move))]
     [Subcommand(typeof(Rename))]
@@ -119,6 +120,21 @@ namespace QBittorrent.CommandLineInterface.Commands
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 await (IsAll ? client.ResumeAsync() : client.ResumeAsync(Hash));
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Force Resumes the specified torrent or all torrents.")]
+        public class ForceResume : TorrentSpecificCommandBase
+        {
+            protected override bool AllowAll => true;
+
+            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to force resume all torrents.")]
+            public override string Hash { get; set; }
+
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                await (IsAll ? client.SetForceStartAsync(true) : client.SetForceStartAsync(new[] { Hash }, true));
                 return ExitCodes.Success;
             }
         }
