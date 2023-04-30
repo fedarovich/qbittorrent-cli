@@ -61,7 +61,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             break;
                     }
 
-                    var time = DateTimeOffset.FromUnixTimeMilliseconds(entry.Timestamp).ToString("s").Replace("T", " ");
+                    var time = DateTimeOffset.FromUnixTimeSeconds(entry.Timestamp).ToString("s").Replace("T", " ");
                     console.WriteColored($" {entry.Id:D6} {time} ", timestamp.fg, timestamp.bg);
                     console.WriteLineColored(entry.Message, message.fg, message.bg);
                 }
