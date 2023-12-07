@@ -8,12 +8,12 @@ namespace QBittorrent.CommandLineInterface
 {
     internal static class EnumHelper
     {
-#if NETCOREAPP2_0
+#if !NETFRAMEWORK
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result)
         {
-#if NETCOREAPP2_0
+#if !NETFRAMEWORK
             return Enum.TryParse(enumType, value, ignoreCase, out result);
 #else
             var gerenericMethod = typeof(Enum)
@@ -30,7 +30,7 @@ namespace QBittorrent.CommandLineInterface
 
         public static bool IsDefined<T>(T value) => Enum.IsDefined(typeof(T), value);
 
-        public static IEnumerable<T> GetValues<T>() where T : Enum
+        public static IEnumerable<T> GetValues<T>() where T : struct, Enum
         {
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
