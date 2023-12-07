@@ -6,6 +6,7 @@ using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
 using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
+using DateTimeOffset = System.DateTimeOffset;
 
 namespace QBittorrent.CommandLineInterface.Commands
 {
@@ -14,6 +15,8 @@ namespace QBittorrent.CommandLineInterface.Commands
     [Subcommand(typeof(Info))]
     public partial class ServerCommand : ClientRootCommandBase
     {
+        private static readonly ApiVersion ApiVersion_2_8_18 = new ApiVersion(2, 8, 18);
+
         [Command(Description = "Gets the qBittorrent log.")]
         public class Log : AuthenticatedCommandBase
         {
@@ -42,6 +45,11 @@ namespace QBittorrent.CommandLineInterface.Commands
                 var timestamp = GetColors(colorScheme, "timestamp", colorScheme.Normal);
                 var message = GetColors(colorScheme, "message", colorScheme.Normal);
 
+                var apiVersion = await client.GetApiVersionAsync();
+                var timestampToDateTimeOffset = apiVersion < ApiVersion_2_8_18
+                    ? (Func<long, DateTimeOffset>) DateTimeOffset.FromUnixTimeMilliseconds
+                    : (Func<long, DateTimeOffset>) DateTimeOffset.FromUnixTimeSeconds;
+
                 var log = await client.GetLogAsync(severity, AfterId ?? -1);
                 foreach (var entry in log)
                 {
@@ -61,7 +69,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                             break;
                     }
 
-                    var time = DateTimeOffset.FromUnixTimeMilliseconds(entry.Timestamp).ToString("s").Replace("T", " ");
+                    var time = timestampToDateTimeOffset(entry.Timestamp).ToString("s").Replace("T", " ");
                     console.WriteColored($" {entry.Id:D6} {time} ", timestamp.fg, timestamp.bg);
                     console.WriteLineColored(entry.Message, message.fg, message.bg);
                 }
