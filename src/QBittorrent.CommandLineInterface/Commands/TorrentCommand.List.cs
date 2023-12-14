@@ -92,6 +92,12 @@ namespace QBittorrent.CommandLineInterface.Commands
             [Option("-o|--offset <OFFSET>", "Offset from the beginning of the list.", CommandOptionType.SingleValue)]
             public int? Offset { get; set; }
 
+            [Option("-H|--hash <HASH>", "Filter by torrent hash. Can be specified multiple times.", CommandOptionType.MultipleValue)]
+            public IList<string> Hashes { get; set; }
+
+            [Option("-t|--tag <TAG>", "Filter by tag.", CommandOptionType.SingleValue)]
+            public string Tag { get; set; }
+
             protected override async Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var query = new TorrentListQuery
@@ -103,7 +109,9 @@ namespace QBittorrent.CommandLineInterface.Commands
                         : null,
                     ReverseSort = Reverse,
                     Limit = Limit,
-                    Offset = Offset
+                    Offset = Offset,
+                    Hashes = Hashes,
+                    Tag = Tag
                 };
                 var torrents = await client.GetTorrentListAsync(query);
                 Print(torrents, Verbose);
