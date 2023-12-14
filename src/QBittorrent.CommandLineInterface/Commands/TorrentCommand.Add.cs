@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using QBittorrent.Client;
+using QBittorrent.CommandLineInterface.Attributes;
 using QBittorrent.CommandLineInterface.ColorSchemes;
 
 namespace QBittorrent.CommandLineInterface.Commands
@@ -35,7 +36,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-n|--no-check", "Skip hash checking.", CommandOptionType.NoValue)]
                 public bool SkipChecking { get; set; }
 
-                [Option("-R|--create-root-folder <BOOL>", "Create root folder (true/false).", CommandOptionType.SingleValue)]
+                [Option("-R|--create-root-folder <BOOL>", "Create root folder (true/false). Deprecated since qBittorrent 4.3.2, use --content-layout instead.", CommandOptionType.SingleValue)]
                 public bool? CreateRootFolder { get; set; }
 
                 [Option("-r|--rename <NEW_NAME>", "Rename torrent", CommandOptionType.SingleValue)]
@@ -56,13 +57,63 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-a|--automatic-torrent-management <BOOL>", "Enable/disables automatic torrent management. Requires qBittorrent 4.1.5 or later.", CommandOptionType.SingleValue)]
                 public bool? AutomaticTorrentManagement { get; set; }
 
-                protected async Task WarnAutomaticTorrentManagement(IQBittorrentClient client, IConsole console)
+                [Option("-l|--ratio-limit", "The ratio limit (number|GLOBAL|NONE). Requires qBittorrent 4.3.4 or later.", CommandOptionType.SingleValue)]
+                [ShareRatioLimitValidation]
+                public double? RatioLimit { get; set; }
+
+                [Option("-T|--seeding-time-limit", "Seeding time limit ([d.]HH:mm[:ss]|GLOBAL|NONE). Requires qBittorrent 4.3.4 or later.", CommandOptionType.SingleValue)]
+                [ShareSeedingTimeLimitValidation]
+                public TimeSpan? SeedingTimeLimit { get; set; }
+
+                [Option("-L|--content-layout", "Content layout (Original|Subfolder|NoSubfolder). Requires qBittorrent 4.3.2 or later.", CommandOptionType.SingleValue)]
+                [EnumValidation(typeof(TorrentContentLayout), AllowEmpty = true)]
+                public string ContentLayout { get; set; }
+
+                [Option("-t|--tag <TAG>", "The tag to be added to the torrent. Can be specified multiple times. Requires qBittorrent 4.3.4 or later.", CommandOptionType.MultipleValue)]
+                public IList<string> Tags { get; set; }
+
+                protected async Task WarnUnsupportedOptions(IQBittorrentClient client, IConsole console)
                 {
-                    if (AutomaticTorrentManagement != null &&
-                        await client.GetApiVersionAsync() < new ApiVersion(2, 2))
+                    var apiVersion = await client.GetApiVersionAsync();
+                    if (AutomaticTorrentManagement != null && apiVersion < new ApiVersion(2, 2))
                     {
                         console.WriteLineColored(
-                            "automatic-torrent-management option is ignored by qBittorrent versions earlier than 4.1.5.",
+                            "--automatic-torrent-management option is ignored by qBittorrent versions earlier than 4.1.5.",
+                            ColorScheme.Current.Warning);
+                    }
+                    
+                    if (Tags != null && apiVersion < new ApiVersion(2, 6, 2))
+                    {
+                        console.WriteLineColored(
+                            "--tag option is ignored by qBittorrent versions earlier than 4.3.2.",
+                            ColorScheme.Current.Warning);
+                    }
+
+                    if (CreateRootFolder != null && apiVersion >= new ApiVersion(2, 7))
+                    {
+                        console.WriteLineColored(
+                            "--create-root-folder option is deprecated and has no effect on qBittorrent version 4.3.2 or later. Use --content-layout option instead.",
+                            ColorScheme.Current.Warning);
+                    }
+
+                    if (ContentLayout != null && apiVersion < new ApiVersion(2, 7))
+                    {
+                        console.WriteLineColored(
+                            "--content-layout option is not available before qBittorrent version 4.3.2. Use --create-root-folder option instead.",
+                            ColorScheme.Current.Warning);
+                    }
+
+                    if (RatioLimit != null && apiVersion < new ApiVersion(2, 8, 1))
+                    {
+                        console.WriteLineColored(
+                            "--ratio-limit option is ignored by qBittorrent versions earlier than 4.3.4.",
+                            ColorScheme.Current.Warning);
+                    }
+
+                    if (SeedingTimeLimit != null && apiVersion < new ApiVersion(2, 8, 1))
+                    {
+                        console.WriteLineColored(
+                            "--seeding-time-limit option is ignored by qBittorrent versions earlier than 4.3.4.",
                             ColorScheme.Current.Warning);
                     }
                 }
@@ -90,10 +141,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                         SequentialDownload = SequentialDownload,
                         SkipHashChecking = SkipChecking,
                         UploadLimit = UploadLimit,
-                        AutomaticTorrentManagement = AutomaticTorrentManagement
+                        AutomaticTorrentManagement = AutomaticTorrentManagement,
+                        RatioLimit = RatioLimit,
+                        SeedingTimeLimit = SeedingTimeLimit,
+                        ContentLayout = Enum.TryParse(ContentLayout, true, out TorrentContentLayout contentLayout) ? contentLayout : null,
+                        Tags = Tags
                     };
                     await client.AddTorrentsAsync(request);
-                    await WarnAutomaticTorrentManagement(client, console);
+                    await WarnUnsupportedOptions(client, console);
                     return ExitCodes.Success;
                 }
             }
@@ -121,10 +176,14 @@ namespace QBittorrent.CommandLineInterface.Commands
                         SequentialDownload = SequentialDownload,
                         SkipHashChecking = SkipChecking,
                         UploadLimit = UploadLimit,
-                        AutomaticTorrentManagement = AutomaticTorrentManagement
+                        AutomaticTorrentManagement = AutomaticTorrentManagement,
+                        RatioLimit = RatioLimit,
+                        SeedingTimeLimit = SeedingTimeLimit,
+                        ContentLayout = Enum.TryParse(ContentLayout, true, out TorrentContentLayout contentLayout) ? contentLayout : null,
+                        Tags = Tags
                     };
                     await client.AddTorrentsAsync(request);
-                    await WarnAutomaticTorrentManagement(client, console);
+                    await WarnUnsupportedOptions(client, console);
                     return ExitCodes.Success;
                 }
             }
