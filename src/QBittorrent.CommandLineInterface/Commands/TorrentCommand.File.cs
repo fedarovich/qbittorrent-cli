@@ -65,27 +65,44 @@ namespace QBittorrent.CommandLineInterface.Commands
                 }
             }
 
-            [Command(Description = "Gets or sets file priority.")]
-            public class Priority : TorrentSpecificCommandBase
+            [Command(Description = "Gets or sets torrent's files priority.")]
+            public class Priority : TorrentSpecificListCommandBase<TorrentFilePriorityViewModel>
             {
-                [Option("-f|--file <FILE_ID>", "File Id. Use \"torrent file list <HASH>\" command to get the possible values.", CommandOptionType.SingleValue)]
+                [Option("-f|--file <FILE_ID>", "File Id. Use \"torrent file list <HASH>\" command to get the possible values.", CommandOptionType.MultipleValue)]
                 [Required]
-                public int File { get; set; }
+                public IList<int> Files { get; set; }
 
                 [Option("-s|--set <PRIORITY>", "Sets the file priority (SKIP|NORMAL|HIGH|MAXIMAL).", CommandOptionType.SingleValue)]
                 [EnumValidation(typeof(TorrentContentPriority), AllowEmpty = true)]
                 public string Value { get; set; }
 
+                [Option("-F|--format <LIST_FORMAT>", "Output format: plain|table|list|csv|json", CommandOptionType.SingleValue)]
+                public override string Format { get; set; }
+
                 protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
                     if (Enum.TryParse(Value, true, out TorrentContentPriority priority))
                     {
-                        await client.SetFilePriorityAsync(Hash, File, priority);
+                        await client.SetFilePriorityAsync(Hash, Files, priority);
                     }
                     else
                     {
-                        var contents = (await client.GetTorrentContentsAsync(Hash))?.ToList();
-                        console.WriteLineColored(contents?[File]?.Priority.ToString(), ColorScheme.Current.Normal);
+                        var contents = await client.GetTorrentContentsAsync(Hash);
+                        if (string.IsNullOrEmpty(Format) || Format.Equals("plain", StringComparison.OrdinalIgnoreCase))
+                        {
+                            foreach (var file in Files)
+                            {
+                                console.WriteLineColored(contents?[file]?.Priority.ToString(), ColorScheme.Current.Normal);
+                            }
+                        }
+                        else
+                        {
+                            var idSet = Files.ToHashSet();
+                            var viewModels = contents
+                                .Select((c, i) => new TorrentFilePriorityViewModel(c, i))
+                                .Where(vm => idSet.Contains(vm.Id));
+                            Print(viewModels);
+                        }
                     }
 
                     return ExitCodes.Success;
