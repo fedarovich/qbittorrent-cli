@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,74 +95,99 @@ namespace QBittorrent.CommandLineInterface.Commands
             }
         }
 
-        [Command(Description = "Pauses the specified torrent or all torrents.")]
-        public class Pause : TorrentSpecificCommandBase
+        [Command(Description = "Pauses the specified torrents or all torrents.")]
+        public class Pause : MultiTorrentCommandBase
         {
             protected override bool AllowAll => true;
 
-            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to pause all torrents.")]
-            public override string Hash { get; set; }
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to pause all torrents.")]
+            public override IList<string> Hashes { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await (IsAll ? client.PauseAsync() : client.PauseAsync(Hash));
+                await (IsAll ? client.PauseAsync() : client.PauseAsync(Hashes));
                 return ExitCodes.Success;
             }
         }
 
-        [Command(Description = "Resumes the specified torrent or all torrents.")]
-        public class Resume : TorrentSpecificCommandBase
+        [Command(Description = "Resumes the specified torrents or all torrents.")]
+        public class Resume : MultiTorrentCommandBase
         {
             protected override bool AllowAll => true;
 
-            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to resume all torrents.")]
-            public override string Hash { get; set; }
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to resume all torrents.")]
+            public override IList<string> Hashes { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await (IsAll ? client.ResumeAsync() : client.ResumeAsync(Hash));
+                await (IsAll ? client.ResumeAsync() : client.ResumeAsync(Hashes));
                 return ExitCodes.Success;
             }
         }
 
-        [Command(Description = "Force Resumes the specified torrent or all torrents.")]
-        public class ForceResume : TorrentSpecificCommandBase
+        [Command(Description = "Force Resumes the specified torrents or all torrents.")]
+        public class ForceResume : MultiTorrentCommandBase
         {
             protected override bool AllowAll => true;
 
-            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to force resume all torrents.")]
-            public override string Hash { get; set; }
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to force resume all torrents.")]
+            public override IList<string> Hashes { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await (IsAll ? client.SetForceStartAsync(true) : client.SetForceStartAsync(new[] { Hash }, true));
+                await (IsAll ? client.SetForceStartAsync(true) : client.SetForceStartAsync(Hashes, true));
                 return ExitCodes.Success;
             }
         }
 
-        [Command(Description = "Deletes the torrent.")]
-        public class Delete : TorrentSpecificCommandBase
+        [Command(Description = "Deletes the specified torrents or all torrents.")]
+        public class Delete : MultiTorrentCommandBase
         {
+            protected override bool AllowAll => true;
+
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to delete all torrents.")]
+            public override IList<string> Hashes { get; set; }
+
             [Option("-f|--delete-files|--with-files", "Delete downloaded files", CommandOptionType.NoValue)]
             public bool DeleteFiles { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await client.DeleteAsync(Hash, DeleteFiles);
+                await (IsAll ? client.DeleteAsync(DeleteFiles) : client.DeleteAsync(Hashes, DeleteFiles));
                 return ExitCodes.Success;
             }
         }
 
         [Command(Description = "Moves the downloaded files to the other folder.")]
-        public class Move : TorrentSpecificCommandBase
+        public class Move : MultiTorrentCommandBase
         {
-            [Argument(1, "<FOLDER>", "The folder to move the torrent to.")]
-            [Required]
+            protected override bool AllowAll => true;
+
+            [Option("-f|--folder <FOLDER>", CommandOptionType.SingleValue)]
             public string Folder { get; set; }
+
+            protected override Task<int> OnExecuteAuthenticatedAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                if (Folder == null)
+                {
+                    if (Hashes.Count != 2)
+                        throw new InvalidOperationException("The --folder field is required.");
+
+                    // Compatibility mode
+#warning Remove this code for qbt 2.0
+                    Folder = Hashes[1];
+                    Hashes.RemoveAt(1);
+                    console.WriteLineColored(
+                        "Passing folder as unnamed argument is deprecated and will be removed in the next version. Use --folder option instead.",
+                        ColorScheme.Current.Warning);
+                }
+
+                return base.OnExecuteAuthenticatedAsync(client, app, console);
+            }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await client.SetLocationAsync(Hash, Folder);
+                await (IsAll ? client.SetLocationAsync(Folder) : client.SetLocationAsync(Hashes, Folder));
                 return ExitCodes.Success;
             }
         }
@@ -181,40 +207,50 @@ namespace QBittorrent.CommandLineInterface.Commands
         }
 
         [Command(Description = "Sets the torrent category.")]
-        public class Category : TorrentSpecificCommandBase
+        public class Category : MultiTorrentCommandBase
         {
+            protected override bool AllowAll => true;
+
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to set category for all torrents.")]
+            public override IList<string> Hashes { get; set; }
+
             [Option("--set <CATEGORY>", "The category name to set.", CommandOptionType.SingleValue)]
             [Required(AllowEmptyStrings = true)]
             public string CategoryName { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await client.SetTorrentCategoryAsync(Hash, CategoryName);
+                await (IsAll ? client.SetTorrentCategoryAsync(CategoryName) : client.SetTorrentCategoryAsync(Hashes, CategoryName));
                 return ExitCodes.Success;
             }
         }
 
-        [Command(Description = "Rechecks the torrent.")]
-        public class Check : TorrentSpecificCommandBase
-        {
-            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
-            {
-                await client.RecheckAsync(Hash);
-                return ExitCodes.Success;
-            }
-        }
-
-        [Command(Description = "Reannounces the torrent.", ExtendedHelpText = "Requires qBittorrent v4.1.2 or later.")]
-        public class Reannounce : TorrentSpecificCommandBase
+        [Command(Description = "Rechecks the specified torrents or all torrents.")]
+        public class Check : MultiTorrentCommandBase
         {
             protected override bool AllowAll => true;
 
-            [Argument(0, "<HASH|ALL>", "Full or partial torrent hash, or keyword ALL to reannounce all torrents.")]
-            public override string Hash { get; set; }
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to recheck all torrents.")]
+            public override IList<string> Hashes { get; set; }
 
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
-                await (IsAll ? client.ReannounceAsync() : client.ReannounceAsync(Hash));
+                await (IsAll ? client.RecheckAsync() : client.RecheckAsync(Hashes));
+                return ExitCodes.Success;
+            }
+        }
+
+        [Command(Description = "Reannounces the specified torrents or all torrents.", ExtendedHelpText = "Requires qBittorrent v4.1.2 or later.")]
+        public class Reannounce : MultiTorrentCommandBase
+        {
+            protected override bool AllowAll => true;
+
+            [Argument(0, "<HASH_1 HASH_2 ... HASH_N|ALL>", "Full or partial torrent hashes, or keyword ALL to reannounce all torrents.")]
+            public override IList<string> Hashes { get; set; }
+
+            protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
+            {
+                await (IsAll ? client.ReannounceAsync() : client.ReannounceAsync(Hashes));
                 return ExitCodes.Success;
             }
         }

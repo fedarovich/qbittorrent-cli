@@ -16,6 +16,7 @@
     <RepositoryUrl>https://github.com/fedarovich/qbittorrent-cli</RepositoryUrl>
     <PackageTags>torrent qbittorrent</PackageTags>
     <PackageLicenseUrl>https://github.com/fedarovich/qbittorrent-cli/blob/master/LICENSE</PackageLicenseUrl>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -50,10 +51,10 @@
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.4" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" Condition="'$(TargetFramework)' != 'net46'" />
     <PackageReference Include="Mono.Posix" Version="5.4.0.201" Condition="'$(TargetFramework)' == 'net46'" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NJsonSchema" Version="9.14.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
-    <PackageReference Include="QBittorrent.Client" Version="1.8.23016.2" />
+    <PackageReference Include="QBittorrent.Client" Version="1.9.23340.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="5.0.0" />
   </ItemGroup>
 
