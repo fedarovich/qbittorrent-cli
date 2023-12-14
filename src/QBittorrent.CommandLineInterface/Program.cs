@@ -117,7 +117,37 @@ namespace QBittorrent.CommandLineInterface
                     if (apiVersion == new ApiVersion(2, 2))
                         return "4.1.5";
                     if (apiVersion == new ApiVersion(2, 3))
-                        return "4.2";
+                        return "4.2.0";
+                    if (apiVersion == new ApiVersion(2, 4))
+                        return "4.2.1";
+                    if (apiVersion == new ApiVersion(2, 4, 1))
+                        return "4.2.2";
+                    if (apiVersion == new ApiVersion(2, 5))
+                        return "4.2.4";
+                    if (apiVersion == new ApiVersion(2, 5, 1))
+                        return "4.2.5";
+                    if (apiVersion == new ApiVersion(2, 6))
+                        return "4.3.0";
+                    if (apiVersion == new ApiVersion(2, 6, 1))
+                        return "4.3.1";
+                    if (apiVersion == new ApiVersion(2, 7))
+                        return "4.3.2";
+                    if (apiVersion == new ApiVersion(2, 8, 1))
+                        return "4.3.4";
+                    if (apiVersion == new ApiVersion(2, 8, 2))
+                        return "4.3.5";
+                    if (apiVersion == new ApiVersion(2, 8, 4))
+                        return "4.4.0";
+                    if (apiVersion == new ApiVersion(2, 8, 5))
+                        return "4.4.1";
+                    if (apiVersion == new ApiVersion(2, 8, 18))
+                        return "4.5.0";
+                    if (apiVersion == new ApiVersion(2, 8, 19))
+                        return "4.5.1";
+                    if (apiVersion == new ApiVersion(2, 9, 2))
+                        return "4.6.0";
+                    if (apiVersion == new ApiVersion(2, 9, 3))
+                        return "4.6.1";
                     return null;
                 }
             }
