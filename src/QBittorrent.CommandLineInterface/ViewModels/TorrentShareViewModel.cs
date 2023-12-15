@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using BencodeNET.Torrents;
 using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.ViewModels
@@ -32,5 +29,9 @@ namespace QBittorrent.CommandLineInterface.ViewModels
         [Display(Name = "Seeding time limit")]
         [DisplayFormat(NullDisplayText = "n/a")]
         public TimeSpan? SeedingTimeLimit => _partialInfo.SeedingTimeLimit;
+
+        [Display(Name = "Inactive seeding time limit")]
+        [DisplayFormat(NullDisplayText = "n/a")]
+        public TimeSpan? InactiveSeedingTimeLimit => _partialInfo.InactiveSeedingTimeLimit;
     }
 }

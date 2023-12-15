@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
@@ -27,6 +26,10 @@ namespace QBittorrent.CommandLineInterface.Commands
             [ShareSeedingTimeLimitValidation]
             public string SeedingTimeLimit { get; set; }
 
+            [Option("-i|--inactive-seeding-time-limit <VALUE>", "Set the inactive seeding time limit ([d.]HH:mm[:ss]|GLOBAL|NONE). Requires qBittorrent 4.6.0 or later.", CommandOptionType.SingleValue)]
+            [ShareSeedingTimeLimitValidation]
+            public string InactiveSeedingTimeLimit { get; set; }
+
             protected override async Task<int> OnExecuteTorrentSpecificAsync(QBittorrentClient client, CommandLineApplication app, IConsole console)
             {
                 var partialData = await client.GetPartialDataAsync();
@@ -38,12 +41,31 @@ namespace QBittorrent.CommandLineInterface.Commands
 
                 var ratioLimit = GetRatioLimit();
                 var seedingTimeLimit = GetSeedingTimeLimit();
+                var inactiveSeedingTimeLimit = GetInactiveSeedingTimeLimit();
 
-                if (ratioLimit != null || seedingTimeLimit != null)
+                var apiVersion = await client.GetApiVersionAsync();
+
+                if (ratioLimit != null || seedingTimeLimit != null || inactiveSeedingTimeLimit != null)
                 {
-                    await client.SetShareLimitsAsync(Hash,
-                        ratioLimit ?? info.RatioLimit ?? ShareLimits.Ratio.Global,
-                        seedingTimeLimit ?? info.SeedingTimeLimit ?? ShareLimits.SeedingTime.Global);
+                    if (apiVersion < new ApiVersion(2, 9, 2))
+                    {
+                        if (inactiveSeedingTimeLimit != null)
+                        {
+                            console.WriteLineColored("The option --inactive-seeding-time-limit requires qBittorrent 4.6.0 or later.", ColorScheme.Current.Warning);
+                        }
+
+                        await client.SetShareLimitsAsync(Hash,
+                            ratioLimit ?? info.RatioLimit ?? ShareLimits.Ratio.Global,
+                            seedingTimeLimit ?? info.SeedingTimeLimit ?? ShareLimits.SeedingTime.Global);
+                    }
+                    else
+                    {
+                        await client.SetShareLimitsAsync(Hash,
+                            ratioLimit ?? info.RatioLimit ?? ShareLimits.Ratio.Global,
+                            seedingTimeLimit ?? info.SeedingTimeLimit ?? ShareLimits.SeedingTime.Global,
+                            inactiveSeedingTimeLimit ?? info.InactiveSeedingTimeLimit ?? ShareLimits.SeedingTime.Global);
+                    }
+
                     return ExitCodes.Success;
                 }
 
@@ -55,7 +77,8 @@ namespace QBittorrent.CommandLineInterface.Commands
                 _customFormatters = new Dictionary<string, Func<object, object>>
                 {
                     [nameof(viewModel.RatioLimit)] = FormatRatioLimit,
-                    [nameof(viewModel.SeedingTimeLimit)] = FormatSeedingTimeLimit
+                    [nameof(viewModel.SeedingTimeLimit)] = FormatSeedingTimeLimit,
+                    [nameof(viewModel.InactiveSeedingTimeLimit)] = FormatInactiveSeedingTimeLimit
                 };
                 Print(viewModel);
 
@@ -82,7 +105,19 @@ namespace QBittorrent.CommandLineInterface.Commands
                     var time = arg as TimeSpan?;
                     if (time == ShareLimits.SeedingTime.Global)
                     {
-                        var globalValue = global.MaxSeedingTime >= 0 ? global.MaxSeedingTime.Value.ToString() : "None";
+                        var globalValue = global.MaxSeedingTime >= 0 ? TimeSpan.FromMinutes(global.MaxSeedingTime.Value).ToString() : "None";
+                        return $"Global ({globalValue})";
+                    }
+
+                    return time == ShareLimits.SeedingTime.Unlimited ? "None" : time?.ToString();
+                }
+
+                object FormatInactiveSeedingTimeLimit(object arg)
+                {
+                    var time = arg as TimeSpan?;
+                    if (time == ShareLimits.SeedingTime.Global)
+                    {
+                        var globalValue = global.MaxInactiveSeedingTime >= 0 ? TimeSpan.FromMinutes(global.MaxInactiveSeedingTime.Value).ToString() : "None";
                         return $"Global ({globalValue})";
                     }
 
@@ -103,7 +138,7 @@ namespace QBittorrent.CommandLineInterface.Commands
                 if (double.TryParse(RatioLimit, NumberStyles.Float, CultureInfo.InvariantCulture, out var ratioLimit))
                     return ratioLimit;
 
-                return double.TryParse(RatioLimit, out ratioLimit) ? ratioLimit : (double?) null;
+                return double.TryParse(RatioLimit, out ratioLimit) ? ratioLimit : null;
             }
 
             private TimeSpan? GetSeedingTimeLimit()
@@ -114,7 +149,18 @@ namespace QBittorrent.CommandLineInterface.Commands
                 if ("NONE".Equals(SeedingTimeLimit, StringComparison.OrdinalIgnoreCase))
                     return ShareLimits.SeedingTime.Unlimited;
 
-                return TimeSpan.TryParse(SeedingTimeLimit, out var seedingTimeLimit) ? seedingTimeLimit : (TimeSpan?)null;
+                return TimeSpan.TryParse(SeedingTimeLimit, out var seedingTimeLimit) ? seedingTimeLimit : null;
+            }
+
+            private TimeSpan? GetInactiveSeedingTimeLimit()
+            {
+                if ("GLOBAL".Equals(InactiveSeedingTimeLimit, StringComparison.OrdinalIgnoreCase))
+                    return ShareLimits.SeedingTime.Global;
+
+                if ("NONE".Equals(InactiveSeedingTimeLimit, StringComparison.OrdinalIgnoreCase))
+                    return ShareLimits.SeedingTime.Unlimited;
+
+                return TimeSpan.TryParse(InactiveSeedingTimeLimit, out var inactiveSeedingTimeLimit) ? inactiveSeedingTimeLimit : null;
             }
         }
     }

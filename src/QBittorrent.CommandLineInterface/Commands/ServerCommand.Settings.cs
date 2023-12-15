@@ -509,8 +509,16 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Range(-1, int.MaxValue)]
                 public int? MaxSeedingTime { get; set; }
 
-                [Option("-a|--action <ACTION>", "Action to perform when maximal ratio or seeding time limit is reached (Pause|Remove)", 
-                    CommandOptionType.SingleValue)]
+                [Option("-I|--max-inactive-seeding-time-enabled <BOOL>", "Enable/disable maximal inactive seeding time limit", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.9.2", "\"max-inactive-seeding-time-enabled\" option requires qBittorrent 4.6.0 or later.")]
+                public bool? MaxInactiveSeedingTimeEnabled { get; set; }
+
+                [Option("-i|--max-inactive-seeding-time <MINUTES>", "Maximal inactive seeding time in minutes", CommandOptionType.SingleValue)]
+                [Range(-1, int.MaxValue)]
+                [MinApiVersion("2.9.2", "\"max-inactive-seeding-time-enabled\" option requires qBittorrent 4.6.0 or later.")]
+                public int? MaxInactiveSeedingTime { get; set; }
+
+                [Option("-a|--action <ACTION>", "Action to perform when maximal ratio or seeding time limit is reached (Pause|Remove)", CommandOptionType.SingleValue)]
                 public MaxRatioAction? MaxRatioAction { get; set; }
             }
 

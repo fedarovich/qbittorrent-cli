@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using QBittorrent.Client;
 
 namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
@@ -28,6 +25,13 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         [Display(Name = "Maximal seeding time")]
         [DisplayFormat(DataFormatString = "{0:0 minutes;None;None}")]
         public int? MaxSeedingTime => _wrappedObject.MaxSeedingTime;
+
+        [Display(Name = "Maximal inactive seeding time enabled")]
+        public bool? MaxInactiveSeedingTimeEnabled => _wrappedObject.MaxInactiveSeedingTimeEnabled;
+
+        [Display(Name = "Maximal inactive seeding time")]
+        [DisplayFormat(DataFormatString = "{0:0 minutes;None;None}")]
+        public int? MaxInactiveSeedingTime => _wrappedObject.MaxInactiveSeedingTime;
 
         [Display(Name = "Action on limit reached")]
         public MaxRatioAction? MaxRatioAction => _wrappedObject.MaxRatioAction;
