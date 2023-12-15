@@ -24,8 +24,23 @@ namespace QBittorrent.CommandLineInterface.ViewModels.ServerPreferences
         [Display(Name = "Port")]
         public int? ProxyPort => _wrappedObject.ProxyPort;
 
+        [Display(Name = "Perform hostname lookup via proxy")]
+        public bool? ProxyHostnameLookup => _wrappedObject.ProxyHostnameLookup;
+
+        [Display(Name = "Use proxy for BitTorrent purposes")]
+        public bool? ProxyBitTorrent => _wrappedObject.ProxyBittorrent;
+
         [Display(Name = "Use proxy for peer connections")]
         public bool? ProxyPeerConnections => _wrappedObject.ProxyPeerConnections;
+
+        [Display(Name = "Use proxy for torrents only")]
+        public bool? ProxyTorrentsOnly => _wrappedObject.ProxyTorrentsOnly;
+
+        [Display(Name = "Use proxy for RSS purposes")]
+        public bool? ProxyRss => _wrappedObject.ProxyRss;
+
+        [Display(Name = "Use proxy for general purposes")]
+        public bool? ProxyMisc => _wrappedObject.ProxyMisc;
 
         [Display(Name = "Disable connections not supported by proxies")]
         public bool? ForceProxy => _wrappedObject.ForceProxy;

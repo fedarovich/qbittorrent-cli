@@ -318,9 +318,29 @@ namespace QBittorrent.CommandLineInterface.Commands
                 [Option("-p|--proxy-password <PASSWORD>", "Proxy password", CommandOptionType.SingleValue)]
                 public string ProxyPassword { get; set; }
 
-                [Option("-P|--ask-proxy-password", "Ask user to enter SMTP server password.", CommandOptionType.NoValue)]
+                [Option("-P|--ask-proxy-password", "Ask user to enter proxy password.", CommandOptionType.NoValue)]
                 [NoAutoSet]
                 public bool AskForProxyPassword { get; set; }
+
+                [Option("-H|--proxy-hostname-lookup", "Use proxy for torrents only.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.8.18", "\"proxy-hostname-lookup\" option requires qBittorrent 4.5.0 or later.")]
+                public bool? ProxyHostnameLookup { get; set; }
+
+                [Option("-T|--proxy-torrents-only", "Use proxy for hostname lookup.", CommandOptionType.SingleValue)]
+                [MaxApiVersion("2.9.1", "\"proxy-torrents-only\" option is not available on qBittorrent 4.6.0 or later.")]
+                public bool? ProxyTorrentsOnly { get; set; }
+
+                [Option("-B|--proxy-bittorrent", "Use proxy for bittorrent purposes.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.9.1", "\"proxy-bittorrent\" option requires qBittorrent 4.6.0 or later.")]
+                public bool? ProxyBitTorrent { get; set; }
+
+                [Option("-R|--proxy-rss", "Use proxy for RSS purposes.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.9.1", "\"proxy-rss\" option requires qBittorrent 4.6.0 or later.")]
+                public bool? ProxyRss { get; set; }
+
+                [Option("-G|--proxy-general", "Use proxy for general purposes.", CommandOptionType.SingleValue)]
+                [MinApiVersion("2.9.1", "\"proxy-general\" option requires qBittorrent 4.6.0 or later.")]
+                public bool? ProxyMisc { get; set; }
 
                 protected override Task Prepare(QBittorrentClient client, CommandLineApplication app, IConsole console)
                 {
