@@ -1,11 +1,9 @@
 #!/bin/bash
-pushd . > /dev/null
 SCRIPT_PATH="${BASH_SOURCE[0]}";
-while([ -h "${SCRIPT_PATH}" ]); do
-    cd "`dirname "${SCRIPT_PATH}"`"
-    SCRIPT_PATH="$(readlink "`basename "${SCRIPT_PATH}"`")";
+while [ -h "${SCRIPT_PATH}" ]; do
+    DIR="$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )"
+    SCRIPT_PATH="$(readlink "$SCRIPT_PATH")"
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH="$DIR/$SCRIPT_PATH"
 done
-cd "`dirname "${SCRIPT_PATH}"`" > /dev/null
-SCRIPT_PATH="`pwd`";
-popd  > /dev/null
-dotnet "$SCRIPT_PATH/qbt.dll" "$@"
+DIR="$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )"
+exec dotnet "$DIR/qbt.dll" "$@"
