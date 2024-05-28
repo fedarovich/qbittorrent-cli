@@ -1,0 +1,8 @@
+# Source: Cloudsmith (support@cloudsmith.io)
+# Repository: qbittorrent-cli / qbittorrent-cli
+# Description: A certifiably-awesome open-source package repository curated by qbittorrent-cli, hosted by Cloudsmith.
+
+
+deb https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/deb/ubuntu kinetic main
+
+deb-src https://dl.cloudsmith.io/public/qbittorrent-cli/qbittorrent-cli/deb/ubuntu kinetic main
