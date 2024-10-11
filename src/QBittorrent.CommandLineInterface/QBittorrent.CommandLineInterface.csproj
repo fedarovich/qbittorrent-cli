@@ -54,12 +54,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NJsonSchema" Version="9.14.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
-    <PackageReference Include="QBittorrent.Client" Version="1.9.23349.1" />
+    <PackageReference Include="QBittorrent.Client" Version="1.9.24285.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
-    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net46'">
